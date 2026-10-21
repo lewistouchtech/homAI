@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual env
+venv/
+.venv/
+
+# Data
+*.db
+*.sqlite
+*.sqlite3
+data/*.db
+
+# Logs
+tmp/
+*.log
+
+# IDE
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Config with secrets
+config.yaml
+config_from_api.yaml
+*.key
+*.pem
+
+# macOS
+.DS_Store
+
+# Large binaries excluded from GitHub backup
+asset/*.safetensors
+
+# 允许 README 引用仓库内的图片资源
+!assets/**/*.png
+!assets/**/*.jpg
+!assets/**/*.jpeg
+!assets/**/*.gif
+!assets/**/*.webp
