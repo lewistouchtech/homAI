@@ -52,6 +52,12 @@ BUCKET_IMPORTANT = "important"  # 重要/工作 → 移入「重要」文件夹
 BUCKET_TRASH = "trash"        # 垃圾/广告/杂志 → 移入「已删除邮件」
 
 # 发件人本地部分里的垃圾特征
+# 主人 2026-10-21 明确：Discord 只注册了没用 → 全部当垃圾
+_JUNK_SENDER_DOMAINS = (
+    "discord.com", "discord.gg", "skool.com", "linkedin.com", "facebook.com",
+    "instagram.com", "pinterest.com", "tiktok.com", "twitter.com", "x.com",
+    "medium.com", "substack.com", "mailchimp.com", "hubspot.com", "salesforce.com",
+)
 _JUNK_LOCAL_PARTS = (
     "no-reply", "noreply", "no_reply", "do-not-reply", "donotreply",
     "promotions", "promotion", "newsletter", "marketing", "deals",
@@ -380,6 +386,14 @@ class EmailManager:
         sender_l = (sender or "").lower()
         local = sender_l.split("<")[-1].split("@")[0].strip()
 
+        # 0) 主人填的规则优先（清单里填的「留 / 清」）
+        for dom in self.settings.get("keep_domains", []) or []:
+            if str(dom).lower().lstrip("@") in sender_l:
+                return BUCKET_IMPORTANT, f"主人指定保留（{dom}）"
+        for dom in self.settings.get("trash_domains", []) or []:
+            if str(dom).lower().lstrip("@") in sender_l:
+                return BUCKET_TRASH, f"主人指定清理（{dom}）"
+
         # 1) 手动白名单（配置里的 important 名单）
         for pat in self.settings.get("important_senders", []) or []:
             p = str(pat).lower().strip()
@@ -397,7 +411,12 @@ class EmailManager:
                     return BUCKET_INBOX, f"归到 {r.target_folder}（学到的规则：{r.pattern}）"
 
         # 3) 特征判断
-        # 3.0 系统通知保护（优先级最高）：no-reply 发来的欢迎信/验证码/安全提醒等不是垃圾
+        # 3.0a 域级垃圾（主人明确指认：Discord 之类只注册不用 → 全是垃圾）
+        for dom in _JUNK_SENDER_DOMAINS:
+            if dom in sender_l:
+                return BUCKET_TRASH, f"主人指认的垃圾来源（{dom}）"
+
+        # 3.0b 系统通知保护（优先级最高）：no-reply 发来的欢迎信/验证码/安全提醒等不是垃圾
         for hint in _SYSTEM_NOTIFY_SUBJECTS:
             if hint in (subject or ""):
                 return BUCKET_IMPORTANT, f"系统通知类邮件（{hint}）"

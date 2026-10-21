@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/Platform-macOS%20%7C%20Linux-lightgrey.svg" alt="Platform">
 </p>
 
-<p align="center"><b>🌐 <a href="https://myhomai.com">访问官网</a> · 📺 <a href="#视频">看视频</a> · 💬 <a href="#join">申请内测</a></b></p>
+<p align="center"><b>🌐 <a href="https://myhomai.com">访问官网</a> · 📺 <a href="#-视频">看视频</a> · 💬 <a href="https://myhomai.com/#join">申请内测</a></b></p>
 
 ---
 
@@ -81,12 +81,6 @@
 ESP32 设备接入与状态监控，固件 OTA 在线升级。
 
 <p align="center"><img src="assets/website/devices.jpg" alt="设备管理" width="88%"></p>
-
-### 🌌 LED 大屏待机画面
-
-支持 LED 点阵大屏：待机时是水族馆，唤醒后是管家。
-
-<p align="center"><img src="assets/website/led.jpg" alt="LED 大屏待机画面" width="88%"></p>
 
 ### 🧩 模块状态
 
@@ -278,11 +272,15 @@ curl http://localhost:8003/api/health
 
 ## 🙏 致谢
 
-homAI 站在众多开源项目的肩膀上，包括 [xiaozhi-esp32-server](https://github.com/xinnan-tech/xiaozhi-esp32-server)（MIT）、
-[sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx)、[FunASR](https://github.com/modelscope/FunASR)、
-[MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk) 等。
+homAI 建立在许多开源项目之上，主要包括：
 
-完整的第三方开源项目与许可清单见 **[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)**。
+- [xiaozhi-esp32-server](https://github.com/xinnan-tech/xiaozhi-esp32-server)（MIT）—— 服务端架构基础
+- [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx)（Apache-2.0）—— 本地语音识别
+- [FunASR](https://github.com/modelscope/FunASR)（MIT）—— 语音工具包
+- [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk)（MIT）—— MCP 协议支持
+- [mem0](https://github.com/mem0ai/mem0)（Apache-2.0）—— 长期记忆引擎
+
+**完整的第三方项目与许可清单见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。**
 
 > 「homAI」名称、标识与形象素材为项目所有，代码协议（AGPL-3.0）不包含商标授权。
 > 社区版包含对话引擎、语音链路、基础插件、短期记忆与 MCP 通道；

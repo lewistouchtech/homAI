@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-10-21 22:14:30",
+  "generated_at": "2026-10-21 22:32:58",
   "source": "/Users/lewisli/AI 人工智能/projects/homebrain/server/homebrain-server",
   "file_count": 368,
-  "total_bytes": 3916623,
+  "total_bytes": 3917681,
   "files": [
     {
       "path": "core/.DS_Store",
@@ -1031,8 +1031,8 @@
     },
     {
       "path": "core/utils/email_manager.py",
-      "size": 32067,
-      "sha256": "87f0c267e7c0"
+      "size": 33125,
+      "sha256": "41dc11e62b90"
     },
     {
       "path": "core/utils/emergency_listener.py",

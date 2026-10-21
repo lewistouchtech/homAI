@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/Platform-macOS%20%7C%20Linux-lightgrey.svg" alt="Platform">
 </p>
 
-<p align="center"><b>🌐 <a href="https://myhomai.com">Visit our site</a> · 📺 <a href="#videos">Watch the videos</a> · 💬 <a href="#join">Join the beta</a></b></p>
+<p align="center"><b>🌐 <a href="https://myhomai.com">Visit our site</a> · 📺 <a href="#-videos">Watch the videos</a> · 💬 <a href="https://myhomai.com/#join">Join the beta</a></b></p>
 
 ---
 
@@ -81,12 +81,6 @@ Devices, channels, plugins and configuration — all managed in one place.
 ESP32 device onboarding, status monitoring and firmware OTA upgrades.
 
 <p align="center"><img src="assets/website/devices.jpg" alt="Device management" width="88%"></p>
-
-### 🌌 LED wall standby screen
-
-Support for LED dot-matrix walls: an aquarium while idle, your butler when awake.
-
-<p align="center"><img src="assets/website/led.jpg" alt="LED wall standby screen" width="88%"></p>
 
 ### 🧩 Module status
 
@@ -278,13 +272,15 @@ advanced modules (health guardian, full memory, digital-human suite…), priorit
 
 ## 🙏 Acknowledgements
 
-homAI stands on the shoulders of many open-source projects, including
-[xiaozhi-esp32-server](https://github.com/xinnan-tech/xiaozhi-esp32-server) (MIT),
-[sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx), [FunASR](https://github.com/modelscope/FunASR),
-and the [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk).
+homAI builds on many open-source projects, including:
 
-See **[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)** for the full list of third-party
-projects and licenses.
+- [xiaozhi-esp32-server](https://github.com/xinnan-tech/xiaozhi-esp32-server) (MIT) — the server architecture it started from
+- [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx) (Apache-2.0) — offline speech recognition
+- [FunASR](https://github.com/modelscope/FunASR) (MIT) — speech toolkit
+- [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk) (MIT) — MCP support
+- [mem0](https://github.com/mem0ai/mem0) (Apache-2.0) — long-term memory engine
+
+**See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the complete list of projects and licenses.**
 
 > The "homAI" name, logo and avatar artwork are project assets; the code license (AGPL-3.0)
 > does not grant trademark rights. The community edition includes the dialogue engine, voice
