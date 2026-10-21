@@ -30,26 +30,28 @@
 ## 📺 视频
 
 <p align="center">
-  <a href="https://www.youtube.com/@homai" target="_blank">
+  <a href="https://youtube.com/shorts/N4M2LavMIhQ" target="_blank">
     <img src="assets/video/ep001-cover.png" alt="视频 EP01" width="49%">
   </a>
-  <a href="https://www.youtube.com/@homai" target="_blank">
+  <a href="https://youtube.com/shorts/RcdYNQkkpf4" target="_blank">
     <img src="assets/video/ep002-cover.png" alt="视频 EP02" width="49%">
   </a>
 </p>
 
 <p align="center">
-  <b>EP01 · 我把 AI 装到家里了</b> &nbsp;·&nbsp; <b>EP02 · 它真的住进家里了</b>
+  <b>EP01 · 我把 AI 装到家里了</b> &nbsp;·&nbsp; <b>EP02 · 让 AI 陪孩子玩</b>
 </p>
 
 <p align="center">
-  <a href="https://www.youtube.com/@homai">▶ YouTube 频道</a> ·
-  <a href="https://www.youtube.com/@homai">▶ EP01</a> ·
-  <a href="https://www.youtube.com/@homai">▶ EP02</a> ·
-  <a href="https://www.youtube.com/@homai">▶ 小红书 / 抖音 / 视频号</a>
+  <a href="https://youtube.com/shorts/N4M2LavMIhQ">▶ YouTube EP01</a> ·
+  <a href="https://youtube.com/shorts/RcdYNQkkpf4">▶ YouTube EP02</a> ·
+  <a href="https://xhslink.cn/o/6URn4TVcKGv">▶ 小红书 EP01</a> ·
+  <a href="https://xhslink.cn/o/7Br4KrSKoZm">▶ 小红书 EP02</a> ·
+  <a href="https://weixin.qq.com/sph/AsGolp4j4T">▶ 视频号 EP01</a> ·
+  <a href="https://weixin.qq.com/sph/ArtKbijwvd">▶ 视频号 EP02</a>
 </p>
 
-> 📢 短视频同步更新中，欢迎在各个平台搜索 <b>homAI</b> 关注。
+> 📢 抖音同步更新中，欢迎搜索 <b>homAI</b> 关注。
 
 ---
 

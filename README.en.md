@@ -30,26 +30,28 @@
 ## 📺 Videos
 
 <p align="center">
-  <a href="https://www.youtube.com/@homai" target="_blank">
+  <a href="https://youtube.com/shorts/N4M2LavMIhQ" target="_blank">
     <img src="assets/video/ep001-cover.png" alt="Video EP01" width="49%">
   </a>
-  <a href="https://www.youtube.com/@homai" target="_blank">
+  <a href="https://youtube.com/shorts/RcdYNQkkpf4" target="_blank">
     <img src="assets/video/ep002-cover.png" alt="Video EP02" width="49%">
   </a>
 </p>
 
 <p align="center">
-  <b>EP01 · I put AI inside my home</b> &nbsp;·&nbsp; <b>EP02 · It really moved in</b>
+  <b>EP01 · I put AI inside my home</b> &nbsp;·&nbsp; <b>EP02 · AI plays with the kids</b>
 </p>
 
 <p align="center">
-  <a href="https://www.youtube.com/@homai">▶ YouTube channel</a> ·
-  <a href="https://www.youtube.com/@homai">▶ EP01</a> ·
-  <a href="https://www.youtube.com/@homai">▶ EP02</a> ·
-  <a href="https://www.youtube.com/@homai">▶ More platforms</a>
+  <a href="https://youtube.com/shorts/N4M2LavMIhQ">▶ YouTube EP01</a> ·
+  <a href="https://youtube.com/shorts/RcdYNQkkpf4">▶ YouTube EP02</a> ·
+  <a href="https://xhslink.cn/o/6URn4TVcKGv">▶ Xiaohongshu EP01</a> ·
+  <a href="https://xhslink.cn/o/7Br4KrSKoZm">▶ Xiaohongshu EP02</a> ·
+  <a href="https://weixin.qq.com/sph/AsGolp4j4T">▶ WeChat EP01</a> ·
+  <a href="https://weixin.qq.com/sph/ArtKbijwvd">▶ WeChat EP02</a>
 </p>
 
-> 📢 New episodes on a regular basis — search <b>homAI</b> on your favorite platform.
+> 📢 Also on Douyin — search <b>homAI</b>.
 
 ---
 
