@@ -247,7 +247,7 @@ async def _search_duckduckgo(api_key: str, query: str, max_results: int) -> dict
 
 
 async def _search_searxng(base_url: str, query: str, max_results: int) -> dict:
-    """SearXNG 自托管实例（base_url 必填，格式如 http://192.168.0.252:8888）"""
+    """SearXNG 自托管实例（base_url 必填，格式如 http://YOUR_SEARXNG_HOST:8888）"""
     base_url = base_url.rstrip("/")
     url = f"{base_url}/search"
     params = {"q": query, "format": "json", "language": "zh-CN"}

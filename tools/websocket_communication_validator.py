@@ -253,7 +253,7 @@ async def validate_websocket_communication(websocket_uri):
 
 async def main():
     # WebSocket服务器地址
-    websocket_uri = "ws://192.168.100.199:8000/homebrain/v1/"
+    websocket_uri = "ws://YOUR_DEVICE_HOST:8000/homebrain/v1/"
     
     logger.info("🔍 开始WebSocket实时通信验证...")
     logger.info(f"📡 WebSocket服务器地址: {websocket_uri}")

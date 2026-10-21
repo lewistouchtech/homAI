@@ -31,7 +31,7 @@ class MCPEndpointClient:
         """配置 HTTP MCP 端点
         
         Args:
-            url: MCP 端点 URL，如 http://192.168.0.252:8123/api/mcp
+            url: MCP 端点 URL，如 http://YOUR_HA_HOST:8123/api/mcp
             token: Bearer token（可选）
         """
         self.base_url = url

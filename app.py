@@ -41,7 +41,7 @@ def setup_ha_environment():
         for key, value in rows:
             config[key] = value
 
-        host = config.get('ha_host', '192.168.0.252')
+        host = config.get('ha_host', 'YOUR_HA_HOST')
         port = config.get('ha_port', '8123')
         token = config.get('ha_token', '')
 

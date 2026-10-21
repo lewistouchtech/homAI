@@ -135,7 +135,7 @@ class WebSocketTestClient:
 
 async def main():
     # WebSocket服务器地址 - 使用服务器启动时显示的地址
-    # 从之前的日志可以看出，WebSocket地址是 ws://192.168.100.199:8000/homebrain/v1/
+    # 从之前的日志可以看出，WebSocket地址是 ws://YOUR_DEVICE_HOST:8000/homebrain/v1/
     # 但我们需要使用本地地址进行测试
     websocket_uri = "ws://localhost:8000/homebrain/v1/"  # 默认端口8000
     

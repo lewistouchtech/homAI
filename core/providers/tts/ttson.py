@@ -22,7 +22,7 @@ class TTSProvider(TTSProviderBase):
         super().__init__(config, delete_audio_file)
         self.url = config.get(
             "url",
-            "https://u95167-bd74-2aef8085.westx.seetacloud.com:8443/flashsummary/tts?token=",
+            "https://YOUR_TTS_HOST/flashsummary/tts?token=",
         )
         if config.get("private_voice"):
             self.voice = int(config.get("private_voice"))

@@ -64,7 +64,7 @@ def _terminate_ffmpeg(process, timeout: float = 3.0) -> None:
 # │ [2026-10-13 主人要求修] ffmpeg 僵尸进程清理                       │
 # ├─────────────────────────────────────────────────────────────────┤
 # │ 实测抓到：PID 65598 已运行 3 天 10 小时、CPU 0.0%、仍在拉        │
-# │ rtsp://…@192.168.100.146:554/… —— 连接早死、进程没退的僵尸。      │
+# │ rtsp://…@YOUR_CAMERA_HOST:554/… —— 连接早死、进程没退的僵尸。      │
 # │ 与 Frigate 无关：本文件自己直接拉 RTSP 转 MJPEG，Frigate 是       │
 # │ plugins.describe_camera_event.frigate_api 那条路（15000）。       │
 # │                                                                   │

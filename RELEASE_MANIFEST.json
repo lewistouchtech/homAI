@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-10-21 17:51:22",
+  "generated_at": "2026-10-21 19:17:56",
   "source": "/Users/lewisli/AI 人工智能/projects/homebrain/server/homebrain-server",
-  "file_count": 387,
-  "total_bytes": 4273184,
+  "file_count": 392,
+  "total_bytes": 4354376,
   "files": [
     {
       "path": "core/.DS_Store",
@@ -73,6 +73,11 @@
       "path": "core/api/device_manager.py",
       "size": 36299,
       "sha256": "ee4fccd1aaf3"
+    },
+    {
+      "path": "core/api/email_api.py",
+      "size": 5070,
+      "sha256": "7ac5756baf9b"
     },
     {
       "path": "core/api/embed_api.py",
@@ -1140,6 +1145,11 @@
       "sha256": "2b3c046d7c90"
     },
     {
+      "path": "core/utils/email_manager.py",
+      "size": 23533,
+      "sha256": "37ca33f4b717"
+    },
+    {
       "path": "core/utils/emergency_listener.py",
       "size": 12662,
       "sha256": "bc40ac352226"
@@ -1938,6 +1948,21 @@
       "path": "plugins_func/functions/welcome_demo.py",
       "size": 3356,
       "sha256": "0c21ad042168"
+    },
+    {
+      "path": "plugins_func/functions/get_news_from_chinanews.py",
+      "size": 9762,
+      "sha256": "ea4eefe7b488"
+    },
+    {
+      "path": "plugins_func/functions/get_news_from_newsnow.py",
+      "size": 39026,
+      "sha256": "86430111613a"
+    },
+    {
+      "path": "plugins_func/functions/show_news_full.py",
+      "size": 3801,
+      "sha256": "eb9a61fc5e92"
     }
   ]
 }

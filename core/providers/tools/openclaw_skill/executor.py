@@ -156,7 +156,7 @@ class OpenClawSkillExecutor(ToolExecutor):
             # 确保环境变量已设置
             env = os.environ.copy()
             if not env.get("HASS_BASE_URL"):
-                env["HASS_BASE_URL"] = "http://192.168.0.252:8123"
+                env["HASS_BASE_URL"] = 'YOUR_HA_BASE_URL'
             if not env.get("HASS_ACCESS_TOKEN"):
                 # 从 config 中获取 token
                 hass_config = self.config.get("plugins", {}).get("home_assistant", {})
@@ -289,7 +289,7 @@ class OpenClawSkillExecutor(ToolExecutor):
             # 调用 mcporter 获取设备列表
             env = os.environ.copy()
             if not env.get("HASS_BASE_URL"):
-                env["HASS_BASE_URL"] = "http://192.168.0.252:8123"
+                env["HASS_BASE_URL"] = 'YOUR_HA_BASE_URL'
             if not env.get("HASS_ACCESS_TOKEN"):
                 hass_config = self.config.get("plugins", {}).get("home_assistant", {})
                 token = hass_config.get("api_key", "")

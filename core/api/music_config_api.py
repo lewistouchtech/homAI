@@ -13,7 +13,7 @@ routes = web.RouteTableDef()
 DB_PATH = "data/devices.db"
 
 # 默认HA配置
-DEFAULT_HA_HOST = "192.168.0.252"
+DEFAULT_HA_HOST = 'YOUR_HA_HOST'
 DEFAULT_HA_PORT = "8123"
 
 def get_db_connection():

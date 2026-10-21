@@ -11,7 +11,7 @@
 #   4. 部署后自动重启生产并冒烟验证
 
 set -e
-MINI="bot-eva@192.168.0.214"
+MINI="YOUR_USER@YOUR_SERVER_IP"
 REMOTE_BASE="~/Projects/homebrain"
 LOCAL_BASE="$(cd "$(dirname "$0")/../../.." && pwd)"
 DRY_FLAG="-n"
