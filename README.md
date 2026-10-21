@@ -272,3 +272,17 @@ curl http://localhost:8003/api/health
 | 官网 | <https://myhomai.com> |
 | 商务 / 商业授权 | lewis.li@msn.com |
 | 问题反馈 | [GitHub Issues](https://github.com/lewistouchtech/homAI/issues) |
+| 参与贡献 | [贡献指南](CONTRIBUTING.md) · [行为准则](.github/CODE_OF_CONDUCT.md) |
+| 安全问题 | [安全策略](.github/SECURITY.md)（请勿公开提 issue） |
+
+## 🙏 致谢
+
+homAI 站在众多开源项目的肩膀上，包括 [xiaozhi-esp32-server](https://github.com/xinnan-tech/xiaozhi-esp32-server)（MIT）、
+[sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx)、[FunASR](https://github.com/modelscope/FunASR)、
+[MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk) 等。
+
+完整的第三方开源项目与许可清单见 **[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)**。
+
+> 「homAI」名称、标识与形象素材为项目所有，代码协议（AGPL-3.0）不包含商标授权。
+> 社区版包含对话引擎、语音链路、基础插件、短期记忆与 MCP 通道；
+> 长期记忆（mem0）、健康守护、数字人全家桶、设备管理、LED 大屏与云服务为商业版能力。

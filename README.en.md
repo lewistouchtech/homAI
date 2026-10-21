@@ -272,3 +272,21 @@ advanced modules (health guardian, full memory, digital-human suite…), priorit
 | Website | <https://myhomai.com> |
 | Business / commercial licensing | lewis.li@msn.com |
 | Bug reports | [GitHub Issues](https://github.com/lewistouchtech/homAI/issues) |
+| Contributing | [Contributing guide](CONTRIBUTING.md) · [Code of Conduct](.github/CODE_OF_CONDUCT.md) |
+| Security issues | [Security policy](.github/SECURITY.md) (please don't open a public issue) |
+
+## 🙏 Acknowledgements
+
+homAI stands on the shoulders of many open-source projects, including
+[xiaozhi-esp32-server](https://github.com/xinnan-tech/xiaozhi-esp32-server) (MIT),
+[sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx), [FunASR](https://github.com/modelscope/FunASR),
+and the [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk).
+
+See **[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)** for the full list of third-party
+projects and licenses.
+
+> The "homAI" name, logo and avatar artwork are project assets; the code license (AGPL-3.0)
+> does not grant trademark rights. The community edition includes the dialogue engine, voice
+> pipeline, basic plugins, short-term memory and the MCP channel; long-term memory (mem0),
+> health guardian, the full digital-human suite, device management, LED wall and cloud
+> services are commercial features.
