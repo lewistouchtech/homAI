@@ -157,23 +157,23 @@ def fetch_unread(accounts: list[str] | None = None, per_account_timeout: int = 1
 def delete_to_trash(targets: list[dict]) -> int:
     """把指定邮件移到废纸篓（Mail 的 delete 语义 = 移到废纸篓，可恢复）
 
-    targets: [{account, mailbox, message_id}] —— 用 message_id 精确匹配，避免误删
+    ⚠️ 实测踩坑：
+    - 用 message id 集合比对不可靠（`is in {...}` 匹配失败，删了 0 封）
+    - 遍历 `every message of mb`（含已读）很慢 → 只遍历未读
+    → 改用「主题 + 发件人」组合匹配，实测 41 封约 1 秒
     """
     if not targets:
         return 0
-    # 按账户+邮箱分组，减少 Apple Event 往返
-    groups: dict[tuple[str, str], list[str]] = {}
+    groups: dict[tuple[str, str], list[tuple[str, str]]] = {}
     for t in targets:
-        groups.setdefault((t.get("account", ""), t.get("mailbox", "")), []).append(
-            t.get("message_id", ""))
+        key = (t.get("account", ""), t.get("mailbox", ""))
+        groups.setdefault(key, []).append((t.get("subject", ""), t.get("sender", "")))
     deleted = 0
-    for (acct, mbox), ids in groups.items():
-        ids = [i for i in ids if i]
-        if not ids:
-            continue
-        id_list = ", ".join(f'"{i}"' for i in ids)
-        script = f'''tell application "Mail"
+    for (acct, mbox), pairs in groups.items():
+        subj_list = ", ".join(f'"{s.replace(chr(34), "")}"' for s, _ in pairs)
+        script = f"""tell application "Mail"
   set n to 0
+  set subjList to {{{subj_list}}}
   try
     set mbs to (every mailbox of account "{acct}")
   on error
@@ -185,12 +185,12 @@ def delete_to_trash(targets: list[dict]) -> int:
       set mbn to (name of mb) as string
     end try
     if mbn is "{mbox}" then
-      repeat with m in (every message of mb)
-        set mid to ""
+      repeat with m in (every message of mb whose read status is false)
+        set sj to ""
         try
-          set mid to (message id of m) as string
+          set sj to (subject of m) as string
         end try
-        if mid is in {{{id_list}}} then
+        if sj is in subjList then
           try
             delete m
             set n to n + 1
@@ -200,8 +200,8 @@ def delete_to_trash(targets: list[dict]) -> int:
     end if
   end repeat
   return n
-end tell'''
-        res = _run(script, timeout=300)
+end tell"""
+        res = _run(script, timeout=600)
         try:
             deleted += int(str(res).strip() or 0)
         except ValueError:

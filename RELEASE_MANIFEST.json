@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-10-21 21:19:25",
+  "generated_at": "2026-10-21 21:24:42",
   "source": "/Users/lewisli/AI 人工智能/projects/homebrain/server/homebrain-server",
-  "file_count": 370,
-  "total_bytes": 3925999,
+  "file_count": 368,
+  "total_bytes": 3916318,
   "files": [
     {
       "path": "core/.DS_Store",
@@ -1031,8 +1031,8 @@
     },
     {
       "path": "core/utils/email_manager.py",
-      "size": 31216,
-      "sha256": "254a7191aeca"
+      "size": 32067,
+      "sha256": "87f0c267e7c0"
     },
     {
       "path": "core/utils/emergency_listener.py",
@@ -1141,8 +1141,8 @@
     },
     {
       "path": "core/utils/mailapp_bridge.py",
-      "size": 8218,
-      "sha256": "da8961b7a249"
+      "size": 8374,
+      "sha256": "bd5c0255b89b"
     },
     {
       "path": "core/utils/member_profile.py",
@@ -1373,16 +1373,6 @@
       "path": "core/websocket_server.py",
       "size": 18514,
       "sha256": "80b2a8fcdd89"
-    },
-    {
-      "path": "core/websocket_server_reload.py",
-      "size": 2602,
-      "sha256": "ae1f4a86a6d2"
-    },
-    {
-      "path": "core/websocket_server_update_config.py",
-      "size": 8086,
-      "sha256": "866125f37295"
     },
     {
       "path": "plugins_func/bundle_manager.py",

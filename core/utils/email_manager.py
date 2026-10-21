@@ -265,6 +265,10 @@ class EmailManager:
         self.poll_interval = int(self.settings.get("poll_interval_sec", 300))
         self._folder_cache: dict[str, dict[str, str]] = {}   # address -> {role: folder}
         self._learned_message_ids: set[str] = set()
+        # 已提醒过的邮件（避免历史积压一次性轰炸主人）
+        self._notified_path = os.path.join(BASE_DIR, "data", ".email_notified.json")
+        self._notified: set[str] = set(self._load_json(self._notified_path, []) or [])
+        self.max_notify_per_round = int(self.settings.get("max_notify_per_round", 5))
 
     @property
     def dry_run(self) -> bool:
@@ -619,6 +623,15 @@ class EmailManager:
 
     # ------------------------------------------------------------ 提醒
     def notify(self, items: list[dict], channel: str = "mac") -> bool:
+        if not items:
+            return False
+        # 只提醒「没提醒过的」+ 每轮限流（实测一次可能有几百封重要邮件，不能全弹）
+        fresh = [i for i in items if i.get("message_id") and i["message_id"] not in self._notified]
+        for i in fresh:
+            self._notified.add(i["message_id"])
+        self._notified = set(list(self._notified)[-5000:])
+        self._save_json(self._notified_path, sorted(self._notified))
+        items = fresh[: self.max_notify_per_round]
         if not items:
             return False
         title = f"重要邮件 {len(items)} 封"
