@@ -77,6 +77,9 @@ _SYSTEM_NOTIFY_SUBJECTS = (
 # 阿里邮箱系统信的专属发件域（阿里云自己的商业推广不在这类域里）
 _SYSTEM_SENDER_DOMAINS = (
     "mailsupport.aliyun.com", "service.aliyun.com", "notify.aliyun.com",
+    # 实测误判：Apple/iCloud 的系统通知（"Bot Eva 已加入你的家庭"、"加入日历"）也来自 noreply，
+    # 不能当垃圾删
+    "email.apple.com", "apple.com", "icloud.com",
 )
 
 # 主题里的工作/重要特征
@@ -218,6 +221,37 @@ class MailItem:
             "subject": self.subject, "date": self.date, "bucket": self.bucket,
             "reason": self.reason, "folder": self.folder,
         }
+
+
+class MailAppBackend:
+    """走 macOS「邮件」App 的后端（主人 2026-10-21 提问「你不能直接在苹果邮件里去查吗」）
+
+    优点：
+    - **不需要任何密码**（Mail 里已经登录好了）
+    - Mail 自己用系统代理（Clash）同步，Python 直连 Gmail 反而超时
+    - Mail 的 `delete` 本身就是「移到废纸篓」→ 正是主人要的效果
+    """
+
+    name = "mailapp"
+
+    def __init__(self, manager: "EmailManager"):
+        self.m = manager
+
+    def accounts(self) -> list[dict]:
+        from core.utils import mailapp_bridge
+        return mailapp_bridge.list_accounts()
+
+    def fetch(self) -> list[dict]:
+        from core.utils import mailapp_bridge
+        return mailapp_bridge.fetch_unread()
+
+    def trash(self, items: list[dict]) -> int:
+        from core.utils import mailapp_bridge
+        return mailapp_bridge.delete_to_trash(items)
+
+    def mark_read(self, items: list[dict]) -> int:
+        from core.utils import mailapp_bridge
+        return mailapp_bridge.mark_read(items)
 
 
 class EmailManager:
@@ -515,6 +549,44 @@ class EmailManager:
         except Exception as e:
             report["error"] = f"{type(e).__name__}: {e}"
             logger.bind(tag=TAG).warning(f"[邮箱] 巡检失败 {mb.address}: {e}")
+        return report
+
+
+    # ---------------------------------------------------- Mail.app 后端
+    def scan_mailapp(self, notify_channel: str = "mac", trash: bool | None = None) -> dict:
+        """走 macOS「邮件」App 巡检全部已登录账户（不需要密码）
+
+        垃圾 → Mail 的 delete（= 移到废纸篓，可恢复）
+        重要 → 通知
+        """
+        from core.utils.mailapp_bridge import fetch_unread, delete_to_trash
+        do_trash = (not self.dry_run) if trash is None else trash
+        report = {"checked": 0, "by_account": {}, "important": [], "trash": [],
+                  "trashed": 0, "error": None, "backend": "mailapp"}
+        try:
+            mails = fetch_unread()
+        except Exception as e:
+            report["error"] = f"{type(e).__name__}: {e}"
+            return report
+        for m in mails:
+            report["checked"] += 1
+            acct = m["account"]
+            stat = report["by_account"].setdefault(acct, {"checked": 0, "trash": 0, "important": 0})
+            stat["checked"] += 1
+            bucket, reason = self.classify(m["sender"], m["subject"], {}, "")
+            if bucket == BUCKET_TRASH:
+                stat["trash"] += 1
+                report["trash"].append({**m, "reason": reason})
+            elif bucket == BUCKET_IMPORTANT:
+                stat["important"] += 1
+                report["important"].append({**m, "reason": reason})
+        if do_trash and report["trash"]:
+            try:
+                report["trashed"] = delete_to_trash(report["trash"])
+            except Exception as e:
+                report["error"] = f"清理失败: {e}"
+        if report["important"]:
+            self.notify(report["important"], notify_channel)
         return report
 
     def learn_from_manual_moves(self, mb: Mailbox) -> int:

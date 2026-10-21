@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-10-21 20:07:31",
+  "generated_at": "2026-10-21 21:19:25",
   "source": "/Users/lewisli/AI 人工智能/projects/homebrain/server/homebrain-server",
-  "file_count": 369,
-  "total_bytes": 3914792,
+  "file_count": 370,
+  "total_bytes": 3925999,
   "files": [
     {
       "path": "core/.DS_Store",
@@ -1031,8 +1031,8 @@
     },
     {
       "path": "core/utils/email_manager.py",
-      "size": 28227,
-      "sha256": "9c1048e893d6"
+      "size": 31216,
+      "sha256": "254a7191aeca"
     },
     {
       "path": "core/utils/emergency_listener.py",
@@ -1138,6 +1138,11 @@
       "path": "core/utils/llm.py",
       "size": 1188,
       "sha256": "2a19ce42f9e9"
+    },
+    {
+      "path": "core/utils/mailapp_bridge.py",
+      "size": 8218,
+      "sha256": "da8961b7a249"
     },
     {
       "path": "core/utils/member_profile.py",
