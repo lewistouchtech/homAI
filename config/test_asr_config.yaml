@@ -1,0 +1,17 @@
+{
+  "asr": {
+    "selected_provider": "test",
+    "general": {
+      "enable_realtime_display": true,
+      "show_punctuation": true,
+      "vad_threshold": 0.15,
+      "endpoint_detection": true
+    },
+    "test": {
+      "enabled": true,
+      "simulated_delay": 300,
+      "test_text": "这是测试语音识别的结果",
+      "randomize_responses": false
+    }
+  }
+}

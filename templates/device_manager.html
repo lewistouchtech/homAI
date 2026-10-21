@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>homAI 设备管理</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card h3 {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .stat-card .value {
+            color: #333;
+            font-size: 32px;
+            font-weight: bold;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card h2 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        
+        .btn-danger {
+            background: #e53e3e;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c53030;
+        }
+        
+        .btn-success {
+            background: #38a169;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #2f855a;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        th {
+            background: #f7fafc;
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        td {
+            color: #2d3748;
+            font-size: 14px;
+        }
+        
+        tr:hover {
+            background: #f7fafc;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-online {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        
+        .status-offline {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #4a5568;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+        
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+        
+        .alert-success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        
+        .alert-error {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        
+        .alert-info {
+            background: #bee3f8;
+            color: #2a4365;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏠 homAI 设备管理</h1>
+            <p>管理 ESP32 设备配置、OTA 固件和回退服务器</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <h3>总设备数</h3>
+                <div class="value" id="total-devices">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>在线设备</h3>
+                <div class="value" id="online-devices">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>固件版本</h3>
+                <div class="value" id="firmware-versions">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>最后更新</h3>
+                <div class="value" id="last-update" style="font-size: 18px;">-</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>
+                设备列表
+                <button class="btn btn-primary" onclick="showRefresh()">🔄 刷新</button>
+            </h2>
+            <div id="devices-table">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>加载中...</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>
+                固件管理
+                <label for="firmware-upload" class="btn btn-success">📤 上传固件</label>
+                <input type="file" id="firmware-upload" style="display: none;" accept=".bin" onchange="uploadFirmware(this)">
+            </h2>
+            <div id="firmware-list">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>加载中...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 编辑设备配置模态框 -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 20px;">编辑设备配置</h2>
+            <div id="edit-alert"></div>
+            <div class="form-group">
+                <label>设备 ID</label>
+                <input type="text" id="edit-device-id" readonly>
+            </div>
+            <div class="form-group">
+                <label>OTA 服务器地址</label>
+                <input type="text" id="edit-ota-url" placeholder="http://192.168.100.199:8080/xiaozhi/ota/">
+            </div>
+            <div class="form-group">
+                <label>WebSocket 服务器地址</label>
+                <input type="text" id="edit-websocket-url" placeholder="ws://192.168.100.199:8080/xiaozhi/v1/">
+            </div>
+            <div class="form-group">
+                <label>回退服务器地址（当本地服务器不可用时）</label>
+                <input type="text" id="edit-fallback-url" placeholder="wss://cloud.example.com/homebrain/v1/">
+                <small style="color: #666; display: block; margin-top: 4px;">留空表示不回退到其他服务器</small>
+            </div>
+            <div class="form-actions">
+                <button class="btn" onclick="closeModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveConfig()">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 配置历史模态框 -->
+    <div id="history-modal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 20px;">配置历史</h2>
+            <div id="history-list"></div>
+            <div class="form-actions">
+                <button class="btn" onclick="document.getElementById('history-modal').classList.remove('active')">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '';
+        
+        // 页面加载时获取设备列表
+        document.addEventListener('DOMContentLoaded', loadDevices);
+        
+        async function loadDevices() {
+            try {
+                const response = await fetch(`${API_BASE}/api/devices`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    renderDevices(data.devices);
+                    updateStats(data.devices);
+                } else {
+                    showError('加载设备列表失败：' + data.message);
+                }
+            } catch (error) {
+                showError('加载设备列表失败：' + error.message);
+            }
+        }
+        
+        function renderDevices(devices) {
+            const container = document.getElementById('devices-table');
+            
+            if (devices.length === 0) {
+                container.innerHTML = '<div class="alert alert-info">暂无设备，设备首次连接时会自动注册</div>';
+                return;
+            }
+            
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>设备 ID</th>
+                            <th>型号</th>
+                            <th>固件版本</th>
+                            <th>状态</th>
+                            <th>最后连接</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            devices.forEach(device => {
+                const statusClass = device.status === 'online' ? 'status-online' : 'status-offline';
+                html += `
+                    <tr>
+                        <td>${device.device_id}</td>
+                        <td>${device.device_model || 'default'}</td>
+                        <td>${device.device_version}</td>
+                        <td><span class="status-badge ${statusClass}">${device.status}</span></td>
+                        <td>${device.last_seen_str}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-primary btn-sm" onclick="editDevice('${device.device_id}')">编辑</button>
+                                <button class="btn btn-sm" onclick="viewHistory('${device.device_id}')">历史</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteDevice('${device.device_id}')">删除</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+        
+        function updateStats(devices) {
+            document.getElementById('total-devices').textContent = devices.length;
+            document.getElementById('online-devices').textContent = devices.filter(d => d.status === 'online').length;
+            document.getElementById('last-update').textContent = new Date().toLocaleTimeString('zh-CN');
+            
+            // 加载固件版本数
+            loadFirmwareCount();
+        }
+        
+        async function loadFirmwareCount() {
+            try {
+                const response = await fetch(`${API_BASE}/api/firmware`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const totalVersions = Object.values(data.firmware).reduce((sum, versions) => sum + versions.length, 0);
+                    document.getElementById('firmware-versions').textContent = totalVersions;
+                }
+            } catch (error) {
+                console.error('加载固件列表失败:', error);
+            }
+        }
+        
+        async function loadFirmwareList() {
+            try {
+                const response = await fetch(`${API_BASE}/api/firmware`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    renderFirmware(data.firmware);
+                }
+            } catch (error) {
+                showError('加载固件列表失败：' + error.message);
+            }
+        }
+        
+        function renderFirmware(firmware) {
+            const container = document.getElementById('firmware-list');
+            
+            const models = Object.keys(firmware);
+            if (models.length === 0) {
+                container.innerHTML = '<div class="alert alert-info">暂无固件，请上传 .bin 文件</div>';
+                return;
+            }
+            
+            let html = '<table><thead><tr><th>型号</th><th>版本</th><th>大小</th><th>文件名</th><th>操作</th></tr></thead><tbody>';
+            
+            models.forEach(model => {
+                firmware[model].forEach(fw => {
+                    html += `
+                        <tr>
+                            <td>${model}</td>
+                            <td>${fw.version}</td>
+                            <td>${fw.size_mb} MB</td>
+                            <td>${fw.filename}</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm" onclick="deleteFirmware('${fw.filename}')">删除</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+        
+        function editDevice(deviceId) {
+            document.getElementById('edit-device-id').value = deviceId;
+            document.getElementById('edit-ota-url').value = '';
+            document.getElementById('edit-websocket-url').value = '';
+            document.getElementById('edit-fallback-url').value = '';
+            document.getElementById('edit-alert').innerHTML = '';
+            document.getElementById('edit-modal').classList.add('active');
+        }
+        
+        async function saveConfig() {
+            const deviceId = document.getElementById('edit-device-id').value;
+            const config = {};
+            
+            const otaUrl = document.getElementById('edit-ota-url').value.trim();
+            if (otaUrl) config.ota_url = otaUrl;
+            
+            const websocketUrl = document.getElementById('edit-websocket-url').value.trim();
+            if (websocketUrl) config.websocket_url = websocketUrl;
+            
+            const fallbackUrl = document.getElementById('edit-fallback-url').value.trim();
+            config.fallback_url = fallbackUrl; // 允许为空
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/devices/${deviceId}/config`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(config)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('edit-alert', '配置保存成功', 'success');
+                    setTimeout(() => {
+                        closeModal();
+                        loadDevices();
+                    }, 1000);
+                } else {
+                    showAlert('edit-alert', '保存失败：' + data.message, 'error');
+                }
+            } catch (error) {
+                showAlert('edit-alert', '保存失败：' + error.message, 'error');
+            }
+        }
+        
+        function closeModal() {
+            document.getElementById('edit-modal').classList.remove('active');
+        }
+        
+        async function deleteDevice(deviceId) {
+            if (!confirm(`确定要删除设备 ${deviceId} 吗？此操作不可恢复。`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/devices/${deviceId}`, {
+                    method: 'DELETE'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('设备已删除');
+                    loadDevices();
+                } else {
+                    alert('删除失败：' + data.message);
+                }
+            } catch (error) {
+                alert('删除失败：' + error.message);
+            }
+        }
+        
+        async function viewHistory(deviceId) {
+            try {
+                const response = await fetch(`${API_BASE}/api/devices/${deviceId}/history`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    renderHistory(data.history);
+                    document.getElementById('history-modal').classList.add('active');
+                } else {
+                    alert('加载历史失败：' + data.message);
+                }
+            } catch (error) {
+                alert('加载历史失败：' + error.message);
+            }
+        }
+        
+        function renderHistory(history) {
+            const container = document.getElementById('history-list');
+            
+            if (history.length === 0) {
+                container.innerHTML = '<div class="alert alert-info">暂无配置变更记录</div>';
+                return;
+            }
+            
+            let html = '<table><thead><tr><th>时间</th><th>配置项</th><th>旧值</th><th>新值</th></tr></thead><tbody>';
+            
+            history.forEach(record => {
+                html += `
+                    <tr>
+                        <td>${record.changed_at_str}</td>
+                        <td>${record.config_type}</td>
+                        <td>${record.old_value || '-'}</td>
+                        <td>${record.new_value || '-'}</td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+        
+        async function uploadFirmware(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/firmware/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(`固件上传成功：${file.name} (${data.size_mb} MB)`);
+                    loadFirmwareList();
+                    loadFirmwareCount();
+                } else {
+                    alert('上传失败：' + data.message);
+                }
+            } catch (error) {
+                alert('上传失败：' + error.message);
+            }
+            
+            input.value = '';
+        }
+        
+        async function deleteFirmware(filename) {
+            if (!confirm(`确定要删除固件 ${filename} 吗？`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/firmware/${filename}`, {
+                    method: 'DELETE'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('固件已删除');
+                    loadFirmwareList();
+                    loadFirmwareCount();
+                } else {
+                    alert('删除失败：' + data.message);
+                }
+            } catch (error) {
+                alert('删除失败：' + error.message);
+            }
+        }
+        
+        function showRefresh() {
+            loadDevices();
+            loadFirmwareList();
+        }
+        
+        function showAlert(containerId, message, type) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+        }
+        
+        function showError(message) {
+            const container = document.getElementById('devices-table');
+            container.innerHTML = `<div class="alert alert-error">${message}</div>`;
+        }
+        
+        // 每 30 秒自动刷新
+        setInterval(loadDevices, 30000);
+    </script>
+</body>
+</html>

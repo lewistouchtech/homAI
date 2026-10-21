@@ -1,0 +1,202 @@
+# 工具话术登记表（v3.0 第一波 P1）
+# 层级: A=零铺垫(<1.5s)  B=衔接语(1.5-8s)  C=长任务(>8s或异步)
+# 性质: query=查询型  action=动作型
+# 闸门: 该工具是否要求 LLM 先确认再执行
+#
+# 模板变量由工具在 ActionResponse.result 里返回字典承载，播报引擎做字符串替换。
+# 未登记工具走 defaults.unknown_tool_tier 兜底（B 类）。
+
+defaults:
+  unknown_tool_tier: B
+  a_action_done: "{object}已经{verb}了。"
+  b_lead_in_query: "我去查一下哈"
+  b_lead_in_action: "好嘞，我这就去办哈"
+  polish_model_hint: lite
+  c_duration_phrases:
+    "8-20s": "要十几秒"
+    "20-60s": "要几十秒"
+    "1-3min": "大约一两分钟"
+    "over_3min": "要好一会儿"
+
+tools:
+  # ===== A 类：零铺垫（<1.5s，直接出结果）=====
+  get_time:
+    tier: A
+    type: query
+  get_lunar:
+    tier: A
+    type: query
+  query_camera_status:
+    tier: A
+    type: query
+  show_camera_view:
+    tier: A
+    type: action
+  show_album:
+    tier: A
+    type: action
+  close_stage:
+    tier: A
+    type: action
+  handle_exit_intent:
+    tier: A
+    type: action
+  change_role:
+    tier: A
+    type: action
+  embed_mac_app:
+    tier: A
+    type: action
+  overlay_mac_app:
+    tier: A
+    type: action
+  mac_app:
+    tier: A
+    type: action
+
+  # ===== B 类：衔接语（1.5-8s，需一句过渡）=====
+  get_weather:
+    tier: B
+    type: query
+    lead_in: "我去瞅瞅天气哈"
+  get_news_from_newsnow:
+    tier: B
+    type: query
+    lead_in: "我去翻翻今天的新闻哈"
+  get_news_from_chinanews:
+    tier: B
+    type: query
+    lead_in: "我去看看今天的新闻哈"
+  show_news_full:
+    tier: B
+    type: query
+  web_search:
+    tier: B
+    type: query
+    lead_in: "我去网上搜搜看哈"
+  mac_browser:
+    tier: B
+    type: action
+    lead_in: "好嘞，这就给你打开浏览器哈"
+  mac_web:
+    tier: B
+    type: action
+  mac_system:
+    tier: B
+    type: action
+  mac_message:
+    tier: B
+    type: action
+  mac_calendar:
+    tier: B
+    type: action
+  mac_reminder:
+    tier: B
+    type: action
+  mac_notes:
+    tier: B
+    type: action
+  ha_music:
+    tier: B
+    type: action
+  play_music:
+    tier: B
+    type: action
+  run_ai_scene:
+    tier: B
+    type: action
+    confirm_required: true
+  read_feishu_messages:
+    tier: B
+    type: query
+  send_feishu_message:
+    tier: B
+    type: action
+    confirm_required: true
+  send_email_message:
+    tier: B
+    type: action
+    confirm_required: true
+  send_sms_message:
+    tier: B
+    type: action
+    confirm_required: true
+  send_wechat_message:
+    tier: B
+    type: action
+    confirm_required: true
+  send_voice_message:
+    tier: B
+    type: action
+    confirm_required: true
+  get_health_status:
+    tier: B
+    type: query
+  get_current_health_status:
+    tier: B
+    type: query
+  get_health_history:
+    tier: B
+    type: query
+  query_health_history:
+    tier: B
+    type: query
+  show_health_report:
+    tier: B
+    type: action
+  check_health_alerts:
+    tier: B
+    type: query
+  register_health_device:
+    tier: B
+    type: action
+  receive_health_data:
+    tier: B
+    type: action
+  get_daily_briefing:
+    tier: B
+    type: query
+  search_from_ragflow:
+    tier: B
+    type: query
+  restaurant_booking:
+    tier: B
+    type: action
+    confirm_required: true
+  travel_reminder:
+    tier: B
+    type: action
+  set_reminder:
+    tier: B
+    type: action
+  cancel_reminder:
+    tier: B
+    type: action
+  get_travel_info:
+    tier: B
+    type: query
+    lead_in: "我看看路线怎么走哈"
+  search_nearby:
+    tier: B
+    type: query
+    lead_in: "我找找附近有啥哈"
+
+  # ===== C 类：长任务（>8s 或异步，需 pre-announce）=====
+  batch_device_control:
+    tier: C
+    type: action
+    pre_announce: "好，我来控制，{duration_phrase}。"
+    duration_phrase: "要十几秒"
+    progress_mode: milestone
+    confirm_required: true
+    confirm_template: "一共{count}个{device_type}，都{action}吗？"
+    result_template: "{success}个成功，{failed}个没响应。"
+    anchors: [success, failed, count]
+    polish: true
+  organize_mailbox:
+    tier: C
+    type: action
+    pre_announce: "好，整理邮箱，{duration_phrase}，完了叫你。"
+    duration_phrase: "大约一两分钟"
+    progress_mode: heartbeat
+    heartbeat_interval: 25

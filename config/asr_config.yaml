@@ -1,0 +1,79 @@
+# ASR (语音识别) 配置
+# 支持的服务：funasr（本地）、doubao_stream（豆包流式）、wesine（讯飞）
+
+asr:
+  # 选择的ASR提供商
+  selected_provider: "funasr"
+  
+  # 通用配置
+  general:
+    # 是否启用实时显示
+    enable_realtime_display: true
+    # 是否显示标点
+    show_punctuation: true
+    # 静音检测 - 保持启用以处理必要检测
+    vad_threshold: 0.15
+    # 端点检测 - 保持启用
+    endpoint_detection: true
+    
+  # FunASR本地配置
+  funasr:
+    # 模型名称（使用SenseVoiceSmall模型，已验证兼容）
+    model_dir: "iic/SenseVoiceSmall"
+    # 采样率
+    sample_rate: 16000
+    # 语言
+    language: "zh"
+    # 是否使用热词
+    use_hotwords: false
+    # 启用时间戳
+    enable_timestamps: true
+    # 批处理大小
+    batch_size: 1
+    # 启用流式模式
+    streaming: true
+    # 备注：
+    # - FunASR-Nano模型存在注册问题，暂时无法使用
+    # - SenseVoiceSmall模型已验证兼容，性能良好
+    # - 当前使用SenseVoiceSmall模型
+    
+  # 豆包流式ASR配置
+  doubao_stream:
+    # API密钥
+    api_key: "YOUR_DOUBAO_API_KEY"
+    # 模型
+    model: "DoubaoASR"
+    # 语言
+    language: "zh"
+    # 是否启用流式
+    streaming: true
+    # 端点检测配置
+    endpointing:
+      silence_duration_ms: 700
+      min_speech_duration_ms: 200
+      
+  # 讯飞ASR配置
+  wesine:
+    # 应用ID
+    app_id: "YOUR_APP_ID"
+    # API密钥
+    api_secret: "YOUR_API_SECRET"
+    # API密钥
+    api_key: "YOUR_API_KEY"
+    # 语言
+    language: "zh"
+    # 方言
+    accent: "mandarin"
+    # 领域
+    domain: "common"
+    
+  # 测试配置（开发环境使用）
+  test:
+    # 使用测试模式
+    enabled: true
+    # 模拟响应延迟（毫秒）
+    simulated_delay: 300
+    # 测试文本
+    test_text: "这是一个测试的语音识别结果"
+    # 是否随机化响应
+    randomize_responses: false

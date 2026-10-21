@@ -1,0 +1,97 @@
+# LLM (大语言模型) 配置
+# 支持的模型：claude、gpt、qwen、deepseek、本地模型等
+
+llm:
+  # 选择的LLM提供商
+  selected_provider: "qwen"
+  
+  # 通用配置
+  general:
+    # 是否启用流式响应
+    enable_streaming: true
+    # 最大令牌数
+    max_tokens: 2000
+    # 温度
+    temperature: 0.7
+    # 系统提示词
+    system_prompt: "你是一个专业的家庭AI助手，回答要简洁、专业、有用。"
+    # 是否启用工具调用
+    enable_function_calling: true
+    # 上下文窗口大小
+    context_window: 8000
+    
+  # Qwen配置
+  qwen:
+    # API密钥
+    api_key: "YOUR_QWEN_API_KEY"
+    # 模型
+    model: "qwen-turbo"
+    # 最大令牌数
+    max_tokens: 2000
+    # 温度
+    temperature: 0.7
+    # 是否启用搜索
+    enable_search: false
+    # 响应格式
+    response_format: "text"
+    
+  # Claude配置
+  claude:
+    # API密钥
+    api_key: "YOUR_ANTHROPIC_API_KEY"
+    # 模型
+    model: "claude-3-haiku-20240307"
+    # 最大令牌数
+    max_tokens: 2000
+    # 温度
+    temperature: 0.7
+    # 是否启用思考
+    enable_thinking: false
+    
+  # OpenAI GPT配置
+  openai:
+    # API密钥
+    api_key: "YOUR_OPENAI_API_KEY"
+    # 模型
+    model: "gpt-4-turbo"
+    # 最大令牌数
+    max_tokens: 2000
+    # 温度
+    temperature: 0.7
+    # 组织ID
+    organization: "YOUR_ORG_ID"
+    
+  # DeepSeek配置
+  deepseek:
+    # API密钥
+    api_key: "YOUR_DEEPSEEK_API_KEY"
+    # 模型
+    model: "deepseek-chat"
+    # 最大令牌数
+    max_tokens: 2000
+    # 温度
+    temperature: 0.7
+    
+  # 本地模型配置
+  local:
+    # 模型路径
+    model_path: "models/local-llm"
+    # 推理引擎
+    engine: "vllm"
+    # 是否启用量化
+    quantized: true
+    # GPU数量
+    gpu_count: 1
+    # 最大内存使用
+    max_memory: "8GB"
+    
+  # 测试配置（开发环境使用）
+  test:
+    # 使用测试模式
+    enabled: true
+    # 模拟响应延迟（毫秒）
+    simulated_delay: 1000
+    # 测试响应
+    test_response: "这是AI的测试回复。当前系统已连接，但需要配置真实的LLM服务以获取智能回复。"
+    # 是否随机化响应
+    randomize_responses: false

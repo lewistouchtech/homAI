@@ -1,0 +1,416 @@
+import os
+import io
+import sys
+import time
+import json
+import wave
+import shutil
+import psutil
+import asyncio
+import numpy as np
+from dataclasses import dataclass, field
+from typing import Optional, Tuple, List, Dict, Any
+
+from funasr import AutoModel
+from config.logger import setup_logging
+from core.providers.asr.utils import lang_tag_filter
+from core.providers.asr.base import ASRProviderBase
+from core.providers.asr.dto.dto import InterfaceType
+from core.handle.receiveAudioHandle import startToChat
+from core.handle.reportHandle import enqueue_asr_report
+
+TAG = __name__
+logger = setup_logging()
+
+MAX_RETRIES = 2
+RETRY_DELAY = 1  # 重试延迟(秒)
+
+# 音频参数
+SAMPLE_RATE = 16000
+
+# paraformer-zh-streaming 流式参数（FunASR 官方推荐）
+CHUNK_SIZE = [0, 10, 5]  # 600ms
+ENCODER_CHUNK_LOOK_BACK = 4
+DECODER_CHUNK_LOOK_BACK = 1
+CHUNK_STRIDE = CHUNK_SIZE[1] * 960  # 9600 samples = 600ms @ 16kHz
+
+# 音频累积最大时长参数
+MAX_SENSEVOICE_DURATION = 20  # SenseVoice最大处理时长(秒)
+MAX_ACCUMULATION_DURATION = 25  # 音频累积最大时长(秒)
+
+
+# 捕获标准输出
+class CaptureOutput:
+    def __enter__(self):
+        self._output = io.StringIO()
+        self._original_stdout = sys.stdout
+        sys.stdout = self._output
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        sys.stdout = self._original_stdout
+        self.output = self._output.getvalue()
+        self._output.close()
+        if self.output:
+            logger.bind(tag=TAG).info(self.output.strip())
+
+
+@dataclass
+class ASRSession:
+    """ASR 会话状态"""
+    asr_pending: list = field(default_factory=list)  # 累积的音频样本 (float32)
+    created_at: float = 0.0
+    last_seen: float = 0.0
+    last_voice_time: float = 0.0
+    sentence_text: str = ""
+    # paraformer 流式专用
+    streaming_cache: dict = field(default_factory=dict)
+    streaming_chunk_buf: list = field(default_factory=list)  # 用于凑齐 chunk_stride
+
+
+class ASRProvider(ASRProviderBase):
+    def __init__(self, config: dict, delete_audio_file: bool):
+        super().__init__()
+
+        # 内存检测
+        min_mem_bytes = 2 * 1024 * 1024 * 1024
+        total_mem = psutil.virtual_memory().total
+        if total_mem < min_mem_bytes:
+            logger.bind(tag=TAG).error(f"可用内存不足2G,当前仅有 {total_mem / (1024*1024):.2f} MB,可能无法启动FunASR")
+
+        self.model_dir = config.get("model_dir")
+        self.output_dir = config.get("output_dir", "tmp/")
+        self.delete_audio_file = delete_audio_file
+
+        # 如果 model_dir 是 iic/SenseVoiceSmall 且本地存在，使用本地路径
+        if self.model_dir == "iic/SenseVoiceSmall":
+            local_sensevoice = os.path.join(os.path.dirname(__file__), "..", "..", "..", "models", "SenseVoiceSmall")
+            if os.path.isdir(local_sensevoice) and os.path.isfile(os.path.join(local_sensevoice, "model.pt")):
+                self.model_dir = local_sensevoice
+                logger.bind(tag=TAG).info(f"使用本地 SenseVoice 模型: {self.model_dir}")
+
+        # 判断模型类型
+        self.is_sensevoice = "sensevoice" in self.model_dir.lower()
+        self.is_paraformer_streaming = "paraformer" in self.model_dir.lower() and "streaming" in self.model_dir.lower()
+
+        if self.is_sensevoice:
+            # SenseVoice: 非流式，累积后一次性识别
+            self.interface_type = InterfaceType.STREAM
+            logger.bind(tag=TAG).info(f"SenseVoice 模型（非流式模式）: {self.model_dir}")
+        elif self.is_paraformer_streaming:
+            # paraformer-zh-streaming: 真正的流式
+            self.interface_type = InterfaceType.STREAM
+            logger.bind(tag=TAG).info(f"paraformer-zh-streaming 模型（流式模式）: {self.model_dir}")
+        else:
+            # 其他模型: 非流式
+            self.interface_type = InterfaceType.LOCAL
+            logger.bind(tag=TAG).info(f"模型: {self.model_dir}")
+
+        # 会话管理
+        self.SESSIONS: Dict[str, ASRSession] = {}
+        self.SESSION_TTL_SEC = 10 * 60
+
+        os.makedirs(self.output_dir, exist_ok=True)
+
+        # 加载模型
+        with CaptureOutput():
+            self.model = AutoModel(
+                model=self.model_dir,
+                vad_kwargs={"max_single_segment_time": 30000},
+                disable_update=True,
+                hub="hf",
+            )
+
+        logger.bind(tag=TAG).info(f"FunASR 模型加载完成: {self.model_dir}")
+
+    def _get_session(self, session_id: str) -> Optional[ASRSession]:
+        session = self.SESSIONS.get(session_id)
+        if session:
+            session.last_seen = time.time()
+        return session
+
+    def _init_session(self, session_id: str) -> ASRSession:
+        session = ASRSession(
+            asr_pending=[],
+            created_at=time.time(),
+            last_seen=time.time(),
+            streaming_cache={},
+            streaming_chunk_buf=[],
+        )
+        self.SESSIONS[session_id] = session
+        return session
+
+    async def process_streaming_chunk(
+        self, pcm_chunk: bytes, session_id: str, is_final: bool = False
+    ) -> Optional[str]:
+        """流式处理音频块"""
+        try:
+            session = self._get_session(session_id)
+            if not session:
+                session = self._init_session(session_id)
+
+            audio_data = np.frombuffer(pcm_chunk, dtype=np.int16).astype(np.float32) / 32768.0
+
+            if self.is_paraformer_streaming:
+                # paraformer-zh-streaming: 流式识别
+                session.streaming_chunk_buf.extend(audio_data.tolist())
+
+                # 凑够一个 chunk_stride 就识别一次
+                text = None
+                while len(session.streaming_chunk_buf) >= CHUNK_STRIDE:
+                    chunk = np.array(session.streaming_chunk_buf[:CHUNK_STRIDE], dtype=np.float32)
+                    session.streaming_chunk_buf = session.streaming_chunk_buf[CHUNK_STRIDE:]
+
+                    result = await asyncio.to_thread(
+                        self.model.generate,
+                        input=chunk,
+                        cache=session.streaming_cache,
+                        is_final=False,
+                        chunk_size=CHUNK_SIZE,
+                        encoder_chunk_look_back=ENCODER_CHUNK_LOOK_BACK,
+                        decoder_chunk_look_back=DECODER_CHUNK_LOOK_BACK,
+                    )
+
+                    if result and len(result) > 0:
+                        first = result[0] if isinstance(result, list) else result
+                        if isinstance(first, dict):
+                            t = first.get("text", "")
+                        else:
+                            t = str(first)
+                        t = lang_tag_filter(t)
+                        if isinstance(t, dict):
+                            t = t.get("content", "")
+                        if t:
+                            text = t
+
+                return text if text else None
+
+            else:
+                # SenseVoice 和其他模型: 只累积，等 finish_streaming
+                session.asr_pending.extend(audio_data.tolist())
+                
+                # 计算当前累积音频时长
+                current_duration = len(session.asr_pending) / SAMPLE_RATE
+                
+                if current_duration > MAX_ACCUMULATION_DURATION:
+                    logger.bind(tag=TAG).info(f"[SenseVoice] 音频累积达到{current_duration:.2f}秒，触发提前处理")
+                    # 提前处理当前累积的音频，但不清理会话
+                    audio_array = np.array(session.asr_pending, dtype=np.float32)
+                    
+                    # 限制音频长度并处理
+                    max_samples = MAX_ACCUMULATION_DURATION * SAMPLE_RATE
+                    if len(audio_array) > max_samples:
+                        audio_array = audio_array[:int(max_samples)]
+                        # 保留超出部分供下次处理
+                        remaining_audio = session.asr_pending[int(max_samples):]
+                        session.asr_pending = remaining_audio
+                    else:
+                        session.asr_pending = []
+                    
+                    # 使用SenseVoice处理当前音频段
+                    max_samples = MAX_SENSEVOICE_DURATION * SAMPLE_RATE
+                    
+                    if len(audio_array) > max_samples:
+                        logger.bind(tag=TAG).warning(f"[SenseVoice] 音频过长 ({len(audio_array)/SAMPLE_RATE:.2f}s)，截取至{MAX_SENSEVOICE_DURATION}s")
+                        audio_array = audio_array[:max_samples]
+                    
+                    result = await asyncio.to_thread(
+                        self.model.generate,
+                        input=audio_array,
+                        cache={},
+                        language="auto",
+                        use_itn=True,
+                    )
+
+                    text = ""
+                    if result and len(result) > 0:
+                        text = lang_tag_filter(result[0]["text"])
+                        if isinstance(text, dict):
+                            text = text.get("content", "")
+                        
+                    return text if text else None
+                
+                return None
+
+        except Exception as e:
+            logger.bind(tag=TAG).error(f"流式识别失败: {e}", exc_info=True)
+            return None
+
+    async def speech_to_text(
+        self, opus_data: List[bytes], session_id: str, audio_format="opus", artifacts=None
+    ) -> Tuple[Optional[str], Optional[str]]:
+        """语音转文本 — 非流式识别"""
+        retry_count = 0
+        while retry_count < MAX_RETRIES:
+            try:
+                if artifacts is None:
+                    return "", None
+
+                start_time = time.time()
+                # 根据模型类型选择合适的参数
+                if self.is_sensevoice:
+                    # SenseVoice不需要batch_size_s参数
+                    result = await asyncio.to_thread(
+                        self.model.generate,
+                        input=artifacts.pcm_bytes,
+                        cache={},
+                        language="auto",
+                        use_itn=True,
+                    )
+                else:
+                    # 其他模型可以使用batch_size_s参数
+                    result = await asyncio.to_thread(
+                        self.model.generate,
+                        input=artifacts.pcm_bytes,
+                        cache={},
+                        language="auto",
+                        use_itn=True,
+                        batch_size_s=60,
+                    )
+                text = lang_tag_filter(result[0]["text"])
+                if isinstance(text, dict):
+                    text = text.get("content", "")
+                logger.bind(tag=TAG).debug(
+                    f"语音识别耗时: {time.time() - start_time:.3f}s | 结果: {text}"
+                )
+                return text, artifacts.file_path
+
+            except OSError as e:
+                retry_count += 1
+                if retry_count >= MAX_RETRIES:
+                    logger.bind(tag=TAG).error(
+                        f"语音识别失败（已重试{retry_count}次）: {e}", exc_info=True
+                    )
+                    return "", None
+                logger.bind(tag=TAG).warning(
+                    f"语音识别失败，正在重试（{retry_count}/{MAX_RETRIES}）: {e}"
+                )
+                time.sleep(RETRY_DELAY)
+
+            except Exception as e:
+                logger.bind(tag=TAG).error(f"语音识别失败: {e}", exc_info=True)
+                return "", None
+
+    async def finish_streaming(self, session_id: str, conn: "ConnectionHandler") -> str:
+        """结束流式识别"""
+        try:
+            logger.bind(tag=TAG).info(f"finish_streaming: session_id={session_id}, SESSIONS keys={list(self.SESSIONS.keys())}")
+
+            session = self._get_session(session_id)
+            if not session:
+                logger.bind(tag=TAG).warning(f"会话不存在: {session_id}")
+                return ""
+
+            text = ""
+
+            if self.is_paraformer_streaming:
+                # paraformer-zh-streaming: 发送空帧结束流式
+                if session.streaming_chunk_buf:
+                    chunk = np.array(session.streaming_chunk_buf, dtype=np.float32)
+                    session.streaming_chunk_buf = []
+
+                    result = await asyncio.to_thread(
+                        self.model.generate,
+                        input=chunk,
+                        cache=session.streaming_cache,
+                        is_final=True,
+                        chunk_size=CHUNK_SIZE,
+                        encoder_chunk_look_back=ENCODER_CHUNK_LOOK_BACK,
+                        decoder_chunk_look_back=DECODER_CHUNK_LOOK_BACK,
+                    )
+
+                    if result and len(result) > 0:
+                        first = result[0] if isinstance(result, list) else result
+                        if isinstance(first, dict):
+                            text = first.get("text", "")
+                        else:
+                            text = str(first)
+                        text = lang_tag_filter(text)
+                        if isinstance(text, dict):
+                            text = text.get("content", "")
+
+                # 清空流式缓存
+                session.streaming_cache = {}
+
+            else:
+                # SenseVoice 和其他模型: 累积音频一次性识别
+                if session.asr_pending:
+                    audio_array = np.array(session.asr_pending, dtype=np.float32)
+                    audio_duration = len(audio_array) / SAMPLE_RATE  # 秒
+                    logger.bind(tag=TAG).info(f"[SenseVoice] 累积音频: {len(audio_array)}样本, {audio_duration:.2f}秒")
+                    session.asr_pending = []
+
+                    # 对于SenseVoice，限制音频长度并调整参数
+                    max_samples = MAX_SENSEVOICE_DURATION * SAMPLE_RATE
+                    
+                    if len(audio_array) > max_samples:
+                        logger.bind(tag=TAG).warning(f"[SenseVoice] 音频过长 ({len(audio_array)/SAMPLE_RATE:.2f}s)，截取至{MAX_SENSEVOICE_DURATION}s")
+                        audio_array = audio_array[:max_samples]
+                    
+                    result = await asyncio.to_thread(
+                        self.model.generate,
+                        input=audio_array,
+                        cache={},
+                        language="auto",
+                        use_itn=True,
+                        # SenseVoice不需要batch_size_s参数，移除该参数
+                    )
+
+                    if result and len(result) > 0:
+                        text = lang_tag_filter(result[0]["text"])
+                        if isinstance(text, dict):
+                            text = text.get("content", "")
+
+            # 清理会话
+            self.SESSIONS.pop(session_id, None)
+
+            if text:
+                # 过滤无意义识别结果：纯标点、极短片段、无意义字符
+                import re
+                cleaned = text.strip()
+                # 移除语言标签如 <|en|>, <|zh|> 等
+                cleaned = re.sub(r'<\|[a-z]+\|>', '', cleaned).strip()
+                # 移除纯标点/空白后检查是否有实质内容
+                content_only = re.sub(r'[\s\u3000\uff01-\uff5e\u2000-\u206f\u3000-\u303f\uff00-\uffef]', '', cleaned)
+                # 判断是否有意义：至少包含中文字符或英文字母，且去除标点后长度>=2
+                has_chinese = bool(re.search(r'[\u4e00-\u9fff]', cleaned))
+                has_english = bool(re.search(r'[a-zA-Z]{2,}', cleaned))
+                if not content_only or (len(content_only) < 2 and not has_chinese and not has_english):
+                    logger.bind(tag=TAG).info(f"识别结果为无意义片段，跳过: {text}")
+                    return ""
+                logger.bind(tag=TAG).info(f"识别完成: {text}")
+
+                # 发送最终结果给前端
+                session_id_attr = getattr(conn, 'session_id', 'unknown')
+                stt_message = json.dumps({
+                    "type": "stt",
+                    "text": text,
+                    "session_id": session_id_attr,
+                    "streaming": False
+                })
+                device_id = getattr(conn, 'device_id', '') or getattr(conn, 'hello_device_id', '')
+                if 'dante' in device_id.lower():
+                    if hasattr(conn, 'server') and conn.server and hasattr(conn.server, 'broadcast_message'):
+                        await conn.server.broadcast_message(stt_message)
+                    elif hasattr(conn, 'websocket') and conn.websocket:
+                        await conn.websocket.send(stt_message)
+                else:
+                    if hasattr(conn, 'websocket') and conn.websocket:
+                        await conn.websocket.send(stt_message)
+
+                # 触发后续对话
+                try:
+                    await startToChat(conn, text)
+                except Exception as e:
+                    logger.bind(tag=TAG).error(f"startToChat 失败: {e}")
+
+                # 上报 ASR 结果
+                try:
+                    enqueue_asr_report(conn, text, [])
+                except Exception as e:
+                    logger.bind(tag=TAG).debug(f"上报 ASR 结果失败: {e}")
+
+            return text
+
+        except Exception as e:
+            logger.bind(tag=TAG).error(f"finish_streaming 失败: {e}", exc_info=True)
+            return ""

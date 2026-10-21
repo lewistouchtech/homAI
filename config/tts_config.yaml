@@ -1,0 +1,93 @@
+# TTS (文本转语音) 配置
+# 支持的服务：openai、edge、azure、elevenlabs、本地模型等
+
+tts:
+  # 选择的TTS提供商
+  selected_provider: "edge"
+  
+  # 通用配置
+  general:
+    # 语音名称
+    voice_name: "zh-CN-XiaoxiaoNeural"
+    # 语速
+    speed: 1.0
+    # 音调
+    pitch: 0.0
+    # 音量
+    volume: 100
+    # 输出格式
+    output_format: "audio-16khz-32kbitrate-mono-mp3"
+    # 采样率
+    sample_rate: 16000
+    
+  # Microsoft Edge TTS配置
+  edge:
+    # 语音名称
+    voice_name: "zh-CN-XiaoxiaoNeural"
+    # 语言
+    language: "zh-CN"
+    # 性别
+    gender: "female"
+    # 风格
+    style: "default"
+    # 角色
+    role: "default"
+    
+  # OpenAI TTS配置
+  openai:
+    # API密钥
+    api_key: "YOUR_OPENAI_API_KEY"
+    # 模型
+    model: "tts-1"
+    # 语音
+    voice: "alloy"
+    # 速度
+    speed: 1.0
+    # 输出格式
+    output_format: "mp3"
+    
+  # Azure TTS配置
+  azure:
+    # API密钥
+    api_key: "YOUR_AZURE_API_KEY"
+    # 区域
+    region: "eastus"
+    # 语音名称
+    voice_name: "zh-CN-XiaoxiaoNeural"
+    # 语言
+    language: "zh-CN"
+    
+  # ElevenLabs配置
+  elevenlabs:
+    # API密钥
+    api_key: "YOUR_ELEVENLABS_API_KEY"
+    # 语音ID
+    voice_id: "EXAVITQu4vr4xnSDxMaL"
+    # 模型ID
+    model_id: "eleven_multilingual_v2"
+    # 稳定性
+    stability: 0.5
+    # 相似度
+    similarity_boost: 0.75
+    
+  # 本地TTS配置
+  local:
+    # 模型路径
+    model_path: "models/local-tts"
+    # 推理引擎
+    engine: "vits"
+    # 语言
+    language: "zh"
+    # 说话人
+    speaker: "default"
+    
+  # 测试配置（开发环境使用）
+  test:
+    # 使用测试模式
+    enabled: true
+    # 模拟响应延迟（毫秒）
+    simulated_delay: 500
+    # 是否播放静音
+    play_silence: true
+    # 音频持续时间（毫秒）
+    audio_duration: 2000

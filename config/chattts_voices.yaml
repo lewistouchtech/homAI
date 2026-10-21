@@ -1,0 +1,164 @@
+# ChatTTS 预置音色配置
+# 包含10个男声音色和10个女声音色，每个音色都有固定的参数配置
+
+male_voices:
+  # 男声音色1 - 温和成熟
+  - name: "male_warm_mature"
+    seed: 1001
+    temperature: 0.3
+    top_p: 0.7
+    top_k: 20
+    description: "温和成熟的男声"
+  
+  # 男声音色2 - 年轻活力
+  - name: "male_young_energy"
+    seed: 1002
+    temperature: 0.4
+    top_p: 0.8
+    top_k: 15
+    description: "年轻有活力的男声"
+  
+  # 男声音色3 - 深沉稳重
+  - name: "male_deep_grave"
+    seed: 1003
+    temperature: 0.2
+    top_p: 0.6
+    top_k: 25
+    description: "深沉稳重的男声"
+  
+  # 男声音色4 - 商务精英
+  - name: "male_business_elite"
+    seed: 1004
+    temperature: 0.35
+    top_p: 0.75
+    top_k: 18
+    description: "商务精英风格的男声"
+  
+  # 男声音色5 - 亲切友善
+  - name: "male_friendly_kind"
+    seed: 1005
+    temperature: 0.45
+    top_p: 0.85
+    top_k: 12
+    description: "亲切友善的男声"
+  
+  # 男声音色6 - 磁性低沉
+  - name: "male_magnetic_deep"
+    seed: 1006
+    temperature: 0.25
+    top_p: 0.65
+    top_k: 22
+    description: "磁性低沉的男声"
+  
+  # 男声音色7 - 青年阳光
+  - name: "male_youth_sunshine"
+    seed: 1007
+    temperature: 0.5
+    top_p: 0.9
+    top_k: 10
+    description: "青年阳光的男声"
+  
+  # 男声音色8 - 专业播音
+  - name: "male_professional_announcer"
+    seed: 1008
+    temperature: 0.3
+    top_p: 0.7
+    top_k: 20
+    description: "专业播音员风格的男声"
+  
+  # 男声音色9 - 温柔体贴
+  - name: "male_gentle_caring"
+    seed: 1009
+    temperature: 0.4
+    top_p: 0.75
+    top_k: 16
+    description: "温柔体贴的男声"
+  
+  # 男声音色10 - 活泼开朗
+  - name: "male_lively_cheerful"
+    seed: 1010
+    temperature: 0.55
+    top_p: 0.88
+    top_k: 8
+    description: "活泼开朗的男声"
+
+female_voices:
+  # 女声音色1 - 温柔甜美 (默认5002)
+  - name: "female_gentle_sweet"
+    seed: 5002
+    temperature: 0.3
+    top_p: 0.7
+    top_k: 20
+    description: "温柔甜美的女声"
+  
+  # 女声音色2 - 成熟知性
+  - name: "female_mature_intelligent"
+    seed: 2001
+    temperature: 0.35
+    top_p: 0.75
+    top_k: 18
+    description: "成熟知性的女声"
+  
+  # 女声音色3 - 活泼可爱
+  - name: "female_lively_cute"
+    seed: 2002
+    temperature: 0.45
+    top_p: 0.85
+    top_k: 12
+    description: "活泼可爱的女声"
+  
+  # 女声音色4 - 商务干练
+  - name: "female_business_efficient"
+    seed: 2003
+    temperature: 0.25
+    top_p: 0.65
+    top_k: 22
+    description: "商务干练的女声"
+  
+  # 女声音色5 - 亲切温暖
+  - name: "female_warm_friendly"
+    seed: 2004
+    temperature: 0.4
+    top_p: 0.8
+    top_k: 15
+    description: "亲切温暖的女声"
+  
+  # 女声音色6 - 清晰专业
+  - name: "female_clear_professional"
+    seed: 2005
+    temperature: 0.3
+    top_p: 0.7
+    top_k: 20
+    description: "清晰专业的女声"
+  
+  # 女声音色7 - 活力四射
+  - name: "female_energetic_vibrant"
+    seed: 2006
+    temperature: 0.5
+    top_p: 0.9
+    top_k: 10
+    description: "活力四射的女声"
+  
+  # 女声音色8 - 优雅端庄
+  - name: "female_elegant_gracious"
+    seed: 2007
+    temperature: 0.28
+    top_p: 0.68
+    top_k: 21
+    description: "优雅端庄的女声"
+  
+  # 女声音色9 - 俏皮灵动
+  - name: "female_playful_lively"
+    seed: 2008
+    temperature: 0.48
+    top_p: 0.82
+    top_k: 14
+    description: "俏皮灵动的女声"
+  
+  # 女声音色10 - 知性文艺
+  - name: "female_intellectual_artistic"
+    seed: 2009
+    temperature: 0.33
+    top_p: 0.72
+    top_k: 19
+    description: "知性文艺的女声"

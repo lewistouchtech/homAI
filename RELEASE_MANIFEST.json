@@ -1,0 +1,1943 @@
+{
+  "generated_at": "2026-10-21 17:51:22",
+  "source": "/Users/lewisli/AI 人工智能/projects/homebrain/server/homebrain-server",
+  "file_count": 387,
+  "total_bytes": 4273184,
+  "files": [
+    {
+      "path": "core/.DS_Store",
+      "size": 6148,
+      "sha256": "a2bf16980b1b"
+    },
+    {
+      "path": "core/api/ai_audio_api.py",
+      "size": 12819,
+      "sha256": "5c23ae828a98"
+    },
+    {
+      "path": "core/api/album_api.py",
+      "size": 8217,
+      "sha256": "bc551c57e404"
+    },
+    {
+      "path": "core/api/base_handler.py",
+      "size": 896,
+      "sha256": "846819056be9"
+    },
+    {
+      "path": "core/api/callpilot_api.py",
+      "size": 8843,
+      "sha256": "1a49580dd9cb"
+    },
+    {
+      "path": "core/api/camera_api.py",
+      "size": 22713,
+      "sha256": "92cf1fd357b4"
+    },
+    {
+      "path": "core/api/center_window_api.py",
+      "size": 16602,
+      "sha256": "934f41b9b4ff"
+    },
+    {
+      "path": "core/api/config_api.py",
+      "size": 130592,
+      "sha256": "a6756bc0fe63"
+    },
+    {
+      "path": "core/api/config_sync_api.py",
+      "size": 8422,
+      "sha256": "d6cbc8a29745"
+    },
+    {
+      "path": "core/api/console_api.py",
+      "size": 100977,
+      "sha256": "2644936ba233"
+    },
+    {
+      "path": "core/api/console_state_api.py",
+      "size": 1722,
+      "sha256": "508b5e9a83c2"
+    },
+    {
+      "path": "core/api/dashboard_config_api.py",
+      "size": 13296,
+      "sha256": "af7e39c26032"
+    },
+    {
+      "path": "core/api/debug_api.py",
+      "size": 2137,
+      "sha256": "43ec285e94a8"
+    },
+    {
+      "path": "core/api/device_manager.py",
+      "size": 36299,
+      "sha256": "ee4fccd1aaf3"
+    },
+    {
+      "path": "core/api/embed_api.py",
+      "size": 5036,
+      "sha256": "e6420189974a"
+    },
+    {
+      "path": "core/api/emergency_api.py",
+      "size": 9444,
+      "sha256": "3dd7b171ca28"
+    },
+    {
+      "path": "core/api/express_api.py",
+      "size": 11423,
+      "sha256": "bef26eae1984"
+    },
+    {
+      "path": "core/api/face_api.py",
+      "size": 9069,
+      "sha256": "a7afc719b4c9"
+    },
+    {
+      "path": "core/api/family_api.py",
+      "size": 33857,
+      "sha256": "4bd020232032"
+    },
+    {
+      "path": "core/api/feishu_contacts_api.py",
+      "size": 8988,
+      "sha256": "d537c4c02092"
+    },
+    {
+      "path": "core/api/galaxy_api.py",
+      "size": 12067,
+      "sha256": "4bf24dc8bc17"
+    },
+    {
+      "path": "core/api/health_anomaly.py",
+      "size": 11379,
+      "sha256": "982ec21a7013"
+    },
+    {
+      "path": "core/api/health_data_api.py",
+      "size": 26966,
+      "sha256": "ffc243e313df"
+    },
+    {
+      "path": "core/api/health_event_api.py",
+      "size": 18442,
+      "sha256": "e05d49a19d8b"
+    },
+    {
+      "path": "core/api/health_monitor_api.py",
+      "size": 3822,
+      "sha256": "4cf1d92c178d"
+    },
+    {
+      "path": "core/api/house_api.py",
+      "size": 40879,
+      "sha256": "d8c8147c0568"
+    },
+    {
+      "path": "core/api/llm_proxy_api.py",
+      "size": 47334,
+      "sha256": "72ebca55a85c"
+    },
+    {
+      "path": "core/api/mac_capture.py",
+      "size": 12143,
+      "sha256": "5804e096b485"
+    },
+    {
+      "path": "core/api/medication_api.py",
+      "size": 9511,
+      "sha256": "75ac8e9ab2f9"
+    },
+    {
+      "path": "core/api/music_config_api.py",
+      "size": 14745,
+      "sha256": "7c6b4cc5bc0d"
+    },
+    {
+      "path": "core/api/news_api.py",
+      "size": 18250,
+      "sha256": "ce900eecec0d"
+    },
+    {
+      "path": "core/api/notification_api.py",
+      "size": 15466,
+      "sha256": "db9c8a699825"
+    },
+    {
+      "path": "core/api/observation_api.py",
+      "size": 8072,
+      "sha256": "85c019458d62"
+    },
+    {
+      "path": "core/api/onenet_health_api.py",
+      "size": 53265,
+      "sha256": "9a57a4faa762"
+    },
+    {
+      "path": "core/api/openviking_api.py",
+      "size": 11503,
+      "sha256": "ded9e1a50431"
+    },
+    {
+      "path": "core/api/ota_handler.py",
+      "size": 10961,
+      "sha256": "869dce98e3f1"
+    },
+    {
+      "path": "core/api/place_api.py",
+      "size": 14708,
+      "sha256": "52e304e60249"
+    },
+    {
+      "path": "core/api/plate_api.py",
+      "size": 4819,
+      "sha256": "1d87ec24bc7d"
+    },
+    {
+      "path": "core/api/plugin_config_api.py",
+      "size": 3755,
+      "sha256": "18ca179d315d"
+    },
+    {
+      "path": "core/api/plugins_api.py",
+      "size": 11981,
+      "sha256": "d94cc9ee575a"
+    },
+    {
+      "path": "core/api/real_health_api.py",
+      "size": 6357,
+      "sha256": "0691b2d48a19"
+    },
+    {
+      "path": "core/api/search_api.py",
+      "size": 12953,
+      "sha256": "6797de4d4d6f"
+    },
+    {
+      "path": "core/api/skills_api.py",
+      "size": 1523,
+      "sha256": "dba062a7628d"
+    },
+    {
+      "path": "core/api/smart_home_api.py",
+      "size": 20302,
+      "sha256": "af8562d14f7f"
+    },
+    {
+      "path": "core/api/stage_bounds.py",
+      "size": 555,
+      "sha256": "d715f01e67c8"
+    },
+    {
+      "path": "core/api/sync_api.py",
+      "size": 9686,
+      "sha256": "56d8962354ea"
+    },
+    {
+      "path": "core/api/todo_api.py",
+      "size": 11680,
+      "sha256": "122f7a8e8381"
+    },
+    {
+      "path": "core/api/vision_handler.py",
+      "size": 7184,
+      "sha256": "f4634e6f0d61"
+    },
+    {
+      "path": "core/api/voice_settings_api.py",
+      "size": 27805,
+      "sha256": "2fb2e22e9e57"
+    },
+    {
+      "path": "core/api/voiceprint_eval_api.py",
+      "size": 22891,
+      "sha256": "ae4fa44689aa"
+    },
+    {
+      "path": "core/api/weather_api.py",
+      "size": 11914,
+      "sha256": "77a2c17a7b28"
+    },
+    {
+      "path": "core/api/weather_city_api.py",
+      "size": 30707,
+      "sha256": "4c2ff7aef03f"
+    },
+    {
+      "path": "core/api/weather_config_api.py",
+      "size": 4474,
+      "sha256": "05d177fd198f"
+    },
+    {
+      "path": "core/api/welcome_llm_api.py",
+      "size": 9487,
+      "sha256": "5eee71000e18"
+    },
+    {
+      "path": "core/auth.py",
+      "size": 2388,
+      "sha256": "27b0af12c591"
+    },
+    {
+      "path": "core/chat/__init__.py",
+      "size": 60,
+      "sha256": "62a607f1554b"
+    },
+    {
+      "path": "core/chat/chat_engine.py",
+      "size": 89360,
+      "sha256": "582c682f3cb5"
+    },
+    {
+      "path": "core/chat/device.py",
+      "size": 2754,
+      "sha256": "e1b170d021a4"
+    },
+    {
+      "path": "core/chat/initializer.py",
+      "size": 19436,
+      "sha256": "7f2a8aab441a"
+    },
+    {
+      "path": "core/chat/progress_announcer.py",
+      "size": 4619,
+      "sha256": "a001c7e0eb3a"
+    },
+    {
+      "path": "core/chat/quick_tools.py",
+      "size": 2464,
+      "sha256": "8cc6c25f1b98"
+    },
+    {
+      "path": "core/chat/router.py",
+      "size": 9709,
+      "sha256": "3a87c798afcf"
+    },
+    {
+      "path": "core/connection.py",
+      "size": 19025,
+      "sha256": "5096766ef0eb"
+    },
+    {
+      "path": "core/handle/abortHandle.py",
+      "size": 9067,
+      "sha256": "d9824c6901fc"
+    },
+    {
+      "path": "core/handle/helloHandle.py",
+      "size": 15929,
+      "sha256": "0f843791bbe7"
+    },
+    {
+      "path": "core/handle/intentHandler.py",
+      "size": 25954,
+      "sha256": "3fb4b16ef1c0"
+    },
+    {
+      "path": "core/handle/receiveAudioHandle.py",
+      "size": 59149,
+      "sha256": "4726bc2470dc"
+    },
+    {
+      "path": "core/handle/reportHandle.py",
+      "size": 7157,
+      "sha256": "c993d3ba7801"
+    },
+    {
+      "path": "core/handle/sendAudioHandle.py",
+      "size": 25966,
+      "sha256": "a4a74680a4dd"
+    },
+    {
+      "path": "core/handle/textHandle.py",
+      "size": 589,
+      "sha256": "209700cb65c2"
+    },
+    {
+      "path": "core/handle/textHandler/abortMessageHandler.py",
+      "size": 702,
+      "sha256": "187b541d2b3b"
+    },
+    {
+      "path": "core/handle/textHandler/confirmMessageHandler.py",
+      "size": 2127,
+      "sha256": "d583dda4f1c5"
+    },
+    {
+      "path": "core/handle/textHandler/conversationMessageHandler.py",
+      "size": 4407,
+      "sha256": "6442eaa3a721"
+    },
+    {
+      "path": "core/handle/textHandler/helloMessageHandler.py",
+      "size": 608,
+      "sha256": "4d1f4c8c450c"
+    },
+    {
+      "path": "core/handle/textHandler/iotMessageHandler.py",
+      "size": 825,
+      "sha256": "2b691911fbd5"
+    },
+    {
+      "path": "core/handle/textHandler/listenMessageHandler.py",
+      "size": 13001,
+      "sha256": "954c92ae027d"
+    },
+    {
+      "path": "core/handle/textHandler/mcpMessageHandler.py",
+      "size": 735,
+      "sha256": "04f523dc7717"
+    },
+    {
+      "path": "core/handle/textHandler/micWatchdogMessageHandler.py",
+      "size": 3832,
+      "sha256": "b49ae16f3e3a"
+    },
+    {
+      "path": "core/handle/textHandler/pingMessageHandler.py",
+      "size": 1480,
+      "sha256": "320727a0421a"
+    },
+    {
+      "path": "core/handle/textHandler/serverMessageHandler.py",
+      "size": 3411,
+      "sha256": "0b55c9482c00"
+    },
+    {
+      "path": "core/handle/textMessageHandler.py",
+      "size": 490,
+      "sha256": "560436d7b333"
+    },
+    {
+      "path": "core/handle/textMessageHandlerRegistry.py",
+      "size": 2320,
+      "sha256": "5dc8dcaee1e5"
+    },
+    {
+      "path": "core/handle/textMessageProcessor.py",
+      "size": 1561,
+      "sha256": "61a3b88f1528"
+    },
+    {
+      "path": "core/handle/textMessageType.py",
+      "size": 511,
+      "sha256": "bd85ccc40c6d"
+    },
+    {
+      "path": "core/home/__init__.py",
+      "size": 566,
+      "sha256": "64397ae83e5f"
+    },
+    {
+      "path": "core/home/actions.py",
+      "size": 14425,
+      "sha256": "01e2bd206e18"
+    },
+    {
+      "path": "core/home/config.py",
+      "size": 2308,
+      "sha256": "060c99bb36d8"
+    },
+    {
+      "path": "core/home/engine.py",
+      "size": 18503,
+      "sha256": "23b3a56a8e44"
+    },
+    {
+      "path": "core/home/executor.py",
+      "size": 7306,
+      "sha256": "d7f9133d7ff7"
+    },
+    {
+      "path": "core/home/guard.py",
+      "size": 5316,
+      "sha256": "a4f5e1a2c846"
+    },
+    {
+      "path": "core/home/registry.py",
+      "size": 13046,
+      "sha256": "87e9a1349844"
+    },
+    {
+      "path": "core/home/resolver.py",
+      "size": 9805,
+      "sha256": "9c69a5ef6e67"
+    },
+    {
+      "path": "core/home/scene_plan.py",
+      "size": 17178,
+      "sha256": "02c1ea718b47"
+    },
+    {
+      "path": "core/home/scenes.py",
+      "size": 1351,
+      "sha256": "7490ce134600"
+    },
+    {
+      "path": "core/home/session.py",
+      "size": 4134,
+      "sha256": "05f902097c9f"
+    },
+    {
+      "path": "core/home/speech.py",
+      "size": 15650,
+      "sha256": "715979cd30d6"
+    },
+    {
+      "path": "core/http_server.py",
+      "size": 220008,
+      "sha256": "3ae6777222e4"
+    },
+    {
+      "path": "core/http_server_apis.py",
+      "size": 4505,
+      "sha256": "c6886f26590d"
+    },
+    {
+      "path": "core/providers/asr/aliyun.py",
+      "size": 8560,
+      "sha256": "4706f6f2ada5"
+    },
+    {
+      "path": "core/providers/asr/aliyun_stream.py",
+      "size": 14248,
+      "sha256": "3cae3f727502"
+    },
+    {
+      "path": "core/providers/asr/aliyunbl_stream.py",
+      "size": 13640,
+      "sha256": "8e7c79c5e163"
+    },
+    {
+      "path": "core/providers/asr/baidu.py",
+      "size": 2640,
+      "sha256": "b8e80648f2a5"
+    },
+    {
+      "path": "core/providers/asr/base.py",
+      "size": 67080,
+      "sha256": "873f3f880490"
+    },
+    {
+      "path": "core/providers/asr/doubao.py",
+      "size": 9712,
+      "sha256": "1d5e55c3477c"
+    },
+    {
+      "path": "core/providers/asr/doubao_stream.py",
+      "size": 29639,
+      "sha256": "1485acbc1c37"
+    },
+    {
+      "path": "core/providers/asr/dto/dto.py",
+      "size": 228,
+      "sha256": "15d2155dbffb"
+    },
+    {
+      "path": "core/providers/asr/fun_local.py",
+      "size": 19918,
+      "sha256": "7ccb1ec450ad"
+    },
+    {
+      "path": "core/providers/asr/fun_local.py.bak.20260524_115903",
+      "size": 17771,
+      "sha256": "4642dc33c999"
+    },
+    {
+      "path": "core/providers/asr/fun_local.py.bak.20260524_124110",
+      "size": 15787,
+      "sha256": "ecf87002e920"
+    },
+    {
+      "path": "core/providers/asr/fun_server.py",
+      "size": 6859,
+      "sha256": "e51641acc005"
+    },
+    {
+      "path": "core/providers/asr/funasr_nano.py",
+      "size": 2881,
+      "sha256": "bb4dffadf29d"
+    },
+    {
+      "path": "core/providers/asr/openai.py",
+      "size": 2372,
+      "sha256": "a8ad137796a2"
+    },
+    {
+      "path": "core/providers/asr/qwen3_asr_flash.py",
+      "size": 3869,
+      "sha256": "5b534dfe8b86"
+    },
+    {
+      "path": "core/providers/asr/sherpa_onnx_local.py",
+      "size": 17013,
+      "sha256": "8d377c19e98b"
+    },
+    {
+      "path": "core/providers/asr/tencent.py",
+      "size": 8304,
+      "sha256": "b85f1783e3be"
+    },
+    {
+      "path": "core/providers/asr/utils.py",
+      "size": 2481,
+      "sha256": "64db7ba4523d"
+    },
+    {
+      "path": "core/providers/asr/vosk.py",
+      "size": 3376,
+      "sha256": "88e4cc5ef9f0"
+    },
+    {
+      "path": "core/providers/asr/xunfei_stream.py",
+      "size": 13699,
+      "sha256": "bbf9cac1b079"
+    },
+    {
+      "path": "core/providers/decision/__init__.py",
+      "size": 643,
+      "sha256": "bc21d0f0e430"
+    },
+    {
+      "path": "core/providers/decision/base.py",
+      "size": 4782,
+      "sha256": "b85ec637c027"
+    },
+    {
+      "path": "core/providers/decision/jev_provider.py",
+      "size": 1894,
+      "sha256": "0c25f090c488"
+    },
+    {
+      "path": "core/providers/decision/local_qwen_provider.py",
+      "size": 8689,
+      "sha256": "cb4589b41466"
+    },
+    {
+      "path": "core/providers/decision/ollaya_provider.py",
+      "size": 8366,
+      "sha256": "42cf886ac73a"
+    },
+    {
+      "path": "core/providers/intent/base.py",
+      "size": 1078,
+      "sha256": "1146ca0d58fa"
+    },
+    {
+      "path": "core/providers/intent/function_call/function_call.py",
+      "size": 712,
+      "sha256": "798933349d64"
+    },
+    {
+      "path": "core/providers/intent/intent_llm/intent_llm.py",
+      "size": 13627,
+      "sha256": "7e7534eab2bd"
+    },
+    {
+      "path": "core/providers/intent/nointent/nointent.py",
+      "size": 708,
+      "sha256": "4c497948c6e5"
+    },
+    {
+      "path": "core/providers/llm/AliBL/AliBL.py",
+      "size": 4464,
+      "sha256": "feada96427ba"
+    },
+    {
+      "path": "core/providers/llm/base.py",
+      "size": 1143,
+      "sha256": "81c5e3e32066"
+    },
+    {
+      "path": "core/providers/llm/coze/coze.py",
+      "size": 3130,
+      "sha256": "3fdae555ff6b"
+    },
+    {
+      "path": "core/providers/llm/dify/dify.py",
+      "size": 4880,
+      "sha256": "da548dc23677"
+    },
+    {
+      "path": "core/providers/llm/fastgpt/fastgpt.py",
+      "size": 2704,
+      "sha256": "0dd076c8271b"
+    },
+    {
+      "path": "core/providers/llm/gemini/gemini.py",
+      "size": 7854,
+      "sha256": "fcdee34946a0"
+    },
+    {
+      "path": "core/providers/llm/homeassistant/homeassistant.py",
+      "size": 2410,
+      "sha256": "f3efe881c877"
+    },
+    {
+      "path": "core/providers/llm/ollama/ollama.py",
+      "size": 6409,
+      "sha256": "24783403c495"
+    },
+    {
+      "path": "core/providers/llm/openai/openai.py",
+      "size": 21911,
+      "sha256": "81a54c90c5ba"
+    },
+    {
+      "path": "core/providers/llm/routing/routing.py",
+      "size": 10001,
+      "sha256": "92aced97c775"
+    },
+    {
+      "path": "core/providers/llm/system_prompt.py",
+      "size": 4672,
+      "sha256": "3699c4b78137"
+    },
+    {
+      "path": "core/providers/llm/xinference/xinference.py",
+      "size": 3249,
+      "sha256": "a726ef6b6b5d"
+    },
+    {
+      "path": "core/providers/memory/README.md",
+      "size": 4526,
+      "sha256": "1a8a7201d993"
+    },
+    {
+      "path": "core/providers/memory/__init__.py",
+      "size": 52,
+      "sha256": "7bdc9262773e"
+    },
+    {
+      "path": "core/providers/memory/base.py",
+      "size": 927,
+      "sha256": "053c82774f55"
+    },
+    {
+      "path": "core/providers/memory/factory.py",
+      "size": 4058,
+      "sha256": "93d6304b9e1b"
+    },
+    {
+      "path": "core/providers/memory/mem0/__init__.py",
+      "size": 0,
+      "sha256": "e3b0c44298fc"
+    },
+    {
+      "path": "core/providers/memory/mem0/llm_patch.py",
+      "size": 3782,
+      "sha256": "650483006fde"
+    },
+    {
+      "path": "core/providers/memory/mem0/provider.py",
+      "size": 74642,
+      "sha256": "aac4e5b1c16b"
+    },
+    {
+      "path": "core/providers/memory/mem_local_short/mem_local_short.py",
+      "size": 8121,
+      "sha256": "283662a6eac8"
+    },
+    {
+      "path": "core/providers/memory/openviking/__init__.py",
+      "size": 115,
+      "sha256": "ba8d3a9a2d6f"
+    },
+    {
+      "path": "core/providers/memory/openviking/provider.py",
+      "size": 29672,
+      "sha256": "2903ef2dda5f"
+    },
+    {
+      "path": "core/providers/tools/__init__.py",
+      "size": 1,
+      "sha256": "36a9e7f1c95b"
+    },
+    {
+      "path": "core/providers/tools/base/__init__.py",
+      "size": 179,
+      "sha256": "fdf1fe9d27cf"
+    },
+    {
+      "path": "core/providers/tools/base/tool_executor.py",
+      "size": 696,
+      "sha256": "361c6d7e163b"
+    },
+    {
+      "path": "core/providers/tools/base/tool_types.py",
+      "size": 796,
+      "sha256": "54818db4b970"
+    },
+    {
+      "path": "core/providers/tools/device_iot/__init__.py",
+      "size": 293,
+      "sha256": "2c965c02a53a"
+    },
+    {
+      "path": "core/providers/tools/device_iot/iot_descriptor.py",
+      "size": 1600,
+      "sha256": "47593c95f7d2"
+    },
+    {
+      "path": "core/providers/tools/device_iot/iot_executor.py",
+      "size": 10016,
+      "sha256": "f618d1782d2c"
+    },
+    {
+      "path": "core/providers/tools/device_iot/iot_handler.py",
+      "size": 3382,
+      "sha256": "31355759ebe4"
+    },
+    {
+      "path": "core/providers/tools/device_mcp/__init__.py",
+      "size": 468,
+      "sha256": "68ffc3620013"
+    },
+    {
+      "path": "core/providers/tools/device_mcp/mcp_client.py",
+      "size": 3269,
+      "sha256": "f0df40319be7"
+    },
+    {
+      "path": "core/providers/tools/device_mcp/mcp_executor.py",
+      "size": 3066,
+      "sha256": "17d0053640fe"
+    },
+    {
+      "path": "core/providers/tools/device_mcp/mcp_handler.py",
+      "size": 15394,
+      "sha256": "05e1cb5b7fe1"
+    },
+    {
+      "path": "core/providers/tools/mcp_endpoint/__init__.py",
+      "size": 569,
+      "sha256": "c2272e5bebd7"
+    },
+    {
+      "path": "core/providers/tools/mcp_endpoint/mcp_endpoint_client.py",
+      "size": 5221,
+      "sha256": "1d96de9d2a08"
+    },
+    {
+      "path": "core/providers/tools/mcp_endpoint/mcp_endpoint_executor.py",
+      "size": 3178,
+      "sha256": "4870493b6964"
+    },
+    {
+      "path": "core/providers/tools/mcp_endpoint/mcp_endpoint_handler.py",
+      "size": 7776,
+      "sha256": "c40fc84fc42d"
+    },
+    {
+      "path": "core/providers/tools/openclaw_skill/__init__.py",
+      "size": 111,
+      "sha256": "cae58013121d"
+    },
+    {
+      "path": "core/providers/tools/openclaw_skill/executor.py",
+      "size": 23572,
+      "sha256": "f4d233f100b1"
+    },
+    {
+      "path": "core/providers/tools/server_mcp/__init__.py",
+      "size": 230,
+      "sha256": "152372c23027"
+    },
+    {
+      "path": "core/providers/tools/server_mcp/mcp_client.py",
+      "size": 10390,
+      "sha256": "dce9b85e056c"
+    },
+    {
+      "path": "core/providers/tools/server_mcp/mcp_executor.py",
+      "size": 3252,
+      "sha256": "39d8995ea049"
+    },
+    {
+      "path": "core/providers/tools/server_mcp/mcp_manager.py",
+      "size": 7576,
+      "sha256": "03be03bbc6b9"
+    },
+    {
+      "path": "core/providers/tools/server_plugins/__init__.py",
+      "size": 121,
+      "sha256": "346831f59edf"
+    },
+    {
+      "path": "core/providers/tools/server_plugins/plugin_executor.py",
+      "size": 5635,
+      "sha256": "09ed58110d93"
+    },
+    {
+      "path": "core/providers/tools/unified_tool_handler.py",
+      "size": 10619,
+      "sha256": "54686a8ec8af"
+    },
+    {
+      "path": "core/providers/tools/unified_tool_manager.py",
+      "size": 6087,
+      "sha256": "20e5d2c5e5af"
+    },
+    {
+      "path": "core/providers/tts/alibl_stream.py",
+      "size": 22904,
+      "sha256": "242133a8bc98"
+    },
+    {
+      "path": "core/providers/tts/aliyun.py",
+      "size": 7847,
+      "sha256": "5855713ae2e9"
+    },
+    {
+      "path": "core/providers/tts/aliyun_stream.py",
+      "size": 25994,
+      "sha256": "5bac436cd316"
+    },
+    {
+      "path": "core/providers/tts/base.py",
+      "size": 39958,
+      "sha256": "349fa1e0ced3"
+    },
+    {
+      "path": "core/providers/tts/base.py.broken",
+      "size": 26679,
+      "sha256": "7204f2461ded"
+    },
+    {
+      "path": "core/providers/tts/cozecn.py",
+      "size": 2113,
+      "sha256": "0e0a20930d88"
+    },
+    {
+      "path": "core/providers/tts/custom.py",
+      "size": 2131,
+      "sha256": "45f4bfad01de"
+    },
+    {
+      "path": "core/providers/tts/default.py",
+      "size": 742,
+      "sha256": "528be7df708e"
+    },
+    {
+      "path": "core/providers/tts/doubao.py",
+      "size": 3586,
+      "sha256": "4e7110808aeb"
+    },
+    {
+      "path": "core/providers/tts/dto/dto.py",
+      "size": 1193,
+      "sha256": "6ba9742e4778"
+    },
+    {
+      "path": "core/providers/tts/edge.py",
+      "size": 1811,
+      "sha256": "81005591329d"
+    },
+    {
+      "path": "core/providers/tts/fishspeech.py",
+      "size": 6782,
+      "sha256": "7b03f04d202a"
+    },
+    {
+      "path": "core/providers/tts/gpt_sovits_v2.py",
+      "size": 3994,
+      "sha256": "0aaa5aa1e4f8"
+    },
+    {
+      "path": "core/providers/tts/gpt_sovits_v3.py",
+      "size": 2650,
+      "sha256": "60fe93827e55"
+    },
+    {
+      "path": "core/providers/tts/huoshan_double_stream.py",
+      "size": 39171,
+      "sha256": "b75a153a06c1"
+    },
+    {
+      "path": "core/providers/tts/index_stream.py",
+      "size": 9903,
+      "sha256": "8ac44e665dd1"
+    },
+    {
+      "path": "core/providers/tts/linkerai.py",
+      "size": 10220,
+      "sha256": "fe71039b0370"
+    },
+    {
+      "path": "core/providers/tts/minimax_httpstream.py",
+      "size": 15190,
+      "sha256": "bc1f545a0ba5"
+    },
+    {
+      "path": "core/providers/tts/moss_nano.py",
+      "size": 6416,
+      "sha256": "adc83ff7a99d"
+    },
+    {
+      "path": "core/providers/tts/openai.py",
+      "size": 2154,
+      "sha256": "50f6dbe164c7"
+    },
+    {
+      "path": "core/providers/tts/paddle_speech.py",
+      "size": 6205,
+      "sha256": "1c6029c0cf1e"
+    },
+    {
+      "path": "core/providers/tts/qwen3_tts.py",
+      "size": 23108,
+      "sha256": "93d128e7d3db"
+    },
+    {
+      "path": "core/providers/tts/siliconflow.py",
+      "size": 1817,
+      "sha256": "fee0753e408a"
+    },
+    {
+      "path": "core/providers/tts/tencent.py",
+      "size": 6450,
+      "sha256": "ce45fb09bbc8"
+    },
+    {
+      "path": "core/providers/tts/ttson.py",
+      "size": 3533,
+      "sha256": "3e866dad1693"
+    },
+    {
+      "path": "core/providers/tts/xunfei_stream.py",
+      "size": 21574,
+      "sha256": "1f0378dbed7b"
+    },
+    {
+      "path": "core/providers/vad/base.py",
+      "size": 220,
+      "sha256": "7557409f5556"
+    },
+    {
+      "path": "core/providers/vad/silero.py",
+      "size": 40851,
+      "sha256": "f429a905b6aa"
+    },
+    {
+      "path": "core/providers/vllm/base.py",
+      "size": 267,
+      "sha256": "5a5d86856d96"
+    },
+    {
+      "path": "core/providers/vllm/openai.py",
+      "size": 2257,
+      "sha256": "2ba92882de7d"
+    },
+    {
+      "path": "core/recipes/__init__.py",
+      "size": 589,
+      "sha256": "792c5599a024"
+    },
+    {
+      "path": "core/recipes/douguo.py",
+      "size": 9901,
+      "sha256": "daa63a78334d"
+    },
+    {
+      "path": "core/recipes/images.py",
+      "size": 3027,
+      "sha256": "6e04db9245bc"
+    },
+    {
+      "path": "core/recipes/service.py",
+      "size": 7652,
+      "sha256": "c390aae6f089"
+    },
+    {
+      "path": "core/recipes/store.py",
+      "size": 7333,
+      "sha256": "8ff2127522bd"
+    },
+    {
+      "path": "core/recipes/xiachufang.py",
+      "size": 7301,
+      "sha256": "57bb0fd75312"
+    },
+    {
+      "path": "core/utils/aec.py",
+      "size": 12962,
+      "sha256": "c663bc90e8f3"
+    },
+    {
+      "path": "core/utils/arrival_policy.py",
+      "size": 8873,
+      "sha256": "8c318fab5805"
+    },
+    {
+      "path": "core/utils/asr.py",
+      "size": 1690,
+      "sha256": "2def430f5229"
+    },
+    {
+      "path": "core/utils/assistant_identity.py",
+      "size": 8550,
+      "sha256": "74bd6714fc6a"
+    },
+    {
+      "path": "core/utils/audioRateController.py",
+      "size": 7321,
+      "sha256": "71f5dec71442"
+    },
+    {
+      "path": "core/utils/auth.py",
+      "size": 4269,
+      "sha256": "0dd58599fd02"
+    },
+    {
+      "path": "core/utils/cache/config.py",
+      "size": 2222,
+      "sha256": "45fea29bcca9"
+    },
+    {
+      "path": "core/utils/cache/manager.py",
+      "size": 6943,
+      "sha256": "d6bf1b0e8295"
+    },
+    {
+      "path": "core/utils/cache/strategies.py",
+      "size": 1014,
+      "sha256": "140beb5222a4"
+    },
+    {
+      "path": "core/utils/confirm_gate.py",
+      "size": 10188,
+      "sha256": "9a197aab3a6f"
+    },
+    {
+      "path": "core/utils/console_ui_state.py",
+      "size": 4388,
+      "sha256": "3ddd14922a68"
+    },
+    {
+      "path": "core/utils/context_provider.py",
+      "size": 2720,
+      "sha256": "8a4b89e6b92f"
+    },
+    {
+      "path": "core/utils/conversation_summary.py",
+      "size": 25151,
+      "sha256": "de24e3e53119"
+    },
+    {
+      "path": "core/utils/current_time.py",
+      "size": 1547,
+      "sha256": "d1ef3e23733f"
+    },
+    {
+      "path": "core/utils/data_collector.py",
+      "size": 20614,
+      "sha256": "25adeaa24034"
+    },
+    {
+      "path": "core/utils/dialogue.py",
+      "size": 12426,
+      "sha256": "2b3c046d7c90"
+    },
+    {
+      "path": "core/utils/emergency_listener.py",
+      "size": 12662,
+      "sha256": "bc40ac352226"
+    },
+    {
+      "path": "core/utils/endpoint_fastpath.py",
+      "size": 5290,
+      "sha256": "5aad9164cbba"
+    },
+    {
+      "path": "core/utils/entry_direction.py",
+      "size": 2313,
+      "sha256": "0e2be8c5b2da"
+    },
+    {
+      "path": "core/utils/exit_intent.py",
+      "size": 2847,
+      "sha256": "4dbd3a5c2380"
+    },
+    {
+      "path": "core/utils/fast_response.py",
+      "size": 2196,
+      "sha256": "9a7690e46643"
+    },
+    {
+      "path": "core/utils/feishu_client.py",
+      "size": 12274,
+      "sha256": "bb670b9fae2e"
+    },
+    {
+      "path": "core/utils/feishu_inbox.py",
+      "size": 12733,
+      "sha256": "3d127b55fce2"
+    },
+    {
+      "path": "core/utils/feishu_listener.py",
+      "size": 38765,
+      "sha256": "6d95de909181"
+    },
+    {
+      "path": "core/utils/filler_audio.py",
+      "size": 7565,
+      "sha256": "b56bf7a6c474"
+    },
+    {
+      "path": "core/utils/foreground_activity.py",
+      "size": 1240,
+      "sha256": "5789ca5aa67c"
+    },
+    {
+      "path": "core/utils/gc_manager.py",
+      "size": 3609,
+      "sha256": "c4d4c7e4d204"
+    },
+    {
+      "path": "core/utils/geo.py",
+      "size": 27167,
+      "sha256": "960885aff682"
+    },
+    {
+      "path": "core/utils/greeting_policy.py",
+      "size": 13048,
+      "sha256": "8c24cae20956"
+    },
+    {
+      "path": "core/utils/ha_client.py",
+      "size": 3484,
+      "sha256": "aa739a12c484"
+    },
+    {
+      "path": "core/utils/ha_expose.py",
+      "size": 10901,
+      "sha256": "a64a0f8d0142"
+    },
+    {
+      "path": "core/utils/health_inbox.py",
+      "size": 17694,
+      "sha256": "fcbefc3b9779"
+    },
+    {
+      "path": "core/utils/health_report_engine.py",
+      "size": 43647,
+      "sha256": "711901456a2d"
+    },
+    {
+      "path": "core/utils/home_intent.py",
+      "size": 53317,
+      "sha256": "78e4f476ed14"
+    },
+    {
+      "path": "core/utils/intent.py",
+      "size": 1064,
+      "sha256": "01547290b48f"
+    },
+    {
+      "path": "core/utils/jev_decision.py",
+      "size": 28742,
+      "sha256": "6152b5572a5e"
+    },
+    {
+      "path": "core/utils/latency_monitor.py",
+      "size": 3782,
+      "sha256": "b4c2ca008532"
+    },
+    {
+      "path": "core/utils/lead_in.py",
+      "size": 42253,
+      "sha256": "7a7e1551fc06"
+    },
+    {
+      "path": "core/utils/llm.py",
+      "size": 1188,
+      "sha256": "2a19ce42f9e9"
+    },
+    {
+      "path": "core/utils/mail_organizer.py",
+      "size": 23065,
+      "sha256": "22a1b81c6c36"
+    },
+    {
+      "path": "core/utils/medication_reminder.py",
+      "size": 3721,
+      "sha256": "c49c344a2650"
+    },
+    {
+      "path": "core/utils/member_profile.py",
+      "size": 5146,
+      "sha256": "ee1d28579cee"
+    },
+    {
+      "path": "core/utils/memory.py",
+      "size": 1778,
+      "sha256": "28acf432aae6"
+    },
+    {
+      "path": "core/utils/memory_consolidation.py",
+      "size": 10858,
+      "sha256": "1ab1ccdd35df"
+    },
+    {
+      "path": "core/utils/memory_curator.py",
+      "size": 19868,
+      "sha256": "e82ae658aea6"
+    },
+    {
+      "path": "core/utils/memory_curator_config.py",
+      "size": 4882,
+      "sha256": "1a953cee227d"
+    },
+    {
+      "path": "core/utils/memory_outbox.py",
+      "size": 12553,
+      "sha256": "55851e08477b"
+    },
+    {
+      "path": "core/utils/memory_scope.py",
+      "size": 6264,
+      "sha256": "e9cdffe0df63"
+    },
+    {
+      "path": "core/utils/memory_short_term.py",
+      "size": 12118,
+      "sha256": "ff82874cc5e6"
+    },
+    {
+      "path": "core/utils/mic_liveness.py",
+      "size": 8873,
+      "sha256": "17b51ba9421c"
+    },
+    {
+      "path": "core/utils/model_stack.py",
+      "size": 5836,
+      "sha256": "e0886e8f96fd"
+    },
+    {
+      "path": "core/utils/modules_initialize.py",
+      "size": 11356,
+      "sha256": "f5302b73bdec"
+    },
+    {
+      "path": "core/utils/morning_digest.py",
+      "size": 18553,
+      "sha256": "3297299aafeb"
+    },
+    {
+      "path": "core/utils/music_auto_pause.py",
+      "size": 25293,
+      "sha256": "5aedc84c1e29"
+    },
+    {
+      "path": "core/utils/net_env.py",
+      "size": 1130,
+      "sha256": "1be7d95a7d66"
+    },
+    {
+      "path": "core/utils/notify_service.py",
+      "size": 13766,
+      "sha256": "85b816ea90c4"
+    },
+    {
+      "path": "core/utils/observation.py",
+      "size": 8508,
+      "sha256": "c83f87c97cec"
+    },
+    {
+      "path": "core/utils/openviking_sync.py",
+      "size": 11317,
+      "sha256": "e7991cca5a83"
+    },
+    {
+      "path": "core/utils/opus_encoder_utils.py",
+      "size": 5073,
+      "sha256": "a69e35edff6c"
+    },
+    {
+      "path": "core/utils/output_counter.py",
+      "size": 1516,
+      "sha256": "0dcfff3abf72"
+    },
+    {
+      "path": "core/utils/p3.py",
+      "size": 1993,
+      "sha256": "fb6dc66ac05b"
+    },
+    {
+      "path": "core/utils/phrase_pool.py",
+      "size": 410,
+      "sha256": "c4669d6ceba9"
+    },
+    {
+      "path": "core/utils/place_manager.py",
+      "size": 27806,
+      "sha256": "5574c0117812"
+    },
+    {
+      "path": "core/utils/plate_bindings.py",
+      "size": 9539,
+      "sha256": "4d2359bb55d0"
+    },
+    {
+      "path": "core/utils/plate_welcome.py",
+      "size": 15769,
+      "sha256": "00a549831aec"
+    },
+    {
+      "path": "core/utils/prompt_manager.py",
+      "size": 15735,
+      "sha256": "db65b1c26bc4"
+    },
+    {
+      "path": "core/utils/qwen3_assets.py",
+      "size": 1513,
+      "sha256": "bfa90aa0dce4"
+    },
+    {
+      "path": "core/utils/scheduler.py",
+      "size": 6445,
+      "sha256": "7ced6642a89e"
+    },
+    {
+      "path": "core/utils/secret_store.py",
+      "size": 12417,
+      "sha256": "d20aafa6216b"
+    },
+    {
+      "path": "core/utils/security_listener.py",
+      "size": 78130,
+      "sha256": "fc6ada9d52cf"
+    },
+    {
+      "path": "core/utils/session_persistence.py",
+      "size": 3595,
+      "sha256": "0866d55194bb"
+    },
+    {
+      "path": "core/utils/showroom_welcome.py",
+      "size": 4994,
+      "sha256": "1776e9bb32e5"
+    },
+    {
+      "path": "core/utils/speech_clean.py",
+      "size": 7583,
+      "sha256": "5820c5e15209"
+    },
+    {
+      "path": "core/utils/system_aec.py",
+      "size": 6777,
+      "sha256": "b9e97ef81ff8"
+    },
+    {
+      "path": "core/utils/textUtils.py",
+      "size": 3058,
+      "sha256": "b80793c2e50f"
+    },
+    {
+      "path": "core/utils/tls_certs.py",
+      "size": 10069,
+      "sha256": "32a3957aa2fa"
+    },
+    {
+      "path": "core/utils/tool_filter.py",
+      "size": 30560,
+      "sha256": "96042d75f122"
+    },
+    {
+      "path": "core/utils/tool_lazy_groups.py",
+      "size": 2894,
+      "sha256": "14e3e593fe33"
+    },
+    {
+      "path": "core/utils/tool_prefilter.py",
+      "size": 10277,
+      "sha256": "dc243ef9e31a"
+    },
+    {
+      "path": "core/utils/transition_voice.py",
+      "size": 5574,
+      "sha256": "b15905b7b03c"
+    },
+    {
+      "path": "core/utils/tts.py",
+      "size": 5978,
+      "sha256": "a527609d4626"
+    },
+    {
+      "path": "core/utils/util.py",
+      "size": 26532,
+      "sha256": "2a94f0df6563"
+    },
+    {
+      "path": "core/utils/vad.py",
+      "size": 1554,
+      "sha256": "d080753b1f5c"
+    },
+    {
+      "path": "core/utils/vllm.py",
+      "size": 811,
+      "sha256": "1467e407f310"
+    },
+    {
+      "path": "core/utils/voiceprint_gate.py",
+      "size": 8095,
+      "sha256": "416ba7930ea1"
+    },
+    {
+      "path": "core/utils/voiceprint_provider.py",
+      "size": 11024,
+      "sha256": "43e72ca32b9a"
+    },
+    {
+      "path": "core/utils/wakeup_word.py",
+      "size": 4960,
+      "sha256": "c4d4ccff378d"
+    },
+    {
+      "path": "core/utils/wakeword_provider.py",
+      "size": 25976,
+      "sha256": "9e63be36adde"
+    },
+    {
+      "path": "core/websocket_server.py",
+      "size": 18514,
+      "sha256": "80b2a8fcdd89"
+    },
+    {
+      "path": "core/websocket_server_reload.py",
+      "size": 2602,
+      "sha256": "ae1f4a86a6d2"
+    },
+    {
+      "path": "core/websocket_server_update_config.py",
+      "size": 8086,
+      "sha256": "866125f37295"
+    },
+    {
+      "path": "plugins_func/bundle_manager.py",
+      "size": 6992,
+      "sha256": "94a73a39c11d"
+    },
+    {
+      "path": "plugins_func/loadplugins.py",
+      "size": 711,
+      "sha256": "6686a53fc1c9"
+    },
+    {
+      "path": "plugins_func/register.py",
+      "size": 4487,
+      "sha256": "e80bb448c9ce"
+    },
+    {
+      "path": "config/.DS_Store",
+      "size": 6148,
+      "sha256": "1bf10cbf64d5"
+    },
+    {
+      "path": "config/asr_config.yaml",
+      "size": 1944,
+      "sha256": "bcaabae9aaf6"
+    },
+    {
+      "path": "config/assets/tts_notify.mp3",
+      "size": 11752,
+      "sha256": "7cb95c481fca"
+    },
+    {
+      "path": "config/chattts_voices.yaml",
+      "size": 3708,
+      "sha256": "01852fc14a96"
+    },
+    {
+      "path": "config/config_loader.py",
+      "size": 16868,
+      "sha256": "6d0ffbf2e125"
+    },
+    {
+      "path": "config/llm_config.yaml",
+      "size": 2191,
+      "sha256": "3aa910764382"
+    },
+    {
+      "path": "config/logger.py",
+      "size": 4126,
+      "sha256": "5aa8a49a1f33"
+    },
+    {
+      "path": "config/manage_api_client.py",
+      "size": 9049,
+      "sha256": "2b6b015f8277"
+    },
+    {
+      "path": "config/mcporter.json",
+      "size": 422,
+      "sha256": "b2b262a3e73d"
+    },
+    {
+      "path": "config/settings.py",
+      "size": 1278,
+      "sha256": "23f547ed3cc7"
+    },
+    {
+      "path": "config/speech_registry.yaml",
+      "size": 4353,
+      "sha256": "39aed2fd9de4"
+    },
+    {
+      "path": "config/test_asr_config.yaml",
+      "size": 372,
+      "sha256": "ef354a135547"
+    },
+    {
+      "path": "config/test_llm_config.yaml",
+      "size": 535,
+      "sha256": "e7085d58785b"
+    },
+    {
+      "path": "config/tts_config.yaml",
+      "size": 1864,
+      "sha256": "723e42d0fa67"
+    },
+    {
+      "path": "scripts/analyze_decision_shadow.py",
+      "size": 19675,
+      "sha256": "ab0ea86a14d0"
+    },
+    {
+      "path": "scripts/cleanup_models.py",
+      "size": 3619,
+      "sha256": "ff27d6a0d6f1"
+    },
+    {
+      "path": "scripts/deploy_to_mini.sh",
+      "size": 2953,
+      "sha256": "4328be476945"
+    },
+    {
+      "path": "scripts/download_nano2512.py",
+      "size": 4356,
+      "sha256": "0de948636435"
+    },
+    {
+      "path": "scripts/eval_addressed_zh.py",
+      "size": 12024,
+      "sha256": "8a998a944c04"
+    },
+    {
+      "path": "scripts/eval_mem0_e2e_models.py",
+      "size": 7268,
+      "sha256": "ec0373c07b82"
+    },
+    {
+      "path": "scripts/eval_mem0_extract_models.py",
+      "size": 6034,
+      "sha256": "26b7b563f9f6"
+    },
+    {
+      "path": "scripts/eval_mem0_models_fair.py",
+      "size": 8295,
+      "sha256": "ca9f7a596dbd"
+    },
+    {
+      "path": "scripts/eval_mem0_zh.py",
+      "size": 6069,
+      "sha256": "6db2a91b2b1c"
+    },
+    {
+      "path": "scripts/eval_strands_decider_zh.py",
+      "size": 9133,
+      "sha256": "716097077e47"
+    },
+    {
+      "path": "scripts/find_window.swift",
+      "size": 897,
+      "sha256": "9a91127dec9d"
+    },
+    {
+      "path": "scripts/install_openviking_launchd.sh",
+      "size": 1489,
+      "sha256": "fbe67a82dbaf"
+    },
+    {
+      "path": "scripts/lmstudio_launchd.sh",
+      "size": 2527,
+      "sha256": "92d38167e7e5"
+    },
+    {
+      "path": "scripts/openviking_launchd.sh",
+      "size": 1078,
+      "sha256": "280b51b68edb"
+    },
+    {
+      "path": "scripts/sweep_decision_threshold.py",
+      "size": 3516,
+      "sha256": "40379de07987"
+    },
+    {
+      "path": "scripts/switch_llm.py",
+      "size": 3302,
+      "sha256": "2616de906a1e"
+    },
+    {
+      "path": "scripts/tts_experiment.py",
+      "size": 4855,
+      "sha256": "ee27119a3824"
+    },
+    {
+      "path": "scripts/verify_greeting_policy_all_hours.py",
+      "size": 4540,
+      "sha256": "17b771e1682b"
+    },
+    {
+      "path": "scripts/verify_home_engine.py",
+      "size": 25959,
+      "sha256": "833a2f4a66c0"
+    },
+    {
+      "path": "templates/device_manager.html",
+      "size": 22947,
+      "sha256": "16f89fa0edde"
+    },
+    {
+      "path": "templates/health_monitor.html",
+      "size": 14560,
+      "sha256": "57a1af633647"
+    },
+    {
+      "path": "tools/audit_config_ui.py",
+      "size": 8053,
+      "sha256": "521e1e67df36"
+    },
+    {
+      "path": "tools/check_feishu.py",
+      "size": 20809,
+      "sha256": "1d5b853f4901"
+    },
+    {
+      "path": "tools/migrate_secrets_to_env.py",
+      "size": 6105,
+      "sha256": "2a0d88fab2dc"
+    },
+    {
+      "path": "tools/onenet_configurator.py",
+      "size": 3885,
+      "sha256": "c19928d5b932"
+    },
+    {
+      "path": "tools/regenerate_filler_voice.py",
+      "size": 3003,
+      "sha256": "ea0cd3763a57"
+    },
+    {
+      "path": "tools/simple_ws_test.py",
+      "size": 2109,
+      "sha256": "b2711663cabf"
+    },
+    {
+      "path": "tools/test_config_api.py",
+      "size": 6457,
+      "sha256": "5973fa34b87d"
+    },
+    {
+      "path": "tools/test_dedup_finish.py",
+      "size": 3118,
+      "sha256": "2d93f5051170"
+    },
+    {
+      "path": "tools/test_e2e_bargein.py",
+      "size": 6637,
+      "sha256": "a1afabfa619d"
+    },
+    {
+      "path": "tools/test_e2e_exit_intent.py",
+      "size": 4523,
+      "sha256": "ad1177146d8c"
+    },
+    {
+      "path": "tools/test_e2e_multiturn.py",
+      "size": 6060,
+      "sha256": "86736326144e"
+    },
+    {
+      "path": "tools/test_e2e_voice.py",
+      "size": 4923,
+      "sha256": "bc42cf25f19b"
+    },
+    {
+      "path": "tools/test_ha_camera_query.py",
+      "size": 3332,
+      "sha256": "7187ef3dc64f"
+    },
+    {
+      "path": "tools/test_idle_guard.py",
+      "size": 4736,
+      "sha256": "a139758f99bf"
+    },
+    {
+      "path": "tools/test_int16_vs_float32.py",
+      "size": 1030,
+      "sha256": "4fa32b2a02d4"
+    },
+    {
+      "path": "tools/test_streaming_regression.py",
+      "size": 2274,
+      "sha256": "1a57ce912b74"
+    },
+    {
+      "path": "tools/test_streaming_semantics.py",
+      "size": 1789,
+      "sha256": "58e8b69d1ccd"
+    },
+    {
+      "path": "tools/test_ws_reconnect_verify.py",
+      "size": 3677,
+      "sha256": "f82f39c07738"
+    },
+    {
+      "path": "tools/websocket_communication_validator.py",
+      "size": 10361,
+      "sha256": "fc2e242ef908"
+    },
+    {
+      "path": "tools/websocket_test_client.py",
+      "size": 6323,
+      "sha256": "0126676ce999"
+    },
+    {
+      "path": "docs/optimization_plan.md",
+      "size": 5127,
+      "sha256": "fda272006a41"
+    },
+    {
+      "path": "app.py",
+      "size": 18332,
+      "sha256": "1ad380046325"
+    },
+    {
+      "path": "requirements.txt",
+      "size": 1540,
+      "sha256": "3dbaaace7b68"
+    },
+    {
+      "path": "restart.sh",
+      "size": 6348,
+      "sha256": "fb4c02d439f9"
+    },
+    {
+      "path": "start.sh",
+      "size": 2942,
+      "sha256": "97f66d8d3aa6"
+    },
+    {
+      "path": ".gitignore",
+      "size": 699,
+      "sha256": "57dd7dee439a"
+    },
+    {
+      "path": "plugins_func/functions/get_time.py",
+      "size": 4960,
+      "sha256": "12abb2ab35d5"
+    },
+    {
+      "path": "plugins_func/functions/get_weather.py",
+      "size": 8009,
+      "sha256": "1dd748596f2e"
+    },
+    {
+      "path": "plugins_func/functions/ha_control.py",
+      "size": 36477,
+      "sha256": "63bcd76f5996"
+    },
+    {
+      "path": "plugins_func/functions/ha_music.py",
+      "size": 24349,
+      "sha256": "777bf0b98e06"
+    },
+    {
+      "path": "plugins_func/functions/hass_init.py",
+      "size": 6615,
+      "sha256": "dc6e31bf8b9c"
+    },
+    {
+      "path": "plugins_func/functions/play_music.py",
+      "size": 9635,
+      "sha256": "04e99ab7e601"
+    },
+    {
+      "path": "plugins_func/functions/reminder.py",
+      "size": 10780,
+      "sha256": "6c397690d5d8"
+    },
+    {
+      "path": "plugins_func/functions/show_album.py",
+      "size": 2218,
+      "sha256": "5fbf5c2c1fe0"
+    },
+    {
+      "path": "plugins_func/functions/show_map.py",
+      "size": 35820,
+      "sha256": "da0707613a9f"
+    },
+    {
+      "path": "plugins_func/functions/web_search.py",
+      "size": 13463,
+      "sha256": "c7db85640add"
+    },
+    {
+      "path": "plugins_func/functions/web_read.py",
+      "size": 5275,
+      "sha256": "cf3c0a2876b2"
+    },
+    {
+      "path": "plugins_func/functions/web_view.py",
+      "size": 6518,
+      "sha256": "e49255fcbf58"
+    },
+    {
+      "path": "plugins_func/functions/send_sms_message.py",
+      "size": 2399,
+      "sha256": "580b72dc6147"
+    },
+    {
+      "path": "plugins_func/functions/send_feishu_message.py",
+      "size": 3956,
+      "sha256": "a7aa432c37ba"
+    },
+    {
+      "path": "plugins_func/functions/send_voice_message.py",
+      "size": 2141,
+      "sha256": "3e434d0e4dd6"
+    },
+    {
+      "path": "plugins_func/functions/send_wechat_message.py",
+      "size": 2058,
+      "sha256": "8110bc3bf146"
+    },
+    {
+      "path": "plugins_func/functions/read_feishu_messages.py",
+      "size": 6165,
+      "sha256": "e180ba3761ed"
+    },
+    {
+      "path": "plugins_func/functions/change_role.py",
+      "size": 3495,
+      "sha256": "f21e31ce7128"
+    },
+    {
+      "path": "plugins_func/functions/handle_exit_intent.py",
+      "size": 1760,
+      "sha256": "7f15395264da"
+    },
+    {
+      "path": "plugins_func/functions/batch_device_control.py",
+      "size": 3103,
+      "sha256": "3dec2462222f"
+    },
+    {
+      "path": "plugins_func/functions/welcome_demo.py",
+      "size": 3356,
+      "sha256": "0c21ad042168"
+    }
+  ]
+}

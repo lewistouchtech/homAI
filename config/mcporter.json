@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "home-assistant": {
+      "baseUrl": "http://192.168.0.252:8123/api/mcp",
+      "description": "Home Assistant MCP server",
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIyMGMxNDZlMTNjZjQ0MmIyOTg3YTEwMjU5YmI5ODAwOSIsImlhdCI6MTc3Mjk5MTI4MiwiZXhwIjoyMDg4MzUxMjgyfQ.atu6ACnYvW9YFqguH5hJeap28jaqIRSyav2G6EatQt0"
+      }
+    }
+  },
+  "imports": []
+}

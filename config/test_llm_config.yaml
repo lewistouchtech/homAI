@@ -1,0 +1,19 @@
+{
+  "llm": {
+    "selected_provider": "test",
+    "general": {
+      "enable_streaming": true,
+      "max_tokens": 2000,
+      "temperature": 0.7,
+      "system_prompt": "你是一个专业的家庭AI助手，回答要简洁、专业、有用。",
+      "enable_function_calling": true,
+      "context_window": 8000
+    },
+    "test": {
+      "enabled": true,
+      "simulated_delay": 1000,
+      "test_response": "这是AI的测试回复。我可以与您进行对话，请继续说。",
+      "randomize_responses": false
+    }
+  }
+}
