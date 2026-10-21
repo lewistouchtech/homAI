@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-10-21 21:24:42",
+  "generated_at": "2026-10-21 22:14:30",
   "source": "/Users/lewisli/AI 人工智能/projects/homebrain/server/homebrain-server",
   "file_count": 368,
-  "total_bytes": 3916318,
+  "total_bytes": 3916623,
   "files": [
     {
       "path": "core/.DS_Store",
@@ -1141,8 +1141,8 @@
     },
     {
       "path": "core/utils/mailapp_bridge.py",
-      "size": 8374,
-      "sha256": "bd5c0255b89b"
+      "size": 8679,
+      "sha256": "c05a4ac3a772"
     },
     {
       "path": "core/utils/member_profile.py",

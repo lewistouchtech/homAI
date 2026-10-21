@@ -157,22 +157,25 @@ def fetch_unread(accounts: list[str] | None = None, per_account_timeout: int = 1
 def delete_to_trash(targets: list[dict]) -> int:
     """把指定邮件移到废纸篓（Mail 的 delete 语义 = 移到废纸篓，可恢复）
 
-    ⚠️ 实测踩坑：
-    - 用 message id 集合比对不可靠（`is in {...}` 匹配失败，删了 0 封）
-    - 遍历 `every message of mb`（含已读）很慢 → 只遍历未读
-    → 改用「主题 + 发件人」组合匹配，实测 41 封约 1 秒
+    ⚠️ 实测踩了三个坑，缺一不可：
+    1. 遍历 `every message of mb`（含已读）很慢 → 只遍历未读
+    2. 用 message id 集合比对（`is in {...}`）匹配不到 → 改用「主题」精确匹配
+    3. **在遍历中直接 delete 会让列表引用失效**（删第 5 封后取第 6 封报
+       "不能获得 item 6"）→ 必须 **倒序按索引删除**（`repeat with i from n to 1 by -1`）
     """
     if not targets:
         return 0
-    groups: dict[tuple[str, str], list[tuple[str, str]]] = {}
+    groups: dict[tuple[str, str], set[str]] = {}
     for t in targets:
-        key = (t.get("account", ""), t.get("mailbox", ""))
-        groups.setdefault(key, []).append((t.get("subject", ""), t.get("sender", "")))
+        subj = (t.get("subject") or "").strip()
+        if not subj:
+            continue
+        groups.setdefault((t.get("account", ""), t.get("mailbox", "")), set()).add(subj)
     deleted = 0
-    for (acct, mbox), pairs in groups.items():
-        subj_list = ", ".join(f'"{s.replace(chr(34), "")}"' for s, _ in pairs)
+    for (acct, mbox), subjects in groups.items():
+        subj_list = ", ".join(f'"{s.replace(chr(34), "")}"' for s in subjects)
         script = f"""tell application "Mail"
-  set n to 0
+  set deleted to 0
   set subjList to {{{subj_list}}}
   try
     set mbs to (every mailbox of account "{acct}")
@@ -185,7 +188,10 @@ def delete_to_trash(targets: list[dict]) -> int:
       set mbn to (name of mb) as string
     end try
     if mbn is "{mbox}" then
-      repeat with m in (every message of mb whose read status is false)
+      set msgs to (every message of mb whose read status is false)
+      set n to (count of msgs)
+      repeat with i from n to 1 by -1
+        set m to item i of msgs
         set sj to ""
         try
           set sj to (subject of m) as string
@@ -193,15 +199,15 @@ def delete_to_trash(targets: list[dict]) -> int:
         if sj is in subjList then
           try
             delete m
-            set n to n + 1
+            set deleted to deleted + 1
           end try
         end if
       end repeat
     end if
   end repeat
-  return n
+  return deleted
 end tell"""
-        res = _run(script, timeout=600)
+        res = _run(script, timeout=900)
         try:
             deleted += int(str(res).strip() or 0)
         except ValueError:
