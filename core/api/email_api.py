@@ -132,5 +132,84 @@ async def status(request: web.Request):
     })
 
 
+
+
+# ---------------------------------------------------------------- 来源清单
+def _domain_of(sender: str) -> str:
+    s = (sender or "").lower()
+    if "<" in s:
+        s = s.split("<")[-1]
+    s = s.split(">")[0]
+    if "@" in s:
+        return s.split("@")[-1].strip()
+    return s.strip() or "(未知)"
+
+
+@routes.get("/api/email/sources")
+async def list_sources(request: web.Request):
+    """按发件域聚合的所有未读邮件来源（供网页端逐条定规则）"""
+    from collections import Counter, defaultdict
+    from core.utils.mailapp_bridge import fetch_unread
+    try:
+        mails = fetch_unread()
+    except Exception as e:
+        return web.json_response({"error": str(e)}, status=500)
+    buckets = defaultdict(lambda: {"count": 0, "accounts": Counter(), "samples": [],
+                                   "trash": 0, "important": 0})
+    for m in mails:
+        b = buckets[_domain_of(m["sender"])]
+        b["count"] += 1
+        b["accounts"][m["account"]] += 1
+        bucket, reason = email_manager.classify(m["sender"], m["subject"], {}, "")
+        if bucket == "trash":
+            b["trash"] += 1
+        elif bucket == "important":
+            b["important"] += 1
+        if len(b["samples"]) < 3:
+            b["samples"].append({"subject": m["subject"][:90], "sender": m["sender"][:70],
+                                 "account": m["account"], "reason": reason})
+    rows = []
+    for dom, b in sorted(buckets.items(), key=lambda kv: -kv[1]["count"]):
+        rows.append({
+            "domain": dom, "count": b["count"], "trash": b["trash"], "important": b["important"],
+            "accounts": dict(b["accounts"]), "samples": b["samples"],
+            "decision": ("清" if dom in (email_manager.settings.get("trash_domains") or []) else
+                         "留" if dom in (email_manager.settings.get("keep_domains") or []) else ""),
+        })
+    return web.json_response({
+        "total_unread": len(mails), "domains": len(rows), "rows": rows,
+        "trash_domains": email_manager.settings.get("trash_domains", []),
+        "keep_domains": email_manager.settings.get("keep_domains", []),
+    })
+
+
+@routes.post("/api/email/domains")
+async def set_domain_rules(request: web.Request):
+    """批量设置发件域规则：{"trash": [...], "keep": [...]}"""
+    try:
+        data = await request.json()
+    except Exception:
+        return web.json_response({"error": "请求体必须是 JSON"}, status=400)
+    trash = [str(x).strip().lower().lstrip("@") for x in (data.get("trash") or []) if str(x).strip()]
+    keep = [str(x).strip().lower().lstrip("@") for x in (data.get("keep") or []) if str(x).strip()]
+    keep = [k for k in keep if k not in trash]      # 冲突时以「清」为准
+    email_manager.settings["trash_domains"] = sorted(set(trash))
+    email_manager.settings["keep_domains"] = sorted(set(keep))
+    email_manager.save()
+    return web.json_response({"ok": True,
+                              "trash_domains": email_manager.settings["trash_domains"],
+                              "keep_domains": email_manager.settings["keep_domains"]})
+
+
+@routes.post("/api/email/clean-now")
+async def clean_now(request: web.Request):
+    """按当前规则立刻清理一轮（垃圾 → 移到废纸篓，可恢复）"""
+    try:
+        data = await request.json()
+    except Exception:
+        data = {}
+    report = email_manager.scan_mailapp(notify_channel=data.get("notify_channel", "none"), trash=True)
+    return web.json_response({"ok": True, "report": report})
+
 def register_routes(app_or_router):
     app_or_router.add_routes(routes)

@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-10-21 22:32:58",
+  "generated_at": "2026-10-21 22:49:46",
   "source": "/Users/lewisli/AI 人工智能/projects/homebrain/server/homebrain-server",
   "file_count": 368,
-  "total_bytes": 3917681,
+  "total_bytes": 3922322,
   "files": [
     {
       "path": "core/.DS_Store",
@@ -76,8 +76,8 @@
     },
     {
       "path": "core/api/email_api.py",
-      "size": 5070,
-      "sha256": "7ac5756baf9b"
+      "size": 8606,
+      "sha256": "61dea5d1383c"
     },
     {
       "path": "core/api/embed_api.py",
@@ -426,8 +426,8 @@
     },
     {
       "path": "core/http_server.py",
-      "size": 220156,
-      "sha256": "8e2d137f14ba"
+      "size": 221261,
+      "sha256": "d7a9d12097d6"
     },
     {
       "path": "core/http_server_apis.py",

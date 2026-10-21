@@ -31,10 +31,10 @@
 
 <p align="center">
   <a href="https://youtube.com/shorts/N4M2LavMIhQ" target="_blank">
-    <img src="assets/video/ep001-cover.png" alt="Video EP01" width="49%">
+    <img src="assets/video/ep001-cover.jpg" alt="Video EP01" width="49%">
   </a>
   <a href="https://youtu.be/fkcnt8pYA0M" target="_blank">
-    <img src="assets/video/ep002-cover.png" alt="Video EP02" width="49%">
+    <img src="assets/video/ep002-cover.jpg" alt="Video EP02" width="49%">
   </a>
 </p>
 

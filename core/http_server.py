@@ -340,6 +340,9 @@ class SimpleHttpServer:
                         # 设备管理前端页面
                         web.get("/admin/devices", self.handle_device_manager_page),
                         # HomeBrain 控制台页面
+                        web.get("/mail", self.handle_mail_rules_page),
+                        web.get("/mail/", self.handle_mail_rules_page),
+                        web.get("/mail/index.html", self.handle_mail_rules_page),
                         web.get("/console", self.handle_homebrain_console_page),
                         web.get("/console/", self.handle_homebrain_console_page),
                         web.get("/admin/", self.handle_homebrain_console_page),
@@ -827,6 +830,24 @@ class SimpleHttpServer:
             return web.Response(text=content, content_type="text/html")
         except Exception as e:
             self.logger.bind(tag=TAG).error(f"加载设备管理页面失败：{e}")
+            return web.Response(text=str(e), status=500)
+
+    async def handle_mail_rules_page(self, request):
+        """邮箱规则页（主人逐条定「留 / 清」规则）"""
+        try:
+            page_path = str(self._console_web_dir() / "mail" / "index.html")
+            if not os.path.exists(page_path):
+                return web.Response(text="Mail rules page not found", status=404)
+            with open(page_path, "r", encoding="utf-8") as f:
+                content = f.read()
+            headers = {
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0",
+            }
+            return web.Response(text=content, content_type="text/html", headers=headers)
+        except Exception as e:
+            self.logger.bind(tag=TAG).error(f"加载邮箱规则页失败：{e}")
             return web.Response(text=str(e), status=500)
 
     async def handle_homebrain_console_page(self, request):
