@@ -286,6 +286,15 @@ async def main():
     from core.utils.memory_consolidation import consolidation_loop
     asyncio.create_task(consolidation_loop(ws_server, config))
 
+    # ── 邮箱管家（2026-10-21）：后台巡检邮件，重要邮件主动提醒 ──
+    #    不依赖网页是否打开；服务端常驻（launchd）→ 主人随时能收到提醒
+    try:
+        from core.utils.email_manager import email_watch_loop
+        asyncio.create_task(email_watch_loop())
+        logger.bind(tag=TAG).info("邮箱管家已启动")
+    except Exception as e:
+        logger.bind(tag=TAG).warning(f"邮箱管家启动失败（不影响主服务）: {e}")
+
     # ── 吃药提醒调度器（2026-10-11）：按 medications 表的服药时间到点播报 ──
     try:
         from core.utils.medication_reminder import medication_reminder_loop

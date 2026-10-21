@@ -1,0 +1,66 @@
+name: 插件 / 功能贡献
+description: 新增一个技能、插件，或扩展已有能力
+title: "[插件] 技能名称"
+labels: ["plugin", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        🎉 **欢迎贡献新技能！**
+
+        homAI 的能力主要靠**插件**实现（`plugins_func/functions/`），每加一个文件就多一项能力。
+        下面是本项目最欢迎的贡献方向 —— **但你也可以提任何别的想法，不必受限**。
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: 这个技能属于哪一类？
+      description: 只是方便归类，不限制你做什么
+      options:
+        - 🏠 智能家居（设备控制、场景联动）
+        - 🎵 影音娱乐（音乐、播客、相册、视频）
+        - 🗓 生活事务（日程、提醒、待办、快递、天气）
+        - 💬 消息通讯（微信、飞书、短信、邮件）
+        - 🔍 信息获取（搜索、新闻、百科、行情）
+        - ❤️ 健康运动（体脂秤、血压计、运动记录）
+        - 🤖 AI 能力（语音克隆、数字人、知识库）
+        - 🛠 基础设施（协议、工具、测试、文档）
+        - ✨ 其他（我自己的点子）
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: 这个技能做什么？用户会怎么跟它说话？
+      description: |
+        用一句话描述**用户视角**。比如："我说'帮我打开客厅灯'，它就开灯"。
+        不用写实现细节，代码部分由 PR 完成。
+      placeholder: |
+        例：我对伊娃说"该起床了"，它会播报今天的日程并调亮卧室灯。
+    validations:
+      required: true
+
+  - type: textarea
+    id: deps
+    attributes:
+      label: 需要什么依赖或外部服务？
+      description: |
+        用了哪些第三方库或 API？**开源版不包含需要商业授权的服务**。
+        如果依赖了需要 key 的服务，请说明用户需要自己配置什么。
+      placeholder: |
+        例：需要调用高德地图 API（免 key）/ 需要用户自己在配置页填一个 API key
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: ready
+    attributes:
+      label: 我准备好了
+      options:
+        - label: 我会提一个对应的 Pull Request
+          required: false
+        - label: 我知道不应该在 PR 里包含任何真实的 API key / 密钥
+          required: true
+        - label: 我读过 README 的「快速开始」，确认我的改动能在本地跑起来
+          required: false

@@ -1,0 +1,71 @@
+name: 提问与功能建议
+description: 提问、报告问题、提功能建议（如果你不确定该用哪个模板，选这个）
+title: "[类型] 简短描述"
+labels: ["needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢你愿意提 issue！homAI 是一个**家庭 AI 管家**项目：住在你家里的「贾维斯」。
+
+        💡 **不确定该报 bug 还是提功能？** 下面选一个就行，不用纠结。
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: 这是什么类型？
+      options:
+        - 🐛 Bug（功能不正常 / 报错）
+        - 💡 功能建议（新能力）
+        - ❓ 使用问题（怎么用 / 配置）
+        - 📖 文档问题（说明不清楚）
+        - 🔌 集成建议（想接某个设备或服务）
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: 发生了什么 / 你想要什么？
+      description: 用自己的话说就行，不需要很专业。
+      placeholder: |
+        例：我让它开客厅的灯，它说"好的"但灯没亮。
+        例：希望能接入扫地机器人。
+    validations:
+      required: true
+
+  - type: textarea
+    id: env
+    attributes:
+      label: 运行环境
+      description: 如果是 bug，填一下这些能帮你复现
+      render: text
+      placeholder: |
+        - 系统：macOS 15 / Ubuntu 24.04 / Windows 11
+        - Python：3.11
+        - 部署方式：源码直接跑 / Docker
+        - 用的模型：本地 oMLX / 火山方舟 / 其他
+        - 入口：网页终端 / ESP32 设备
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 报错日志（如果是 bug）
+      description: |
+        贴 `tmp/server.log` 里相关的部分就好。
+        ⚠️ **请先删掉里面的 token / 密钥 / 密码**（我们也会检查，但你自己删更保险）。
+      render: shell
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 我已删除日志中的密钥、token、密码等敏感信息
+          required: false
+        - label: 我搜索过现有 issue，确认没有重复
+          required: false

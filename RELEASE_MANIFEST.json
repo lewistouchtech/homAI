@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-10-21 19:17:56",
+  "generated_at": "2026-10-21 20:04:00",
   "source": "/Users/lewisli/AI 人工智能/projects/homebrain/server/homebrain-server",
-  "file_count": 392,
-  "total_bytes": 4354376,
+  "file_count": 369,
+  "total_bytes": 3914792,
   "files": [
     {
       "path": "core/.DS_Store",
@@ -153,11 +153,6 @@
       "path": "core/api/medication_api.py",
       "size": 9511,
       "sha256": "75ac8e9ab2f9"
-    },
-    {
-      "path": "core/api/music_config_api.py",
-      "size": 14745,
-      "sha256": "7c6b4cc5bc0d"
     },
     {
       "path": "core/api/news_api.py",
@@ -430,69 +425,9 @@
       "sha256": "bd85ccc40c6d"
     },
     {
-      "path": "core/home/__init__.py",
-      "size": 566,
-      "sha256": "64397ae83e5f"
-    },
-    {
-      "path": "core/home/actions.py",
-      "size": 14425,
-      "sha256": "01e2bd206e18"
-    },
-    {
-      "path": "core/home/config.py",
-      "size": 2308,
-      "sha256": "060c99bb36d8"
-    },
-    {
-      "path": "core/home/engine.py",
-      "size": 18503,
-      "sha256": "23b3a56a8e44"
-    },
-    {
-      "path": "core/home/executor.py",
-      "size": 7306,
-      "sha256": "d7f9133d7ff7"
-    },
-    {
-      "path": "core/home/guard.py",
-      "size": 5316,
-      "sha256": "a4f5e1a2c846"
-    },
-    {
-      "path": "core/home/registry.py",
-      "size": 13046,
-      "sha256": "87e9a1349844"
-    },
-    {
-      "path": "core/home/resolver.py",
-      "size": 9805,
-      "sha256": "9c69a5ef6e67"
-    },
-    {
-      "path": "core/home/scene_plan.py",
-      "size": 17178,
-      "sha256": "02c1ea718b47"
-    },
-    {
-      "path": "core/home/scenes.py",
-      "size": 1351,
-      "sha256": "7490ce134600"
-    },
-    {
-      "path": "core/home/session.py",
-      "size": 4134,
-      "sha256": "05f902097c9f"
-    },
-    {
-      "path": "core/home/speech.py",
-      "size": 15650,
-      "sha256": "715979cd30d6"
-    },
-    {
       "path": "core/http_server.py",
-      "size": 220008,
-      "sha256": "3ae6777222e4"
+      "size": 220156,
+      "sha256": "8e2d137f14ba"
     },
     {
       "path": "core/http_server_apis.py",
@@ -600,31 +535,6 @@
       "sha256": "bbf9cac1b079"
     },
     {
-      "path": "core/providers/decision/__init__.py",
-      "size": 643,
-      "sha256": "bc21d0f0e430"
-    },
-    {
-      "path": "core/providers/decision/base.py",
-      "size": 4782,
-      "sha256": "b85ec637c027"
-    },
-    {
-      "path": "core/providers/decision/jev_provider.py",
-      "size": 1894,
-      "sha256": "0c25f090c488"
-    },
-    {
-      "path": "core/providers/decision/local_qwen_provider.py",
-      "size": 8689,
-      "sha256": "cb4589b41466"
-    },
-    {
-      "path": "core/providers/decision/ollaya_provider.py",
-      "size": 8366,
-      "sha256": "42cf886ac73a"
-    },
-    {
       "path": "core/providers/intent/base.py",
       "size": 1078,
       "sha256": "1146ca0d58fa"
@@ -725,34 +635,9 @@
       "sha256": "93d6304b9e1b"
     },
     {
-      "path": "core/providers/memory/mem0/__init__.py",
-      "size": 0,
-      "sha256": "e3b0c44298fc"
-    },
-    {
-      "path": "core/providers/memory/mem0/llm_patch.py",
-      "size": 3782,
-      "sha256": "650483006fde"
-    },
-    {
-      "path": "core/providers/memory/mem0/provider.py",
-      "size": 74642,
-      "sha256": "aac4e5b1c16b"
-    },
-    {
       "path": "core/providers/memory/mem_local_short/mem_local_short.py",
       "size": 8121,
       "sha256": "283662a6eac8"
-    },
-    {
-      "path": "core/providers/memory/openviking/__init__.py",
-      "size": 115,
-      "sha256": "ba8d3a9a2d6f"
-    },
-    {
-      "path": "core/providers/memory/openviking/provider.py",
-      "size": 29672,
-      "sha256": "2903ef2dda5f"
     },
     {
       "path": "core/providers/tools/__init__.py",
@@ -1146,8 +1031,8 @@
     },
     {
       "path": "core/utils/email_manager.py",
-      "size": 23533,
-      "sha256": "37ca33f4b717"
+      "size": 28227,
+      "sha256": "9c1048e893d6"
     },
     {
       "path": "core/utils/emergency_listener.py",
@@ -1183,11 +1068,6 @@
       "path": "core/utils/feishu_inbox.py",
       "size": 12733,
       "sha256": "3d127b55fce2"
-    },
-    {
-      "path": "core/utils/feishu_listener.py",
-      "size": 38765,
-      "sha256": "6d95de909181"
     },
     {
       "path": "core/utils/filler_audio.py",
@@ -1245,11 +1125,6 @@
       "sha256": "01547290b48f"
     },
     {
-      "path": "core/utils/jev_decision.py",
-      "size": 28742,
-      "sha256": "6152b5572a5e"
-    },
-    {
       "path": "core/utils/latency_monitor.py",
       "size": 3782,
       "sha256": "b4c2ca008532"
@@ -1263,16 +1138,6 @@
       "path": "core/utils/llm.py",
       "size": 1188,
       "sha256": "2a19ce42f9e9"
-    },
-    {
-      "path": "core/utils/mail_organizer.py",
-      "size": 23065,
-      "sha256": "22a1b81c6c36"
-    },
-    {
-      "path": "core/utils/medication_reminder.py",
-      "size": 3721,
-      "sha256": "c49c344a2650"
     },
     {
       "path": "core/utils/member_profile.py",
@@ -1328,11 +1193,6 @@
       "path": "core/utils/modules_initialize.py",
       "size": 11356,
       "sha256": "f5302b73bdec"
-    },
-    {
-      "path": "core/utils/morning_digest.py",
-      "size": 18553,
-      "sha256": "3297299aafeb"
     },
     {
       "path": "core/utils/music_auto_pause.py",
@@ -1413,11 +1273,6 @@
       "path": "core/utils/secret_store.py",
       "size": 12417,
       "sha256": "d20aafa6216b"
-    },
-    {
-      "path": "core/utils/security_listener.py",
-      "size": 78130,
-      "sha256": "fc6ada9d52cf"
     },
     {
       "path": "core/utils/session_persistence.py",
@@ -1821,8 +1676,8 @@
     },
     {
       "path": "app.py",
-      "size": 18332,
-      "sha256": "1ad380046325"
+      "size": 18829,
+      "sha256": "7f0f156cc3ec"
     },
     {
       "path": "requirements.txt",
@@ -1845,6 +1700,66 @@
       "sha256": "57dd7dee439a"
     },
     {
+      "path": "core/providers/tools/mcp_endpoint/__init__.py",
+      "size": 569,
+      "sha256": "c2272e5bebd7"
+    },
+    {
+      "path": "core/providers/tools/mcp_endpoint/mcp_endpoint_client.py",
+      "size": 5221,
+      "sha256": "1d96de9d2a08"
+    },
+    {
+      "path": "core/providers/tools/mcp_endpoint/mcp_endpoint_executor.py",
+      "size": 3178,
+      "sha256": "4870493b6964"
+    },
+    {
+      "path": "core/providers/tools/mcp_endpoint/mcp_endpoint_handler.py",
+      "size": 7776,
+      "sha256": "c40fc84fc42d"
+    },
+    {
+      "path": "core/api/device_manager.py",
+      "size": 36299,
+      "sha256": "ee4fccd1aaf3"
+    },
+    {
+      "path": "core/chat/device.py",
+      "size": 2754,
+      "sha256": "e1b170d021a4"
+    },
+    {
+      "path": "core/providers/memory/mem_local_short/mem_local_short.py",
+      "size": 8121,
+      "sha256": "283662a6eac8"
+    },
+    {
+      "path": "core/providers/memory/base.py",
+      "size": 927,
+      "sha256": "053c82774f55"
+    },
+    {
+      "path": "core/providers/memory/factory.py",
+      "size": 4058,
+      "sha256": "93d6304b9e1b"
+    },
+    {
+      "path": "core/providers/memory/__init__.py",
+      "size": 52,
+      "sha256": "7bdc9262773e"
+    },
+    {
+      "path": "core/providers/memory/README.md",
+      "size": 4526,
+      "sha256": "1a8a7201d993"
+    },
+    {
+      "path": "core/providers/asr/sherpa_onnx_local.py",
+      "size": 17013,
+      "sha256": "8d377c19e98b"
+    },
+    {
       "path": "plugins_func/functions/get_time.py",
       "size": 4960,
       "sha256": "12abb2ab35d5"
@@ -1855,39 +1770,24 @@
       "sha256": "1dd748596f2e"
     },
     {
-      "path": "plugins_func/functions/ha_control.py",
-      "size": 36477,
-      "sha256": "63bcd76f5996"
+      "path": "plugins_func/functions/get_news_from_chinanews.py",
+      "size": 9762,
+      "sha256": "ea4eefe7b488"
     },
     {
-      "path": "plugins_func/functions/ha_music.py",
-      "size": 24349,
-      "sha256": "777bf0b98e06"
+      "path": "plugins_func/functions/get_news_from_newsnow.py",
+      "size": 39026,
+      "sha256": "86430111613a"
     },
     {
-      "path": "plugins_func/functions/hass_init.py",
-      "size": 6615,
-      "sha256": "dc6e31bf8b9c"
-    },
-    {
-      "path": "plugins_func/functions/play_music.py",
-      "size": 9635,
-      "sha256": "04e99ab7e601"
+      "path": "plugins_func/functions/show_news_full.py",
+      "size": 3801,
+      "sha256": "eb9a61fc5e92"
     },
     {
       "path": "plugins_func/functions/reminder.py",
       "size": 10780,
       "sha256": "6c397690d5d8"
-    },
-    {
-      "path": "plugins_func/functions/show_album.py",
-      "size": 2218,
-      "sha256": "5fbf5c2c1fe0"
-    },
-    {
-      "path": "plugins_func/functions/show_map.py",
-      "size": 35820,
-      "sha256": "da0707613a9f"
     },
     {
       "path": "plugins_func/functions/web_search.py",
@@ -1930,14 +1830,14 @@
       "sha256": "e180ba3761ed"
     },
     {
-      "path": "plugins_func/functions/change_role.py",
-      "size": 3495,
-      "sha256": "f21e31ce7128"
+      "path": "plugins_func/functions/ha_music.py",
+      "size": 24349,
+      "sha256": "777bf0b98e06"
     },
     {
-      "path": "plugins_func/functions/handle_exit_intent.py",
-      "size": 1760,
-      "sha256": "7f15395264da"
+      "path": "plugins_func/functions/play_music.py",
+      "size": 9635,
+      "sha256": "04e99ab7e601"
     },
     {
       "path": "plugins_func/functions/batch_device_control.py",
@@ -1945,24 +1845,9 @@
       "sha256": "3dec2462222f"
     },
     {
-      "path": "plugins_func/functions/welcome_demo.py",
-      "size": 3356,
-      "sha256": "0c21ad042168"
-    },
-    {
-      "path": "plugins_func/functions/get_news_from_chinanews.py",
-      "size": 9762,
-      "sha256": "ea4eefe7b488"
-    },
-    {
-      "path": "plugins_func/functions/get_news_from_newsnow.py",
-      "size": 39026,
-      "sha256": "86430111613a"
-    },
-    {
-      "path": "plugins_func/functions/show_news_full.py",
-      "size": 3801,
-      "sha256": "eb9a61fc5e92"
+      "path": "plugins_func/functions/show_album.py",
+      "size": 2218,
+      "sha256": "5fbf5c2c1fe0"
     }
   ]
 }

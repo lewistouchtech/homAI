@@ -30,6 +30,7 @@ import os
 import re
 import ssl
 import subprocess
+import sys
 import time
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
@@ -63,6 +64,21 @@ _JUNK_SUBJECT_HINTS = (
     "红包", "抽奖", "活动邀约", "清仓", "新品上市", "领取", "优惠券",
     "限时特惠", "会员日", "双十一", "618", "双12",
 )
+# ⚠️ 系统通知保护：这些邮件发件人常是 no-reply，但内容重要，绝不能当垃圾删
+#    （实测踩坑：阿里邮箱「欢迎使用 xxx 邮箱系统」的欢迎信来自 no-reply@mailsupport.aliyun.com，
+#      被「批量发送」规则误判成垃圾）
+_SYSTEM_NOTIFY_SUBJECTS = (
+    "欢迎使用", "邮箱系统", "验证码", "身份验证", "安全验证", "登录通知",
+    "异常登录", "异地登录", "账户变更", "账号变更", "开通", "激活", "实名认证",
+    "到期", "续费", "发票", "账单", "付款", "订单", "合同", "报价", "对账",
+    "会议", "面试", "入职", "离职", "年检", "报税", "报销", "中标", "采购",
+    "验收", "交付", "方案", "协议", "公告", "回执", "整改", "报销单",
+)
+# 阿里邮箱系统信的专属发件域（阿里云自己的商业推广不在这类域里）
+_SYSTEM_SENDER_DOMAINS = (
+    "mailsupport.aliyun.com", "service.aliyun.com", "notify.aliyun.com",
+)
+
 # 主题里的工作/重要特征
 _WORK_SUBJECT_HINTS = (
     "合同", "报价", "订单", "发票", "对账", "项目", "会议", "面试", "入职",
@@ -70,6 +86,39 @@ _WORK_SUBJECT_HINTS = (
     "整改", "通知", "公告", "验收", "交付", "方案", "协议", "账户变更",
     "安全提醒", "异地登录", "异常登录", "安全中心",
 )
+
+
+def decode_utf7(raw: str) -> str:
+    """IMAP modified UTF-7 文件夹名解码
+
+    阿里企业邮箱的文件夹名是编码的（如 `&XfJSIJZkkK5O9g-` = 已删除邮件），
+    不解码就匹配不上「已删除邮件 / 垃圾邮件」这些名字。
+    """
+    import base64 as _b64
+    out: list[str] = []
+    i = 0
+    while i < len(raw):
+        ch = raw[i]
+        if ch != "&":
+            out.append(ch)
+            i += 1
+            continue
+        j = raw.find("-", i)
+        if j == -1:
+            out.append(ch)
+            i += 1
+            continue
+        chunk = raw[i + 1:j]
+        if chunk == "":
+            out.append("&")
+        else:
+            try:
+                b = _b64.b64decode(chunk.replace(",", "/") + "=" * (-len(chunk) % 4))
+                out.append(b.decode("utf-16-be"))
+            except Exception:
+                out.append(raw[i:j + 1])
+        i = j + 1
+    return "".join(out)
 
 
 def _decode_header(raw: str | None) -> str:
@@ -180,9 +229,17 @@ class EmailManager:
         self.rules: list[Rule] = [Rule(**r) for r in self.config.get("rules", [])]
         self.settings: dict[str, Any] = self.config.get("settings", {}) or {}
         self.poll_interval = int(self.settings.get("poll_interval_sec", 300))
-        self.dry_run = bool(self.settings.get("dry_run", False))
         self._folder_cache: dict[str, dict[str, str]] = {}   # address -> {role: folder}
         self._learned_message_ids: set[str] = set()
+
+    @property
+    def dry_run(self) -> bool:
+        """动态读配置（实测踩坑：做成 init 快照 → 改了 settings 也不生效）"""
+        return bool(self.settings.get("dry_run", False))
+
+    @dry_run.setter
+    def dry_run(self, value: bool) -> None:
+        self.settings["dry_run"] = bool(value)
 
     # ------------------------------------------------------------------ 基础
     @staticmethod
@@ -302,6 +359,14 @@ class EmailManager:
                     return BUCKET_INBOX, f"归到 {r.target_folder}（学到的规则：{r.pattern}）"
 
         # 3) 特征判断
+        # 3.0 系统通知保护（优先级最高）：no-reply 发来的欢迎信/验证码/安全提醒等不是垃圾
+        for hint in _SYSTEM_NOTIFY_SUBJECTS:
+            if hint in (subject or ""):
+                return BUCKET_IMPORTANT, f"系统通知类邮件（{hint}）"
+        for dom in _SYSTEM_SENDER_DOMAINS:
+            if dom in sender_l:
+                return BUCKET_IMPORTANT, f"邮箱/云平台系统通知（{dom}）"
+
         has_unsub = any(k.lower() in ("list-unsubscribe", "list-unsubscribe-post") for k in headers)
         if has_unsub and any(t in local for t in _JUNK_LOCAL_PARTS):
             return BUCKET_TRASH, "带退订头的批量营销邮件"
@@ -330,30 +395,45 @@ class EmailManager:
         return imaplib.IMAP4_SSL(mb.imap_host, mb.imap_port, ssl_context=ctx, timeout=30)
 
     def folders(self, mb: Mailbox) -> dict[str, str]:
-        """探测邮箱文件夹：{role: 实际文件夹名}；role ∈ inbox/trash/important/sent"""
+        """探测邮箱文件夹：{role: IMAP 原始文件夹名}；role ∈ inbox/trash/junk/sent/important
+
+        ⚠️ 两个坑（阿里企业邮箱实测）：
+        1. 文件夹名是 **UTF-7 编码**（`&XfJSIJZkkK5O9g-` = 已删除邮件），必须解码后再按名字匹配
+        2. 特殊用途标志在 LIST 响应的 flags 里（`(\Trash) "/" "name"`），不在文件夹名里
+        IMAP 操作必须用**原始编码名**，所以这里保留原名，只用解码名做判断。
+        """
         if mb.key in self._folder_cache:
             return self._folder_cache[mb.key]
-        roles: dict[str, str] = {"inbox": "INBOX", "trash": "", "important": "", "sent": ""}
+        roles: dict[str, str] = {"inbox": "INBOX", "trash": "", "junk": "",
+                                 "sent": "", "important": ""}
         try:
             M = self._imap(mb)
             M.login(mb.address, mb.password)
             typ, boxes = M.list()
             for raw in boxes or []:
                 line = raw.decode(errors="ignore")
+                flags = ""
+                if line.startswith("("):
+                    flags = line[1:line.find(")")].lower()
                 name = line.split(' "/" ')[-1].strip('"')
-                low = name.lower()
-                if "\\trash" in low or "已删除" in name or name.lower() in ("trash", "deleted"):
+                if name.startswith('"') and name.endswith('"'):
+                    name = name[1:-1]
+                decoded = decode_utf7(name)
+                if "\\trash" in flags or "已删除" in decoded or decoded.lower() in ("trash", "deleted"):
                     roles["trash"] = name
-                elif "\\sent" in low or "已发送" in name or low == "sent":
+                elif "\\junk" in flags or "\\spam" in flags or "垃圾" in decoded:
+                    roles["junk"] = name
+                elif "\\sent" in flags or "已发送" in decoded or decoded.lower() == "sent":
                     roles["sent"] = name
-                elif name in ("重要", "重要邮件", "starred", "flagged"):
+                elif "\\drafts" in flags:
+                    roles["drafts"] = name
+                elif decoded in ("重要", "重要邮件", "starred", "flagged"):
                     roles["important"] = name
-                elif "垃圾" in name or "junk" in low or "spam" in low:
-                    roles.setdefault("junk", name)
             M.logout()
         except Exception as e:
             logger.bind(tag=TAG).warning(f"[邮箱] 探测文件夹失败 {mb.address}: {e}")
         self._folder_cache[mb.key] = roles
+        logger.bind(tag=TAG).info(f"[邮箱] {mb.address} 文件夹识别: {roles}")
         return roles
 
     # ------------------------------------------------------------ 巡检
@@ -547,3 +627,30 @@ class EmailManager:
 
 
 email_manager = EmailManager()
+
+
+async def email_watch_loop(notify_channel: str = "mac") -> None:
+    """后台巡检循环（挂在服务启动流程里，**不依赖网页是否打开**）
+
+    - 主人开着网页与否都能收到提醒
+    - pytest 下自动不启动，避免单测里发真实请求
+    """
+    import asyncio
+    if "pytest" in sys.modules:
+        logger.bind(tag=TAG).info("[邮箱] pytest 环境，跳过巡检循环")
+        return
+    mgr = email_manager
+    logger.bind(tag=TAG).info(f"[邮箱] 巡检循环启动，间隔 {mgr.poll_interval}s")
+    while True:
+        try:
+            reports = await asyncio.to_thread(mgr.run_cycle, notify_channel)
+            total = sum(r.get("trashed", 0) for r in reports)
+            imp = sum(len(r.get("important", [])) for r in reports)
+            if total or imp:
+                logger.bind(tag=TAG).info(
+                    f"[邮箱] 本轮处理：清理 {total} 封垃圾，重要 {imp} 封")
+        except asyncio.CancelledError:
+            raise
+        except Exception as e:
+            logger.bind(tag=TAG).warning(f"[邮箱] 巡检循环异常: {e}")
+        await asyncio.sleep(mgr.poll_interval)

@@ -59,6 +59,7 @@ from core.api.feishu_contacts_api import register_routes as register_feishu_cont
 from core.api.search_api import register_routes as register_search_routes
 from core.api.callpilot_api import register_routes as register_callpilot_routes
 from core.api.notification_api import register_routes as register_notification_routes
+from core.api.email_api import register_routes as register_email_routes
 from core.api.emergency_api import register_routes as register_emergency_routes
 from core.api.openviking_api import register_openviking_routes
 from core.api.weather_config_api import handle_get_weather_config, handle_save_weather_config
@@ -706,6 +707,7 @@ class SimpleHttpServer:
                 register_search_routes(app)
                 register_callpilot_routes(app)
                 register_notification_routes(app)
+                register_email_routes(app)   # 邮箱管家（2026-10-21）
                 register_emergency_routes(app)
                 register_openviking_routes(app)
 
