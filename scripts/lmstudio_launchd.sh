@@ -1,8 +1,8 @@
 #!/bin/bash
 # LM Studio 本地 API 服务（默认端口 1234）的 launchd 包装脚本。
 #
-# 为什么需要它：mem0 的记忆抽取走 LM Studio 的 OpenAI 兼容端点
-# （data/.config.yaml 的 Memory.mem0.llm_base_url）。服务不在线 = 长期记忆抽不出东西，
+# 为什么需要它：ltm 的记忆抽取走 LM Studio 的 OpenAI 兼容端点
+# （data/.config.yaml 的 Memory.ltm.llm_base_url）。服务不在线 = 长期记忆抽不出东西，
 # 而 lms server start 是手动敲的，重启机器就没了。
 #
 # 为什么不能直接 exec：`lms server start` 没有 --foreground 选项，它会自己 daemonize

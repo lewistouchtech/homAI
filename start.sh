@@ -2,7 +2,7 @@
 # HomeBrain Server 启动脚本
 # 路径自定位：脚本放在哪台机器哪个目录都能跑（Mac Mini 部署依赖这一点）
 # - 启动前清理端口，防止 launchd 重启时端口冲突
-# - HomeBrain 起来后，若配了 OpenViking（data/openviking/ov.conf），也拉起它
+# - HomeBrain 起来后，若配了 Ltm（data/LTM/ov.conf），也拉起它
 
 set -e
 
@@ -52,16 +52,16 @@ for port in $PORTS; do
     done
 done
 
-# 拉起 OpenViking（如果配置了）— 失败不阻塞 HomeBrain 启动
-if [ -f "$SCRIPT_DIR/data/openviking/ov.conf" ]; then
-    if launchctl print "gui/$(id -u)/com.homebrain.openviking" >/dev/null 2>&1; then
-        echo "[$(date)] OpenViking 由 launchd 管理，跳过手动启动"
+# 拉起 Ltm（如果配置了）— 失败不阻塞 HomeBrain 启动
+if [ -f "$SCRIPT_DIR/data/LTM/ov.conf" ]; then
+    if launchctl print "gui/$(id -u)/com.homebrain.LTM" >/dev/null 2>&1; then
+        echo "[$(date)] Ltm 由 launchd 管理，跳过手动启动"
     elif ! lsof -i :8765 2>/dev/null | grep -q LISTEN; then
-        echo "[$(date)] Starting OpenViking service..."
-        bash "$SCRIPT_DIR/start_openviking.sh" &
-        # 不等它完成，允许 HomeBrain 先起来（OpenViking 有懒加载重连兜底）
+        echo "[$(date)] Starting Ltm service..."
+        bash "$SCRIPT_DIR/start_LTM.sh" &
+        # 不等它完成，允许 HomeBrain 先起来（Ltm 有懒加载重连兜底）
     else
-        echo "[$(date)] OpenViking already running"
+        echo "[$(date)] Ltm already running"
     fi
 fi
 

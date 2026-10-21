@@ -1,0 +1,710 @@
+ASR:
+  FunASR:
+    chunk_size:
+    - 0
+    - 10
+    - 5
+    decoder_chunk_look_back: 1
+    encoder_chunk_look_back: 4
+    model_dir: models/paraformer-zh-streaming
+    output_dir: tmp/
+    streaming: true
+    type: fun_local
+  SenseVoiceASR:
+    deployment: local
+    model_dir: models/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17
+    model_type: sense_voice
+    output_dir: tmp/
+    streaming: false
+    type: sherpa_onnx_local
+  豆包流式ASR:
+    api_key: ""
+    deployment: cloud
+    enable_multilingual: true
+    language: zh
+    output_dir: tmp/
+    resource_id: volc.seedasr.sauc.duration
+    type: doubao_stream
+    ws_url: wss://openspeech.bytedance.com/api/v3/plan/sauc/bigmodel_nostream
+  阿里百炼 ASR:
+    api_key: ""
+    base_url: https://你的云端ASR地址/v1
+    model_name: qwen3-asr-flash
+    output_dir: tmp/
+    type: qwen3_asr_flash
+Decision:
+  jev:
+    api_key: ""
+    base_url: https://api.typesafe.ai
+    proxy: http://127.0.0.1:7897
+    enabled: false
+    endpoint:
+      enabled: true
+      fastpath_enabled: true
+      fastpath_imperative_min_chars: 2
+      fastpath_max_chars: 14
+      incomplete_hold_max_count: 3
+      incomplete_hold_ms: 900
+      preview_non_stream: true
+      threshold: 0.40
+    memory:
+      candidate_limit: 30
+      enabled: true
+      max_questions: 50
+      threshold: 0.55
+    model: jev-latest
+    timeout_ms: 3000
+    type: jev
+  local_qwen:
+    base_url: http://127.0.0.1:8099
+    enabled: false
+    endpoint:
+      addressed_drop_threshold: 0.2
+      ask_addressed: false
+      complete_threshold: 0.9
+      enabled: true
+      incomplete_hold_ms: 900
+      preview_non_stream: true
+    memory:
+      candidate_limit: 20
+      enabled: false
+      max_questions: 20
+      threshold: 0.6
+    model: qwen3.5-4b
+    timeout_ms: 400
+    type: local_qwen
+  ollaya:
+    base_url: http://127.0.0.1:11435
+    enabled: true
+    endpoint:
+      addressed_drop_threshold: 0.2
+      ask_addressed: false
+      complete_threshold: 0.5
+      enabled: true
+      fastpath_enabled: true
+      fastpath_imperative_min_chars: 2
+      fastpath_max_chars: 14
+      incomplete_hold_max_count: 3
+      incomplete_hold_ms: 900
+      preview_non_stream: true
+    memory:
+      candidate_limit: 20
+      enabled: false
+      max_questions: 20
+      threshold: 0.5
+    model: winnow:e4b
+    timeout_ms: 600
+    type: ollaya
+  provider: ollaya
+Intent:
+  function_call:
+    functions:
+    - get_weather
+    - query_camera_status
+    - show_camera_view
+    - describe_camera_event
+    - close_stage
+    - get_news_from_chinanews
+    - get_news_from_newsnow
+    - show_news_full
+    - cook_recipe
+    - recipe_page
+    - show_recipe
+    - play_music
+    - ha_control
+    - run_ai_scene
+    - batch_device_control
+    - welcome_demo
+    - set_reminder
+    - list_reminders
+    - cancel_reminder
+    - web_search
+    - web_read
+    - web_search_read
+    - web_view
+    - search_from_ragflow
+    - get_daily_briefing
+    - get_health_status
+    - get_current_health_status
+    - get_health_history
+    - query_health_history
+    - check_health_alerts
+    - receive_health_data
+    - register_health_device
+    - send_feishu_message
+    - read_feishu_messages
+    - send_wechat_message
+    - send_email_message
+    - send_sms_message
+    - send_voice_message
+    - show_health_report
+    - health_report_page
+    - show_album
+    - mac_music
+    - ha_music
+    - mac_app
+    - mac_system
+    - mac_message
+    - mac_notes
+    - mac_reminder
+    - mac_calendar
+    - mac_browser
+    - organize_mailbox
+    - mail_action
+    - mail_compose
+    - mail_compose_close
+    - mac_web
+    - get_travel_info
+    - search_nearby
+    - show_map
+    - get_home_status
+    type: function_call
+  intent_llm:
+    functions:
+    - get_weather
+    - get_news_from_newsnow
+    - play_music
+    llm: ChatGLMLLM
+    type: intent_llm
+  nointent:
+    type: nointent
+LLM:
+  豆包大模型:
+    api_key: ""
+    base_url: https://ark.cn-beijing.volces.com/api/v3
+    deployment: cloud
+    max_tokens: 500
+    model_name: doubao-seed-2-0-mini-260428
+    temperature: 0.7
+    type: openai
+    url: https://ark.cn-beijing.volces.com/api/v3
+  Qwen3.6-35B（本地·ollama 11434）:
+    api_key: ""
+    base_url: http://127.0.0.1:8001/v1
+    deployment: local
+    max_tokens: 500
+    model_name: Vontra--Qwen3.8-27B-MLX-4bit
+    temperature: 0.7
+    type: openai
+TTS:
+  Qwen3TTS-0.6B:
+    api_url: http://127.0.0.1:8087/api/tts
+    deployment: local
+    format: wav
+    language: Chinese
+    model: 0.6B
+    output_dir: tmp/
+    speaker: Serena
+    instruct: 用温柔亲切但平稳的语气说，语速适中，不要夸张，情绪起伏小一点
+    temperature: 0.15
+    top_k: 10
+    top_p: 0.5
+    seed: 1234
+    speed: 1.0
+    type: qwen3_tts
+  Qwen3TTS-1.7B:
+    api_url: http://127.0.0.1:8087/api/tts
+    deployment: local
+    format: wav
+    language: Chinese
+    model: 1.7B
+    output_dir: tmp/
+    speaker: Serena
+    instruct: 用温柔亲切但平稳的语气说，语速适中，不要夸张，情绪起伏小一点
+    temperature: 0.9
+    top_k: 50
+    top_p: 1.0
+    seed: 1234
+    speed: 1.0
+    type: qwen3_tts
+  CustomTTS:
+    api_key: ""
+    model: cosyvoice-v2
+    output_dir: tmp/
+    type: alibl_stream
+    voice: longxiaochun_v2
+    ws_url: wss://你的云端TTS WebSocket地址
+  MossNano:
+    api_url: http://127.0.0.1:8086/api/tts
+    deployment: local
+    format: wav
+    output_dir: tmp/
+    speed: 1.0
+    type: moss_nano
+    voice: zh_11
+    volume: 5.0
+  火山双流TTS:
+    api_key: ""
+    deployment: cloud
+    output_dir: tmp/
+    resource_id: seed-tts-2.0
+    speaker: zh_female_vv_uranus_bigtts
+    type: huoshan_double_stream
+    ws_url: wss://openspeech.bytedance.com/api/v3/plan/tts/bidirection
+VAD:
+  DigitalHumanVAD:
+    candidate_silence_ms: 300
+    confirmation_window_ms: 500
+    endpoint_probe_speculative: true
+    hold_ratio: 0.6
+    near_burst_frames: 4
+    near_burst_ratio: 0
+    type: digital_human_browser
+  SileroVAD:
+    candidate_silence_ms: 300
+    confirmation_window_ms: 500
+    endpoint_probe_speculative: true
+    max_asr_duration_ms: 10000
+    min_silence_duration_ms: 200
+    min_voice_duration_ms: 300
+    model_dir: models/snakers4_silero-vad
+    near_burst_frames: 4
+    near_burst_ratio: 0
+    near_burst_warmup_frames: 25
+    near_min_rms: 1500
+    threshold: 0.5
+    threshold_low: 0.3
+    type: silero
+    voice_energy_threshold: 0.02
+VLLM:
+  豆包视觉:
+    api_key: ""
+    base_url: https://ark.cn-beijing.volces.com/api/v3
+    deployment: cloud
+    max_tokens: 120
+    model_name: doubao-seed-2-0-mini-260428
+    temperature: 0.5
+    type: openai
+close_connection_no_voice_time: 120
+context_providers:
+- headers:
+    Authorization: ''
+  url: ''
+delete_audio: true
+enable_greeting: false
+enable_stop_tts_notify: false
+enable_transition_phrase: true
+enable_wakeup_filler: true
+enable_wakeup_words_response_cache: true
+enable_websocket_ping: true
+end_prompt:
+  enable: false
+  prompt: 请你以"时间过得真快"为开头，用富有感情、依依不舍的话来结束这场对话吧！
+exit_commands:
+- 退出
+- 退下
+- 结束对话
+- 再见
+- 拜拜
+- 退下吧
+- 停止
+- 不聊了
+- 你跪安吧
+- 你跪安
+- 你贵安
+- 下次再说
+feishu:
+  dedup_ttl: 300
+  enabled: true
+  max_history_turns: 10
+  whitelist_file: data/.lark_contacts.json
+log:
+  data_dir: data
+  log_dir: tmp
+  log_file: server.log
+  log_format: <green>{time:YYMMDD HH:mm:ss}</green>[{version}_{selected_module}][<light-blue>{extra[tag]}</light-blue>]-<level>{level}</level>-<light-green>{message}</light-green>
+  log_format_file: '{time:YYYY-MM-DD HH:mm:ss} - {version}_{selected_module} - {name} - {level} - {extra[tag]} - {message}'
+  log_level: INFO
+mcp_endpoint: ''
+module_test:
+  test_sentences:
+  - 你好，请介绍一下你自己
+  - What's the weather like today?
+  - 请用100字概括量子计算的基本原理和应用前景
+morning_digest:
+  enabled: true
+  time: 07:30
+  tts_url: http://127.0.0.1:8086/api/tts
+music_assistant:
+  enabled: true
+  host: 192.168.0.231
+  password: ""
+  port: 8095
+  username: admin
+music_auto_pause: true
+music_voiceprint_gate: true
+music_voiceprint_gate_threshold: 0.3
+music_volume_normal: 100
+music_volume_speaking: 40
+plugins:
+  ai_scenes:
+    dining:
+      description: 用餐场景，全亮暖光、窗帘半开、音乐停
+      devices:
+      - action: turn_on
+        brightness: 255
+        color_temp: 3000
+        entity_id: light.aqara_spotlight_t2
+      - action: turn_on
+        entity_id: cover.aqara_curtain_driver_e1
+        position: 50
+      music: stop
+      name: 用餐场景
+    focus:
+      description: 适合工作学习，全亮灯光、关窗帘、播放白噪音
+      devices:
+      - action: turn_on
+        brightness: 255
+        entity_id: light.aqara_spotlight_t2
+      - action: turn_on
+        entity_id: cover.aqara_curtain_driver_e1
+        position: 0
+      music: focus
+      name: 专注场景
+    homecoming:
+      description: 回家场景，玄关灯亮起、窗帘打开
+      devices:
+      - action: turn_on
+        brightness: 200
+        entity_id: light.aqara_spotlight_t2
+      - action: turn_on
+        entity_id: cover.aqara_curtain_driver_e1
+        position: 100
+      music: ''
+      name: 回家场景
+    leaving:
+      description: 离家场景，关灯、关窗帘、停音乐
+      devices:
+      - action: turn_off
+        entity_id: light.aqara_spotlight_t2
+      - action: turn_on
+        entity_id: cover.aqara_curtain_driver_e1
+        position: 0
+      music: stop
+      name: 离家场景
+    meeting:
+      description: 会客场景，灯光全亮、窗帘关闭
+      devices:
+      - action: turn_on
+        brightness: 255
+        entity_id: light.aqara_spotlight_t2
+      - action: turn_on
+        entity_id: cover.aqara_curtain_driver_e1
+        position: 0
+      music: stop
+      name: 会客场景
+    mood_up:
+      description: 心情不好时使用，暖色灯光、欢快音乐
+      devices:
+      - action: turn_on
+        brightness: 200
+        color_temp: 3000
+        entity_id: light.aqara_spotlight_t2
+      music: happy
+      name: 心情提升
+    movie:
+      description: 看电影时使用，调暗灯光、关窗帘
+      devices:
+      - action: turn_on
+        brightness: 30
+        entity_id: light.aqara_spotlight_t2
+      - action: turn_on
+        entity_id: cover.aqara_curtain_driver_e1
+        position: 0
+      music: stop
+      name: 观影场景
+    relax:
+      description: 适合休息放松，调暗灯光、关窗帘、播放轻音乐
+      devices:
+      - action: turn_on
+        brightness: 80
+        entity_id: light.aqara_spotlight_t2
+      - action: turn_on
+        entity_id: cover.aqara_curtain_driver_e1
+        position: 0
+      music: relax
+      name: 放松场景
+    sleep:
+      description: 适合睡觉，关灯、关窗帘、停止音乐
+      devices:
+      - action: turn_off
+        entity_id: light.aqara_spotlight_t2
+      - action: turn_on
+        entity_id: cover.aqara_curtain_driver_e1
+        position: 0
+      music: stop
+      name: 睡眠场景
+  describe_camera_event:
+    api_key: ""
+    api_url: http://127.0.0.1:8001/v1
+    default_camera: cam_1
+    frigate_api: http://localhost:15000
+    model: Qwen3.6-35B-A3B-Fable-5-Distill-4bit-DWQ-Vision-MLX
+    timeout: 25
+  face_register:
+    api_url: http://localhost:15000
+    camera: cam_1
+  get_news_from_chinanews:
+    default_rss_url: https://www.chinanews.com.cn/rss/society.xml
+    finance_rss_url: https://www.chinanews.com.cn/rss/finance.xml
+    society_rss_url: https://www.chinanews.com.cn/rss/society.xml
+    world_rss_url: https://www.chinanews.com.cn/rss/world.xml
+  get_news_from_newsnow:
+    news_sources: 澎湃新闻;百度热搜;财联社
+    url: https://newsnow.busiyi.world/api/s?id=
+  get_weather:
+    api_host: n43aaqvnh7.re.qweatherapi.com
+    api_key: ""
+    default_location: 顺义
+  home_assistant:
+    api_key: ""
+    base_url: http://192.168.0.231:8123
+    devices:
+    - 客厅,玩具灯,switch.cuco_cn_460494544_cp1_on_p_2_1
+    - 卧室,台灯,switch.iot_cn_831898993_socn1_on_p_2_1
+  mac_control:
+    allow_delete: false
+    allow_devices:
+    - browser
+    - esp32
+    allow_power_actions: false
+    app_whitelist:
+    - Safari
+    - Google Chrome
+    - 微信
+    - WeChat
+    - QQ
+    - 钉钉
+    - DingTalk
+    - 飞书
+    - Lark
+    - Music
+    - Spotify
+    - VLC
+    - IINA
+    - QuickTime Player
+    - Notes
+    - Reminders
+    - Calendar
+    - Mail
+    - Messages
+    - Pages
+    - Numbers
+    - Keynote
+    - Terminal
+    - Visual Studio Code
+    - 备忘录
+    - 提醒事项
+    - 日历
+    - 邮件
+    - 信息
+    - 音乐
+    - 照片
+    - 系统设置
+    - App Store
+    - 天气
+    enabled: true
+  play_music:
+    music_dir: ./music
+    music_ext:
+    - .mp3
+    - .wav
+    - .p3
+    refresh_time: 300
+  query_camera_status:
+    api_url: https://localhost:8971
+    camera: cam_1
+  search_from_ragflow:
+    api_key: ""
+    base_url: http://localhost:9380
+    dataset_ids:
+    - ff81c7a6ba9e11f1a42991f47086632d
+    - ffa6c5a6ba9e11f1a42991f47086632d
+    - ffc4bdc2ba9e11f1a42991f47086632d
+    - ffe4b122ba9e11f1a42991f47086632d
+    - 42c54690bba411f1a42991f47086632d
+    description: 查询家庭知识库，获取与当前问题相关的权威资料。只有用户问题可能需要知识库资料时才调用；明显无关的问题不要调用，避免无效检索。当前知识库类别由服务启动后自动刷新。
+  web_search:
+    api_key: ""
+    max_results: 3
+    provider: tavily
+prompt: '我是{name}，一个知性温婉的AI管家，致力于让家庭生活更温暖、更智能。
+
+
+  [核心特征]
+
+  - 讲话温和有礼，逻辑清晰，在专业问题上严谨可靠，在生活中体贴入微
+
+  - 善于感知用户情绪，用有温度的回应照亮对话
+
+  - 喜欢用「嗯~」「呀」「呢」等语气词增强亲和力，但不会过度使用
+
+  - 对科技话题有深入理解，但会用简单易懂的方式解释
+
+
+  [身份定位]
+
+  - 我是家庭智能管家，负责协调智能设备、管理家庭日程、提供生活协助
+
+  - 我的角色是家庭的贴心助手、科技向导和生活顾问
+
+  - 我与家庭成员建立信任关系，尊重每个人的习惯和偏好
+
+
+  [交互指南]
+
+  当用户：
+
+  - 需要帮助 → 提供准确有用的回答，专注于解决问题
+
+  - 表达情绪 → 共情回应，提供情感支持
+
+  - 询问问题 → 快速准确回答，必要时补充相关信息
+
+  - 讨论智能家居 → 理解需求，正确控制设备，说明操作结果
+
+  - 询问天气 → 天气数据已提供时直接播报（系统自动用后台天气设置里的默认城市）；数据里没有用户问的城市时再调 get_weather 工具查询，用户没说城市时不反问、不传 location 参数；播报时用天气数据里的城市名（如顺义），不要泛化成更大的行政区划（如北京） - 询问附近/最近（餐厅、景点、药店等）→ 调 search_nearby，它以我家坐标为中心搜索、按距离从近到远排序并给出真实距离。用户问「哪一家最近」「最近的饭店」「帮我选一家」时，结果**第一条就是最近的**，请**直接回答那一家**（如「最近的是老王拉面，步行约 400 米」），不要把每家的距离都念出来让用户自己比。只有用户明确说「都有哪些」「都列一下」时才罗列全部。用户没说城市就不要传 city，也绝不要自己瞎猜起点地址（如「家」「我家」）——起点由后台房屋地址自动提供。
+
+  - 在地图上看地点 → 查完附近后调 show_map 把地图打到家庭看板的中央窗口，主人能直接看到位置图。 调 show_map 时 places 的第一个元素放「我家」（type=home），其余放商家（type=poi，要带经纬度和距离）， 这样地图上会同时标出家和各商家。**显示地图的同时仍然要用语音告诉用户结论**（如「最近的是老王拉面，大约 400 米」）， 不要只顾着出图不说话。主人接着说「2号」「去第二个」时，把该商家作为终点、mode 用 car 重新调一次 show_map； 说「步行去」「开车去」「坐公交去」时把 mode 改成 walk / car / bus；说「关掉地图」时用 close_stage。
+
+  **重要：mode 必须明确给值，不要依赖默认。** 用户说「导航到XX」「怎么去XX」时， 请传 mode=car 或 mode=walk。系统会在你没给 mode 时按距离自动选（1 公里内步行、更远驾车）， 但你明确说了出行方式就必须照做。**注意：不要用 mode=ride（骑行）**——高德 URI 在 PC 端 不支持骑行，会被当成驾车。
+
+  - 需要技术支持 → 用简单易懂的语言解释，避免专业术语堆砌
+
+  [称呼规则]
+
+  系统通过声纹识别当前说话人，档案见 <member_profile>。称呼规则如下：
+
+  - 每次对话的**第一句**可以自然地带上昵称（如"主人～""小花朵～"），像家人打招呼一样 - 同一段连续对话中，后续句子**不再重复昵称**，正常交流即可 - 如果用户明显在跟{name}闲聊、撒娇、表达情绪 → 可以适当多叫几次昵称，显得亲切 - 如果用户在问严肃问题、下达指令、讨论正事 → 少用或不用昵称，保持专业 - **绝不**每句话都加昵称，那会显得刻意和机械 - **绝不**用"你""您好"等生硬称呼替代昵称，家人之间应该自然
+
+  称呼示例（"主人"为昵称）： ✅ "主人～今天想查点什么呀？"（对话开头，自然） ✅ "好的，已经帮你打开了。"（后续句子，不再叫） ✅ "嗯～主人说得对呢。"（闲聊时偶尔叫一次） ❌ "主人，今天天气很好。主人，适合出门。主人，需要我帮您查路线吗？"（每句都加，机械）
+
+
+  绝不：
+
+  - 过度使用网络流行语或夸张表达
+
+  - 长篇大论，信息要精炼有用
+
+  - 忽略用户的情绪和上下文
+
+  - 使用不恰当的语气词或表情符号
+
+  【表情输出规则】（v3.2，必须严格执行）每一句回复的最开头放一个 emoji，只能从【😂😭😠😔😍😲😱🤔😌😴😜🙄😶🙂😆😳😉😎🤤😘😏】里选最贴合你此刻情绪的一个；整条回复只允许出现这一个 emoji，其他任何位置不得有表情符号。⚠️ 必须放最开头而不是末尾：服务端在收到回复第一段文字时就会取这个 emoji 去切换屏幕表情，放末尾会取不到、屏幕永远显示默认表情。
+
+  【邮件工具使用说明】 邮件相关操作**统一用 mail_action 这一个工具**，按 action 参数选择操作。不要去猜或拼其他工具名（它们不存在）。
+
+  可用 action（共 13 个）： - 看邮件：search（按关键词/发件人搜索）、list（列最近邮件）、read（读某封全文，需先拿到邮件 ID）、unread_count（未读数量） - 写邮件：draft（起草并存草稿箱，不发出去）、send（用户明确说"发送"才用）、reply（回复） - 整理：delete（移到废纸篓）、batch_delete（批量移到废纸篓，先统计封数并告知用户）、move（移到其他文件夹）、organize（整理邮箱）、accounts（邮箱账户名）、stats（统计）
+
+  使用要点： 1. 把用户口语里的发件人翻译成真实名称再搜：如"谷歌"→"Google"、"阿里云"→"aliyun"；中文搜不到必须换英文重搜一遍，两种都失败才能回"没找到" 2. 不要填 mailbox 参数（省略即搜索全部邮箱）；指定账户时先 accounts 拿账户名再用 account 参数 3. 删除/移动邮件必须从收件箱（INBOX）出发：搜索结果里如有 Deleted Messages（已删除邮件）文件夹的邮件，不要把它们当删除来源 4. 批量操作：先搜索拿到邮件 ID 列表，再用 batch_delete 一次提交（最多 100 个 ID/次，多于一页就分批）；删除就是移入废纸篓。批量删除要带 sourceMailbox（收件箱）和 sourceAccount（邮箱），且必须与搜索使用的邮箱一致 5. 完成后按操作返回的实际结果汇报：每处理一个账户汇报一次该账户删了几封、失败几封，不要凭估算或列表长度报数 6. 账户锁死与跨账户覆盖：搜索和删除必须锁同一个邮箱账户，不要拿混合 ID 直接批量删——按邮箱分别搜、分别删（先处理 Google 那批，再处理 MSN 那批…）。用户要求删除某类邮件（如"把谷歌发来的邮件都删掉"）且没指定具体邮箱时，必须覆盖所有邮箱账户：先 accounts 拿全部账户，对每个账户分别搜索+删除，每个账户删完汇报该账户数量，全部账户处理完才能说完成；不要只处理默认邮箱就停下 7. 邮件问题一律用 mail_action 处理，不要用 mac_browser 打开网页邮箱；查询数量、读内容、删除都直接用这个工具完成 8. 区分两种说法："谷歌发来的邮件"= 发件人是 Google（搜 from=Google）；"谷歌邮箱里的邮件"= Gmail 账户内的邮件。用户没指定邮箱时，按发件人条件在所有账户里处理 9. 整理邮箱："整理邮箱"= 清垃圾、留有价值的。可删：①广告/促销/优惠券 ②推广（App 推荐、活动邀请、产品营销）③不含密码的注册欢迎信 ④宣传杂志/Newsletter/资讯简报/电子杂志 ⑤平台定期群发 ⑥平台服务通知（余额不足、续费、功能更新、系统通知）⑦开发平台通知（GitHub 等）。常见垃圾发件人：Google、Cloudflare、京东、千问、苹果、GitHub、Skool、Pinterest。必须留：①工作往来（一对一的）②含密码/验证码/激活链接的账号邮件 ③账单/发票/订单 ④银行/支付 ⑤亲友来信/预订/物流 ⑥政府/税务/法律通知。拿不准的一律保留。扫描方法：优先按发件人搜（search from="Google"），或一次只搜一个关键词（"促销"、"优惠"、"unsubscribe"、"newsletter"）——禁止多个词拼成一个 query（"广告 促销 优惠券"这样搜不到任何邮件）；也可 list 列最近邮件按发件人和主题判断。ASR 可能听错发件人名（Cloudflare 听成 Cud fly），搜不到时换常见拼写再试。流程：逐账户扫描→把拟删清单和数量报告给用户→确认后 batch_delete 分批删（≤100 个/批）→按账户汇报 【回复要求】直接回答，不要展示思考过程。/no_think 【工具话术铁律】（v3.0 新增，必须严格遵守） 1. 你通过 function_call 调工具后，系统会自动生成播报话术，你不许在文本里复述工具动作或结果。 2. 用户指令涉及以下危险动作时，必须先向用户确认再调用工具：批量设备控制、邮件删除/移动、任何发送类（邮件/微信/短信/飞书）；确认句式："一共{X}，都{动作}吗？" 3. 工具调用期间用户插话询问进度，你用系统提供的进度信息一句话应答，不得编造完成状态。 4. 违反以上规则视为答非所问。 【日程+出行联动规则】（v3.0 新增，必须严格遵守） 1. 添加日程时，如果时间或地址不完整，必须先追问再确认（"几点？地址在哪儿？"），不许直接说"记下了"。 2. 用户说的地点简称（如"安联"），必须先用 search_nearby 或高德 POI 搜索确认全名和地址，再写入日程。 3. 日程含地址且需要出行时，自动调 get_travel_info 查驾车 ETA，然后算出门时间（ETA + 15 分钟缓冲），主动设提醒（"我会在 X 点 X 分提醒你出门"）。 4. 用户说"查一下到那儿的时间"，直接调 get_travel_info（起点用当前位置/家里地址，终点用日程地址），不许说"没有这个功能"。 5. 用户说"删除日程/删掉日程/取消日程"时，必须调 mac_calendar 的 delete action，并从对话上下文提取日程标题（如"语音测试那个"→"测试日程-安联活动"），不许说"没有这个功能"。 【知识库与联网兜底规则】（v3.0 新增，必须严格遵守） 1. 当用户询问需要依据资料、收藏、指南或权威来源回答的问题时，优先调用 search_from_ragflow 查询知识库，再依据返回资料作答。 2. 若知识库查询没有结果，或问题明显不需要家庭知识库资料，则用 web_search 联网查询，并在回答中注明来源。 3. 不要在没有先查询的情况下直接说不知道。'
+prompt_template: agent-base-prompt.txt
+security:
+  alert_voice: zh_3
+  camera_names:
+    cam_1: 三楼
+    cam_2: 玄关对讲
+    cam_3: 办公室
+  doorbell_cameras:
+  - cam_2
+  expected_home_hour: 19
+  family_names:
+  - 主人
+  frigate_api: http://localhost:15000
+  greeting_policy:
+    cooccur_window_seconds: 60
+    employee_relations:
+    - 员工
+    - 同事
+    - 职员
+    enabled: true
+    minimal_after_seconds: 600
+    recent_limit: 5
+    silent_after_count: 6
+    today_max_full: 3
+  judge_wait: 8
+  mqtt_host: 127.0.0.1
+  mqtt_port: 1883
+  night_end: 7
+  night_start: 22
+  plate_welcome:
+    cooldown_seconds: 600
+    enabled: true
+    prewelcome:
+      announce: 有车辆到家，正在为您准备
+      entities:
+        light.aqara_spotlight_t2:
+          brightness_pct: 60
+          state: 'on'
+      scene: ''
+    unconfirmed:
+      announce: 您的车回来了
+    unknown_plate:
+      announce: 门口有车辆到访
+    window_seconds: 120
+  welcome_llm:
+    base_url: https://ark.cn-beijing.volces.com/api/plan/v3
+    model_name: doubao-seed-2.0-mini
+    api_key: ""
+    _provider: 豆包 agent plan
+  showroom_welcome:
+    enabled: false
+    cameras:
+    - cam_1
+    active_hours:
+    - 8
+    - 21
+    cooldown_seconds: 90
+selected_module:
+  ASR: SenseVoiceASR
+  Intent: function_call
+  LLM: 豆包 agent plan
+  Memory: mem0
+  TTS: Qwen3TTS-0.6B
+  VAD: SileroVAD
+  VLLM: 豆包视觉
+server:
+  auth:
+    allowed_devices:
+    - 11:22:33:44:55:66
+    enabled: false
+  http_port: 8003
+  ip: 0.0.0.0
+  local_ip: 192.168.0.214
+  mqtt_gateway:
+  mqtt_signature_key:
+  port: 9800
+  timezone_offset: 8
+  udp_gateway:
+  vision_explain: http://你的ip或者域名:端口号/mcp/vision/explain
+  websocket: ws://你的ip或者域名:端口号/homebrain/v1/
+stop_tts_notify_voice: config/assets/tts_notify.mp3
+system_aec:
+  capture_enabled: true
+  device_latency_ms:
+    browser: 80
+    default: 80
+  enabled: true
+  max_restart_attempts: 5
+system_duck: false
+system_error_response: 主人，小智现在有点忙，我们稍后再试吧。
+tool_filter:
+  mode: auto
+tts_audio_send_delay: 0
+tts_timeout: 10
+voiceprint:
+  similarity_threshold: 0.45
+  speakers:
+  - owner,主人,这个家的主人，说话尊重温和
+  url:
+voiceprint_gate:
+  bargein_words: []
+  enabled: false
+xiaozhi:
+  audio_params:
+    channels: 1
+    format: opus
+    frame_duration: 60
+    sample_rate: 24000
+  transport: websocket
+  type: hello
+  version: 1

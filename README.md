@@ -106,7 +106,7 @@ ESP32 设备接入与状态监控，固件 OTA 在线升级。
 
 ### 📝 家庭记忆
 
-- 长期记忆（OpenViking）：记得住家人的偏好、习惯、重要事件
+- 长期记忆：记得住家人的偏好、习惯、重要事件
 - 对话历史本地存储（SQLite），隐私不外流
 - 家庭档案与角色设定：每个成员都有自己的"管家印象"
 
@@ -131,7 +131,7 @@ ESP32 设备接入与状态监控，固件 OTA 在线升级。
 - **形象自定义**：支持定制任意角色形象
 - **唤醒词自定义**：叫「你好伊娃」，还是叫「你好贾维斯」？多个唤醒词、专属昵称都行
 - **声音自定义**：多音色自由搭配，让管家用你最喜欢的声音说话
-- 常驻屏幕：口型同步、实时对话；LED 大屏联动（水族馆待机、唤醒自动接管）
+- 常驻屏幕：口型同步、实时对话，随时待命
 - 更进阶的专属声音克隆、家人形象定制【正在优化】
 
 > 把它做成你的「贾维斯」，或者做成家里的一份子——让 AI 管家真正属于你的家。
@@ -157,7 +157,7 @@ homAI 的语音终端运行在 **ESP32 系列设备**上（如 ESP32-S3 等）�
 
 - 已有 ESP32 设备？接入 homAI，它立刻变成家里的 AI 语音管家
 - 想玩 Muse？也可以把 Muse 玩偶接入 homAI，让家里多一个能聊天的伙伴
-- 麦克风阵列、LED 大屏、健康设备……更多硬件持续接入中
+- 麦克风阵列、健康设备……更多硬件持续接入中
 
 > ESP32 只是入口之一——网页语音终端（以及未来的手机端）同样能召唤你的管家。
 
@@ -190,9 +190,15 @@ homAI 的语音终端运行在 **ESP32 系列设备**上（如 ESP32-S3 等）�
 git clone https://github.com/lewistouchtech/homAI.git && cd homAI
 python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
+
+# 生成自己的配置文件（模板已把所有密钥留空，填自己的 key）
+cp data/.config.yaml.example data/.config.yaml
+
 bash restart.sh                  # 启动（日志：tmp/server.log）
 curl http://localhost:8003/api/health
 ```
+
+> 密钥都写在 `data/.config.yaml`（该文件不入库）。用哪个模型、ASR、TTS 都在里面切换。
 
 启动后浏览器访问：
 
@@ -200,7 +206,6 @@ curl http://localhost:8003/api/health
 | --- | --- |
 | 家庭控制台 | http://localhost:8003/console |
 | 语音终端 | http://localhost:8003/terminal |
-| LED 大屏 | http://localhost:8003/led |
 
 ## ⚙️ 配置（重要）
 
@@ -246,8 +251,8 @@ curl http://localhost:8003/api/health
 
 ## 🗺 路线图
 
-- ✅ **已上线**：双语音终端（网页 / ESP32）、数字人管家、50+ 技能、LED 大屏
-- 🔄 **进行中**：健康硬件生态（体脂秤 / 血氧 / 血压计）、远程访问（手机端）
+- ✅ **已上线**：双语音终端（网页 / ESP32）、数字人管家、50+ 技能、健康硬件生态（体脂秤 / 血氧 / 血压计）
+- 🔄 **进行中**：远程访问（手机端）
 - ☁️ **规划中**：云服务可选包（远程访问 / 健康告警 / 模型云网关 / 云备份）
 - 🎭 **未来**：专属声音克隆、家人形象定制、数字人云渲染、更多商用方案
 
@@ -255,7 +260,7 @@ curl http://localhost:8003/api/health
 
 ## 📌 说明
 
-- 本仓库是 homAI 的**服务端主程序（社区版）**，运行于 macOS（开发机 MacBook Pro / 生产机 Mac Mini）
+- 本仓库是 homAI 的**服务端主程序（社区版）**，运行于 macOS / Linux
 - 商业版与完整功能（含商业模块）另行交付，详见上节授权说明
 - 仓库基线于 2026-09-21 完成稳定性冻结（对话打断生命周期、工具签名、启动端口加固）
 - GitHub 历史从该基线开始导入；更早历史含大体积模型文件，未上传
@@ -278,10 +283,9 @@ homAI 建立在许多开源项目之上，主要包括：
 - [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx)（Apache-2.0）—— 本地语音识别
 - [FunASR](https://github.com/modelscope/FunASR)（MIT）—— 语音工具包
 - [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk)（MIT）—— MCP 协议支持
-- [mem0](https://github.com/mem0ai/mem0)（Apache-2.0）—— 长期记忆引擎
 
 **完整的第三方项目与许可清单见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。**
 
 > 「homAI」名称、标识与形象素材为项目所有，代码协议（AGPL-3.0）不包含商标授权。
 > 社区版包含对话引擎、语音链路、基础插件、短期记忆与 MCP 通道；
-> 长期记忆（mem0）、健康守护、数字人全家桶、设备管理、LED 大屏与云服务为商业版能力。
+> 长期记忆、健康守护、数字人全家桶、设备管理、LED 大屏与云服务为商业版能力。

@@ -3,7 +3,7 @@
 """数字人大脑代理端点（阶段2，2026-09-18）
 - POST /v1/chat/completions：OpenAI 兼容流式端点，内部调用当前 selected LLM
   （websocket_server 的 _llm 实例，即 ESP32/看板同一大脑）
-- "一次流式生成，两处消费"：完整回复同时写入 OpenViking 记忆
+- "一次流式生成，两处消费"：完整回复同时写入 Ltm 记忆
 - 断连=打断：客户端断开即停止生成，半截回复不再入库（对齐方案第 2.3 节）
 """
 import asyncio
@@ -45,7 +45,7 @@ def _sse_chunk(chat_id: str, model: str, token: str) -> str:
 
 
 async def _save_to_memory(memory, user_text: str, assistant_text: str, session_id: str):
-    """同一份流的第二处消费：写 OpenViking 记忆（provider 兼容 dict）"""
+    """同一份流的第二处消费：写 Ltm 记忆（provider 兼容 dict）"""
     if memory is None or not assistant_text.strip():
         return
     try:
@@ -250,7 +250,7 @@ async def _enhance_dialogue_context(ws, memory, dialogue: list, last_user: str) 
             f"当前时间：{current_time}\n今天日期：{today_date} ({today_weekday})\n今天农历：{lunar_date}"
         )
 
-    # ③ 长期记忆（OpenViking）——[P0-1 2026-09-22] 智能触发 + 100ms 快速路径 + 跨轮复用
+    # ③ 长期记忆（Ltm）——[P0-1 2026-09-22] 智能触发 + 100ms 快速路径 + 跨轮复用
     #    （原实现无条件 wait_for 2.0s，每轮白等最多 2 秒；现对齐星球语义：最多等 100ms，
     #     超时本轮不注入，后台查询跑完留缓存供下轮同句复用，详见 _query_memory_fast）
     if memory is not None and last_user:

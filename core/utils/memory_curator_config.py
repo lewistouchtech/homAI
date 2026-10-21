@@ -1,11 +1,11 @@
 """记忆整理模型的配置（2026-10-13，主人要求后台可配 + 同步到服务器信息）。
 
 「记忆整理」= 主人说「把这段记下来」时，用一个**强模型**把前面几轮对话整理成一条
-完整的记忆。它跟 mem0 的逐句抽取（本地 8B，次数多、要快）是两件事：次数少、要求高，
+完整的记忆。它跟 ltm 的逐句抽取（本地 8B，次数多、要快）是两件事：次数少、要求高，
 所以单独一个配置项。两个版本共用同一套代码，只改配置：
   - 本地版：mode=local，指向本机常驻的强模型（默认 oMLX 上的 Qwen3.6-35B）
   - 云端版：mode=main，沿用主对话大模型（云端）
-  - 兜底  ：mode=extractor，用 mem0 的抽取模型（本地 8B）；任何模式失败也都退回它
+  - 兜底  ：mode=extractor，用 ltm 的抽取模型（本地 8B）；任何模式失败也都退回它
 
 配置存 data/.memory_curator.json（机器私有，不入库；热生效，无需重启）。
 """
@@ -22,7 +22,7 @@ MODES = ("local", "main", "extractor")
 MODE_LABELS = {
     "local": "本地强模型",
     "main": "沿用主对话大模型",
-    "extractor": "mem0 抽取模型（本地 8B）",
+    "extractor": "ltm 抽取模型（本地 8B）",
 }
 DEFAULT_LOCAL_MODEL = "Qwen3.6-35B-A3B-Fable-5-Distill-4bit-DWQ-Vision-MLX"
 
@@ -51,8 +51,8 @@ def save_raw(data: Dict[str, Any], path: Optional[Path] = None) -> None:
         pass
 
 
-def _mem0_cfg(config: Dict[str, Any]) -> Dict[str, Any]:
-    return ((config.get("Memory") or {}).get("mem0") or {}) if config else {}
+def _ltm_cfg(config: Dict[str, Any]) -> Dict[str, Any]:
+    return ((config.get("Memory") or {}).get("ltm") or {}) if config else {}
 
 
 def _expand(v: Any) -> str:
@@ -66,7 +66,7 @@ def _expand(v: Any) -> str:
 
 
 def extractor_endpoint(config: Dict[str, Any]) -> Dict[str, str]:
-    m = _mem0_cfg(config)
+    m = _ltm_cfg(config)
     return {
         "base_url": _expand(m.get("llm_base_url") or m.get("base_url")),
         "api_key": _expand(m.get("llm_api_key") or m.get("api_key")),
@@ -95,9 +95,9 @@ def resolve(config: Dict[str, Any], raw: Optional[Dict[str, Any]] = None) -> Dic
         label = f"{ep.get('model') or '未配置'}（沿用主对话：{ep.get('name') or '未选择'}）"
     elif mode == "extractor":
         ep = dict(fallback)
-        label = f"{ep.get('model') or '未配置'}（mem0 抽取模型）"
+        label = f"{ep.get('model') or '未配置'}（ltm 抽取模型）"
     else:
-        m = _mem0_cfg(config)
+        m = _ltm_cfg(config)
         ep = {
             "base_url": _expand(raw.get("base_url")) or _expand(m.get("embed_base_url") or m.get("base_url")),
             "api_key": _expand(raw.get("api_key")) or _expand(m.get("api_key")),

@@ -24,7 +24,7 @@ logger = setup_logging()
 # 需要「每轮对话后实时保存」的向量记忆后端白名单。
 # 只有这两个值得逐轮调用：它们把事实喂给 LLM 抽取，越早提交越不容易丢。
 # 其余 provider（mem_local_short 自管会话）逐轮调只会产生噪音，故不在名单内。
-_REALTIME_MEMORY_TYPES = ("openviking", "mem0")
+_REALTIME_MEMORY_TYPES = ("LTM", "ltm")
 
 TOOL_CALLING_RULES = """
 <tool_calling>
@@ -447,7 +447,7 @@ async def _query_memory_guarded(memory, query: str, cache_key: str,
     try:
         text = await memory.query_memory(query, scope=scope, speaker=speaker)
     except TypeError:
-        # 兼容还没支持 scope/speaker 关键字的 provider（openviking 等）
+        # 兼容还没支持 scope/speaker 关键字的 provider（LTM 等）
         text = await memory.query_memory(query)
     except Exception as e:
         logger.bind(tag=TAG).warning(f"记忆查询失败: {e}")
@@ -510,7 +510,7 @@ def chat(conn, query, depth=0):
 
     # L0.5 记忆整理（2026-10-13 主人定的方案）：「把这段对话记下来」+ 随后的确认。
     # 旁路钩子：只有命中请求/正在等确认才接管；其余一律原样放行，行为同接入前。
-    # 仅 mem0 后端支持（有 store_episode）；任何异常都降级走原链路。
+    # 仅 ltm 后端支持（有 store_episode）；任何异常都降级走原链路。
     if depth == 0 and query is not None and hasattr(getattr(conn, "memory", None), "store_episode"):
         try:
             from core.utils.memory_curator import handle_turn as _curator_turn
@@ -722,7 +722,7 @@ def chat(conn, query, depth=0):
                         conn.logger.bind(tag=TAG).warning(f"[短期续接] 失败，保持原样: {_e!r}")
 
     from core.utils.foreground_activity import touch as _fg_touch
-    _fg_touch()  # 前台有活动：mem0 抽取等后台重负载错开
+    _fg_touch()  # 前台有活动：ltm 抽取等后台重负载错开
     if depth == 0 and query is not None:
         try:
             _n = _shrink_old_tool_results(conn.dialogue.dialogue)
@@ -1354,10 +1354,10 @@ def chat(conn, query, depth=0):
         if user_text:
             # 向量记忆后端的实时保存（每轮对话后，避免只在关闭连接时才保存导致丢失）
             #
-            # ⚠️ 2026-10-06 修复：原来这里写死 `if memory_type == "openviking"`。
-            # 切到 mem0 后实时保存被静默关掉——只有 WebSocket 断开时
+            # ⚠️ 2026-10-06 修复：原来这里写死 `if memory_type == "LTM"`。
+            # 切到 ltm 后实时保存被静默关掉——只有 WebSocket 断开时
             # （connection.py 的 _save_and_close）才会写记忆，而页面一直开着
-            # 就等于永远不写。实测表现：说了 6 句，mem0 一条日志都没有。
+            # 就等于永远不写。实测表现：说了 6 句，ltm 一条日志都没有。
             # 两个 provider 都实现了同一套 async save_memory(msgs, session_id) 契约，
             # 这里按白名单放行；不写成「所有 provider 都试」——
             # 白名单外的 provider 逐轮调用只会刷无意义的日志。

@@ -1,9 +1,9 @@
 """
-OpenViking 会话持久化工具
+Ltm 会话持久化工具
 
 管理 device_id -> session_id 的映射，支持 WebSocket 重连时恢复会话。
 
-存储格式：data/.openviking_sessions.json
+存储格式：data/.LTM_sessions.json
 {
   "device_id_1": {
     "session_id": "xxx",
@@ -24,7 +24,7 @@ TAG = __name__
 logger = setup_logging()
 
 # 会话映射文件路径
-SESSIONS_FILE = Path("data/.openviking_sessions.json")
+SESSIONS_FILE = Path("data/.LTM_sessions.json")
 
 
 def _load_sessions() -> Dict:
@@ -53,7 +53,7 @@ def _save_sessions(sessions: Dict) -> bool:
 
 def get_session_id(device_id: str) -> Optional[str]:
     """
-    获取设备的 OpenViking session_id
+    获取设备的 Ltm session_id
 
     Args:
         device_id: 设备 ID（如 ESP32 设备 ID）
@@ -70,11 +70,11 @@ def get_session_id(device_id: str) -> Optional[str]:
 
 def save_session_id(device_id: str, session_id: str) -> bool:
     """
-    保存设备的 OpenViking session_id
+    保存设备的 Ltm session_id
 
     Args:
         device_id: 设备 ID
-        session_id: OpenViking 会话 ID
+        session_id: Ltm 会话 ID
 
     Returns:
         是否保存成功

@@ -4,7 +4,7 @@
 httpx/openai 会读系统代理设置，且**不看系统的「绕过列表」**；只有环境变量 NO_PROXY
 才能让 localhost 直连。开发机 shell 里有 NO_PROXY，但 launchd 拉起的服务没有 →
 所有对 localhost 的 openai/httpx 请求被送进代理，代理回 502，表现为
-「mem0 抽取/检索 502」「模型明明在线却一直失败」。
+「ltm 抽取/检索 502」「模型明明在线却一直失败」。
 """
 import os
 

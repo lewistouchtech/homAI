@@ -102,18 +102,18 @@ async def handle_save_weather_config(request) -> web.Response:
         result = save_weather_config(config)
 
         # 地点权威源是后台天气设置：保存后让身份缓存失效，并异步把地点同步到
-        # OpenViking 的记忆档案 profile.md（主人 2026-09-17 指示）
+        # Ltm 的记忆档案 profile.md（主人 2026-09-17 指示）
         if result.get("success"):
             try:
                 from core.utils.assistant_identity import invalidate_cache
-                from core.utils.openviking_sync import sync_assistant_identity_to_openviking
+                from core.utils.ltm_sync import sync_assistant_identity_to_LTM
 
                 invalidate_cache()
                 threading.Thread(
-                    target=sync_assistant_identity_to_openviking, daemon=True
+                    target=sync_assistant_identity_to_LTM, daemon=True
                 ).start()
             except Exception as sync_err:
-                logger.warning(f"同步地点到 OpenViking 失败（不影响保存）: {sync_err}")
+                logger.warning(f"同步地点到 Ltm 失败（不影响保存）: {sync_err}")
 
         return web.json_response(result)
         

@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-10-21 22:49:46",
+  "generated_at": "2026-10-22 00:11:55",
   "source": "/Users/lewisli/AI 人工智能/projects/homebrain/server/homebrain-server",
-  "file_count": 368,
-  "total_bytes": 3922322,
+  "file_count": 369,
+  "total_bytes": 3981090,
   "files": [
     {
       "path": "core/.DS_Store",
@@ -36,8 +36,8 @@
     },
     {
       "path": "core/api/center_window_api.py",
-      "size": 16602,
-      "sha256": "934f41b9b4ff"
+      "size": 16607,
+      "sha256": "a5b17efef351"
     },
     {
       "path": "core/api/config_api.py",
@@ -76,8 +76,8 @@
     },
     {
       "path": "core/api/email_api.py",
-      "size": 8606,
-      "sha256": "61dea5d1383c"
+      "size": 12377,
+      "sha256": "2c273924cb1b"
     },
     {
       "path": "core/api/embed_api.py",
@@ -155,6 +155,11 @@
       "sha256": "75ac8e9ab2f9"
     },
     {
+      "path": "core/api/music_config_api.py",
+      "size": 14745,
+      "sha256": "7c6b4cc5bc0d"
+    },
+    {
       "path": "core/api/news_api.py",
       "size": 18250,
       "sha256": "ce900eecec0d"
@@ -173,11 +178,6 @@
       "path": "core/api/onenet_health_api.py",
       "size": 53265,
       "sha256": "9a57a4faa762"
-    },
-    {
-      "path": "core/api/openviking_api.py",
-      "size": 11503,
-      "sha256": "ded9e1a50431"
     },
     {
       "path": "core/api/ota_handler.py",
@@ -1141,8 +1141,8 @@
     },
     {
       "path": "core/utils/mailapp_bridge.py",
-      "size": 8679,
-      "sha256": "c05a4ac3a772"
+      "size": 8657,
+      "sha256": "5f6ef293cb67"
     },
     {
       "path": "core/utils/member_profile.py",
@@ -1218,11 +1218,6 @@
       "path": "core/utils/observation.py",
       "size": 8508,
       "sha256": "c83f87c97cec"
-    },
-    {
-      "path": "core/utils/openviking_sync.py",
-      "size": 11317,
-      "sha256": "e7991cca5a83"
     },
     {
       "path": "core/utils/opus_encoder_utils.py",
@@ -1695,6 +1690,11 @@
       "sha256": "57dd7dee439a"
     },
     {
+      "path": "config.yaml",
+      "size": 27269,
+      "sha256": "1fbecdcfb610"
+    },
+    {
       "path": "core/providers/tools/mcp_endpoint/__init__.py",
       "size": 569,
       "sha256": "c2272e5bebd7"
@@ -1843,6 +1843,11 @@
       "path": "plugins_func/functions/show_album.py",
       "size": 2218,
       "sha256": "5fbf5c2c1fe0"
+    },
+    {
+      "path": "plugins_func/functions/show_map.py",
+      "size": 35820,
+      "sha256": "da0707613a9f"
     }
   ]
 }

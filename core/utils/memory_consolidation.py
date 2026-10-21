@@ -1,18 +1,18 @@
 """夜间短期记忆梳理（2026-10-13，主人定的需求）。
 
 做什么：每天凌晨 03:30，把「上次梳理之后」的整段对话（dialogue_history）重新过一遍，
-按 mem0 的现行规则（指令/乱码过滤、说话人归属、敏感门、助手上文消歧）补抽进长期记忆。
+按 ltm 的现行规则（指令/乱码过滤、说话人归属、敏感门、助手上文消歧）补抽进长期记忆。
 
 跟实时抽取的关系：实时抽取是「说一句抽一句」，会因为失败、熔断、过滤窗口而漏；
-夜间梳理是「兜底补漏」。**去重由 mem0 写入链路负责**（`_add_with_dedup`：先用文本相似度
-挡掉已有内容，再让 mem0 拿候选事实去比对库里已有记忆，重复不写、已有事实被更新则 UPDATE），
+夜间梳理是「兜底补漏」。**去重由 ltm 写入链路负责**（`_add_with_dedup`：先用文本相似度
+挡掉已有内容，再让 ltm 拿候选事实去比对库里已有记忆，重复不写、已有事实被更新则 UPDATE），
 所以重跑、与实时抽取重叠都不会产生重复记忆。
 
 可靠性：
 - 用「最后处理的 dialogue_history.id」当游标（data/.memory_consolidation_state.json），
   服务停机几天也不会漏，也不会重复扫已处理的行；首次运行只回看 24 小时，最多回看 3 天。
 - 入队用稳定幂等键（turn=nightly-<行id>），同一行重复入队只会有一条待办。
-- 抽取走 mem0 的落盘待办队列（outbox），失败自动退避重试，不会因为夜里模型暂时不可用而丢。
+- 抽取走 ltm 的落盘待办队列（outbox），失败自动退避重试，不会因为夜里模型暂时不可用而丢。
 - 本模块**不删除任何对话历史**，只读。
 """
 from __future__ import annotations
@@ -216,7 +216,7 @@ async def run_once(provider, *, now: Optional[datetime] = None,
     return report
 
 
-def _mem0_provider_of(ws_server):
+def _ltm_provider_of(ws_server):
     mem = getattr(ws_server, "_memory", None)
     ok = mem is not None and hasattr(mem, "save_memory") and hasattr(mem, "_ensure_outbox")
     return mem if ok else None
@@ -241,9 +241,9 @@ async def consolidation_loop(ws_server, config: Dict[str, Any]) -> None:
     while True:
         try:
             await asyncio.sleep(seconds_until_next_run(datetime.now(), hour, minute))
-            provider = _mem0_provider_of(ws_server)
+            provider = _ltm_provider_of(ws_server)
             if provider is None:
-                logger.bind(tag=TAG).info("当前记忆后端不是 mem0，跳过夜间梳理")
+                logger.bind(tag=TAG).info("当前记忆后端不是 ltm，跳过夜间梳理")
                 continue
             await run_once(provider)
         except asyncio.CancelledError:

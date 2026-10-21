@@ -258,7 +258,7 @@ def persist_trimmed_rounds(
     只写单句、从不填 topic），等于半成品。现在给它真实内容：
     - `topic` = 'rolling_context'（便于日后按类型清理/统计）
     - `content` = 被截断轮次的紧凑文本
-    - `valuable` = 0（这是短期上下文，不是长期事实；长期事实走 mem0）
+    - `valuable` = 0（这是短期上下文，不是长期事实；长期事实走 ltm）
     """
     if not rounds:
         return False

@@ -282,7 +282,7 @@ async def main():
 
     asyncio.create_task(_resume_memory_backlog())
 
-    # 夜间短期记忆梳理：每天 03:30 把当天对话补抽进 mem0（去重由 mem0 写入链路负责）
+    # 夜间短期记忆梳理：每天 03:30 把当天对话补抽进 ltm（去重由 ltm 写入链路负责）
     from core.utils.memory_consolidation import consolidation_loop
     asyncio.create_task(consolidation_loop(ws_server, config))
 

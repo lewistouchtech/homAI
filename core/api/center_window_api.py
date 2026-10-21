@@ -33,7 +33,7 @@ OPENTALKING_BASE = os.environ.get("OPENTALKING_URL", "http://127.0.0.1:8210").rs
 # led_planet = L 型 LED 屏专用「LED 星球」界面（2026-10-03 主人新增第三个中央形象版本）
 #   1920×960 拼接屏专用布局，待机时自动退回水族馆鱼缸界面。
 _VALID_MODES = ("default", "digital_human", "led_planet")
-_LOCAL_MODELS = ("mock", "quicktalk", "wav2lip", "ultralight")   # 本机（Mac MPS）能跑的渲染后端；wav2lip 需权重已下载且服务带 OPENTALKING_WAV2LIP_DEVICE=mps；ultralight 需训练产物 services/ultralight/checkpoint/v1/last.pth
+_LOCAL_MODELS = ("mock", "quicktalk", "ultralight")   # 本机（Mac MPS）能跑的渲染后端；ultralight 需训练产物 services/ultralight/checkpoint/v1/last.pth（2026-10-21 移除 wav2lip：主人实测效果不好，只改嘴无表情动作）
 _DEFAULT_BACKGROUND = "starfield"
 _BUILTIN_NAMES = {"starfield": "星空", "study": "书房", "livingroom": "客厅", "bedroom": "卧室"}
 _IMG_EXTS = (".png", ".jpg", ".jpeg", ".webp")
@@ -177,7 +177,7 @@ def _supports_background(avatar_dir: Path) -> bool:
 
 
 def _is_locally_supported(avatar: dict) -> bool:
-    """本机渲染后端只有 mock / quicktalk；其余（wav2lip、flashhead 等）建会话会失败。"""
+    """本机渲染后端只有 mock / quicktalk / ultralight；其余（flashhead 等）建会话会失败。"""
     if (avatar.get("client_renderer") or {}).get("type"):
         return True
     return str(avatar.get("model_type") or "").lower() in _LOCAL_MODELS

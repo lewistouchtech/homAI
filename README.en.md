@@ -30,8 +30,8 @@
 ## 📺 Videos
 
 <p align="center">
-  <a href="https://youtube.com/shorts/N4M2LavMIhQ" target="_blank">
-    <img src="assets/video/ep001-cover.jpg" alt="Video EP01" width="49%">
+  <a href="https://www.youtube.com/@homAI" target="_blank">
+    <img src="assets/video/ep001-cover.jpg" alt="Video EP01 — English version coming soon" width="49%">
   </a>
   <a href="https://youtu.be/fkcnt8pYA0M" target="_blank">
     <img src="assets/video/ep002-cover.jpg" alt="Video EP02" width="49%">
@@ -39,17 +39,12 @@
 </p>
 
 <p align="center">
-  <b>EP01 · I put AI inside my home</b> &nbsp;·&nbsp; <b>EP02 · AI plays with the kids</b>
+  <b>EP01 · English version coming soon</b> &nbsp;·&nbsp; <b>EP02 · AI plays with the kids</b>
 </p>
 
 <p align="center">
-  <a href="https://youtube.com/shorts/N4M2LavMIhQ">▶ YouTube EP01</a> ·
   <a href="https://youtu.be/fkcnt8pYA0M">▶ YouTube EP02 (English promo)</a> ·
-  <a href="https://youtube.com/shorts/RcdYNQkkpf4">▶ EP02 (alt)</a> ·
-  <a href="https://xhslink.cn/o/6URn4TVcKGv">▶ Xiaohongshu EP01</a> ·
-  <a href="https://xhslink.cn/o/7Br4KrSKoZm">▶ Xiaohongshu EP02</a> ·
-  <a href="https://weixin.qq.com/sph/AsGolp4j4T">▶ WeChat EP01</a> ·
-  <a href="https://weixin.qq.com/sph/ArtKbijwvd">▶ WeChat EP02</a>
+  <a href="https://youtube.com/shorts/RcdYNQkkpf4">▶ EP02 (alt cut)</a>
 </p>
 
 > 📢 Also on Douyin — search <b>homAI</b>.
@@ -106,7 +101,7 @@ ESP32 device onboarding, status monitoring and firmware OTA upgrades.
 
 ### 📝 Family Memory
 
-- Long-term memory (OpenViking): preferences, habits and important events
+- Long-term memory: preferences, habits and important events
 - Conversation history stored locally in SQLite — nothing leaves the house
 - Family profiles and role settings: every member gets their own "butler persona"
 
@@ -131,7 +126,7 @@ The digital human isn't a fixed character — it's **fully customizable**:
 - **Appearance**: build any character you want
 - **Wake word**: "Hey Eva", "Hey Jarvis"? Multiple wake words and nicknames are fine
 - **Voice**: pick from multiple voice styles so it sounds like someone you like
-- Always on screen: lip sync, real-time dialogue, LED wall integration (aquarium standby, takeover on wake)
+- Always on screen: lip sync and real-time dialogue
 - Voice cloning and family member avatars【in progress】
 
 > Make it your "Jarvis" — or make it part of the family.
@@ -157,7 +152,7 @@ Same direction as ours: **give every household their own AI companion**.
 
 - Already own an ESP32 device? Plug it into homAI and it becomes a home AI butler instantly
 - Playing with Muse? You can connect a Muse toy to homAI as another chatty companion
-- Microphone arrays, LED walls, health devices — more hardware on the way
+- Microphone arrays, health devices — more hardware on the way
 
 > ESP32 is just one entry point — the web voice terminal (and a future mobile app) can summon your butler too.
 
@@ -190,9 +185,15 @@ Every stage of the conversation pipeline can run **locally or in the cloud** —
 git clone https://github.com/lewistouchtech/homAI.git && cd homAI
 python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
+
+# create your own config (the template ships with every key left blank)
+cp data/.config.yaml.example data/.config.yaml
+
 bash restart.sh                  # start (logs: tmp/server.log)
 curl http://localhost:8003/api/health
 ```
+
+> API keys live in `data/.config.yaml` (never committed). Switch model / ASR / TTS there.
 
 Then open in your browser:
 
@@ -200,7 +201,6 @@ Then open in your browser:
 | --- | --- |
 | Home console | http://localhost:8003/console |
 | Voice terminal | http://localhost:8003/terminal |
-| LED wall | http://localhost:8003/led |
 
 ## ⚙️ Configuration (important)
 
@@ -246,8 +246,8 @@ advanced modules (health guardian, full memory, digital-human suite…), priorit
 
 ## 🗺 Roadmap
 
-- ✅ **Shipped**: dual voice terminals (web / ESP32), digital-human butler, 50+ skills, LED wall
-- 🔄 **In progress**: health hardware ecosystem (scales / oximeters / BP monitors), remote access (mobile)
+- ✅ **Shipped**: dual voice terminals (web / ESP32), digital-human butler, 50+ skills, health hardware ecosystem (scales / oximeters / blood-pressure monitors)
+- 🔄 **In progress**: remote access (mobile)
 - ☁️ **Planned**: optional cloud pack (remote access / health alerts / model gateway / cloud backup)
 - 🎭 **Future**: voice cloning, family avatars, cloud-rendered digital humans, more commercial solutions
 
@@ -255,7 +255,7 @@ advanced modules (health guardian, full memory, digital-human suite…), priorit
 
 ## 📌 Notes
 
-- This repository is the **server core of homAI (community edition)**, running on macOS (dev: MacBook Pro / prod: Mac Mini)
+- This repository is the **server core of homAI (community edition)**, running on macOS / Linux
 - The commercial edition with full modules is delivered separately — see the licensing section above
 - The repository baseline was frozen for stability on 2026-09-21 (dialogue interruption lifecycle, tool signatures, port hardening)
 - GitHub history starts from that baseline; earlier history contained large model files and was not uploaded
@@ -278,12 +278,11 @@ homAI builds on many open-source projects, including:
 - [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx) (Apache-2.0) — offline speech recognition
 - [FunASR](https://github.com/modelscope/FunASR) (MIT) — speech toolkit
 - [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk) (MIT) — MCP support
-- [mem0](https://github.com/mem0ai/mem0) (Apache-2.0) — long-term memory engine
 
 **See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the complete list of projects and licenses.**
 
 > The "homAI" name, logo and avatar artwork are project assets; the code license (AGPL-3.0)
 > does not grant trademark rights. The community edition includes the dialogue engine, voice
-> pipeline, basic plugins, short-term memory and the MCP channel; long-term memory (mem0),
+> pipeline, basic plugins, short-term memory and the MCP channel; long-term memory,
 > health guardian, the full digital-human suite, device management, LED wall and cloud
 > services are commercial features.

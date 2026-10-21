@@ -5,14 +5,14 @@
   任何一个 provider 的类名/文件名不匹配时，`core/utils/memory.py` 连 import 都失败，
   整个记忆子系统一起崩、服务起不来。
   现在坏掉的那一个只在被选中时报错，其余 provider 照常可用。
-- **类名双向兜底**：优先用小驼峰约定名（OpenVikingProvider 等），找不到再退到
+- **类名双向兜底**：优先用小驼峰约定名（Ltmprovider 等），找不到再退到
   上游 xiaozhi 惯例的 `MemoryProvider`，反向亦然 —— 避免并发改名造成互断。
 - **构造函数兼容**：先试 (config, summary_memory)，TypeError 再退到 (config)。
 
-历史（2026-09-17）：曾移除 mem0 / mem0ai / mempalace 三个提供者及其注册项
-（长期记忆统一为 OpenViking，见 docs/plans/2026-09-15_OpenViking记忆系统迁移记录.md）。
-⚠️ 该历史已于后续反转，勿据此认为 mem0 不存在：2026-10-06 重新接回 mem0（OpenViking
-检索恒 0，上游 issue #4482），2026-10-13 记忆系统大修后 mem0 为唯一主用长期记忆后端
+历史（2026-09-17）：曾移除 ltm / ltm_ai / ltm_prev 三个提供者及其注册项
+（长期记忆统一为 Ltm，见 docs/plans/2026-09-15_Ltm记忆系统迁移记录.md）。
+⚠️ 该历史已于后续反转，勿据此认为 ltm 不存在：2026-10-06 重新接回 ltm（Ltm
+检索恒 0，上游 issue #4482），2026-10-13 记忆系统大修后 ltm 为唯一主用长期记忆后端
 （scope 模型 family/m:<id>、outbox 写入、中文抽取提示词，见
 docs/plans/2026-10-13_记忆系统调整方案.md）。
 """
@@ -31,15 +31,15 @@ _REGISTRY: Dict[str, Tuple[str, Tuple[str, ...], str]] = {
         ("MemLocalShortProvider", "MemoryProvider"),
         "本地短期记忆",
     ),
-    "openviking": (
-        "core.providers.memory.openviking.provider",
-        ("OpenVikingProvider", "MemoryProvider"),
-        "OpenViking 长期记忆",
+    "LTM": (
+        "core.providers.memory.LTM.provider",
+        ("Ltmprovider", "MemoryProvider"),
+        "Ltm 长期记忆",
     ),
-    "mem0": (
-        "core.providers.memory.mem0.provider",
-        ("Mem0Provider", "MemoryProvider"),
-        "mem0 长期记忆",
+    "ltm": (
+        "core.providers.memory.ltm.provider",
+        ("LtmProvider", "MemoryProvider"),
+        "ltm 长期记忆",
     ),
 }
 

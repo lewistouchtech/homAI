@@ -1,65 +1,90 @@
-"""
-批量设备控制插件（core/home 引擎适配层，2026-10-13 重构）
+# -*- coding: utf-8 -*-
+"""批量设备控制插件（社区版）
 
-一次调用控制多个设备。和 ha_control 的 commands 同一套寻址：只写中文设备名/房间/类型，
-不要写 entity_id（大模型看不到真实编号，写了只会编错）。老调用方仍可传 entity_id，照样认。
+一次调用控制多个 Home Assistant 设备。写法与 `ha_control` 一致：
+每条指令写明设备实体 ID 与操作。
 
-原来的问题：成功与否按「ha_control 有没有返回文本」判断，设备离线也算成功（「成功控制 2/2」）。
-现在直接用引擎的真实结果：离线/没接入/没确认到位都如实说。
+社区版实现直接走标准 HA REST API，**不依赖商业版的语义寻址引擎**。
+
+> 想用「一句话控制一整间屋子的设备」这类语义寻址能力，请使用商业版。
 """
 from typing import Any, Dict, List
 
-print("[批量控制] 模块已加载: batch_device_control")
-from plugins_func.register import ToolType, Action, ActionResponse, register_function
-from plugins_func.functions.ha_control import ha_control_func
-from core.home import engine
+from plugins_func.functions.ha_control import (
+    HEADERS,
+    HASS_ACCESS_TOKEN,
+    HASS_BASE_URL,
+    _HTTP_TIMEOUT,
+    _friendly,
+    _not_configured,
+    _resolve_action,
+    _short,
+    ha_call_service,
+)
 
-_ITEMS = ha_control_func.description["function"]["parameters"]["properties"]["commands"]["items"]
-
-BATCH_DEVICE_CONTROL_DESC = {
+BATCH_CONTROL_FUNC_DESC = {
     "type": "function",
     "function": {
         "name": "batch_device_control",
         "description": (
-            "批量控制智能家居设备，一次调用多个设备。写法同 ha_control 的 commands："
-            "只写中文设备名、房间、类型，不要写 entity_id。"
-            "按心情/氛围组合场景请用 run_ai_scene 的 mood，不要用本工具。"
+            "批量控制智能家居设备，一次调用多个设备。"
+            "写法同 ha_control 的 commands：每条给 entity_id 和 action。"
         ),
         "parameters": {
             "type": "object",
             "properties": {
-                "operations": {
+                "commands": {
                     "type": "array",
-                    "description": "设备操作列表，每项一个动作。",
-                    "items": _ITEMS,
-                }
+                    "description": "要批量执行的操作列表",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "entity_id": {"type": "string", "description": "设备实体 ID，如 light.living_room"},
+                            "action": {"type": "string", "description": "操作：开 / 关 / 播放 / 停止"},
+                            "params": {"type": "object", "description": "额外参数"},
+                        },
+                        "required": ["entity_id", "action"],
+                    },
+                },
             },
-            "required": ["operations"],
+            "required": ["commands"],
         },
     },
 }
 
 
-def _normalize(op: Dict[str, Any]) -> Dict[str, Any]:
-    """兼容老字段：on/off、brightness(0-255)、color_temp(K)、position"""
-    op = dict(op or {})
-    act = str(op.get("action") or "turn_on").lower()
-    if act == "turn_on" and op.get("brightness") is not None and op.get("value") is None:
-        op["action"], op["value"] = "set_brightness", round(float(op.pop("brightness")) / 255 * 100)
-    elif act == "turn_on" and op.get("color_temp") is not None and op.get("value") is None:
-        op["action"], op["value"] = "set_color_temp", op.pop("color_temp")
-    elif act == "turn_on" and op.get("position") is not None and op.get("value") is None:
-        op["action"], op["value"] = "set_position", op.pop("position")
-    return op
+async def batch_device_control_async(commands: List[Dict[str, Any]]) -> str:
+    """批量执行设备操作，返回人话播报文本"""
+    if not commands:
+        return "没有要执行的设备操作"
+    tip = _not_configured()
+    if tip:
+        return tip
+
+    done: List[str] = []
+    failed: List[str] = []
+    for cmd in commands:
+        eid = str(cmd.get("entity_id") or "").strip()
+        action = str(cmd.get("action") or "").strip()
+        params = cmd.get("params") or {}
+        if not eid:
+            failed.append("有个设备没说是哪个")
+            continue
+        domain = eid.split(".")[0] if "." in eid else "switch"
+        label = _friendly(eid)
+        svc_domain, svc = _resolve_action(domain, action)
+        res = await ha_call_service(svc_domain, svc, {"entity_id": eid, **params})
+        if res.get("success"):
+            done.append(f"{label}已{'打开' if svc.endswith('turn_on') else '调整'}")
+        else:
+            failed.append(f"{label}操作失败")
+
+    parts = []
+    if done:
+        parts.append("，".join(done))
+    if failed:
+        parts.append("；".join(failed) + "失败了")
+    return _short("。".join(parts) if parts else "没有执行任何操作")
 
 
-@register_function("batch_device_control", BATCH_DEVICE_CONTROL_DESC, ToolType.SYSTEM_CTL)
-async def batch_device_control(conn, operations: List[Dict]) -> ActionResponse:
-    """批量控制：整批交给引擎，按真实结果播报"""
-    try:
-        if not operations:
-            return ActionResponse(Action.REQLLM, response="未提供设备操作列表")
-        res = await engine.run(conn, commands=[_normalize(o) for o in operations])
-        return ActionResponse(Action.RESPONSE, response=res.spoken[:300])
-    except Exception as e:
-        return ActionResponse(Action.REQLLM, response=f"批量控制失败: {e}")
+batch_device_control_func = BATCH_CONTROL_FUNC_DESC

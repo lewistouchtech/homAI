@@ -22,8 +22,8 @@ ruamel.yaml==0.18.16
 loguru==0.7.3
 requests==2.32.5
 cozepy==0.20.0
-mem0ai==1.0.0
-powermem>=0.3.1
+ltm_ai==1.0.0
+ltm_store>=0.3.1
 bs4==0.0.2
 modelscope==1.32.0
 # datasets 必须锁 3.x：modelscope 1.32.0 从 datasets.load 导入公共名 ALL_ALLOWED_EXTENSIONS，

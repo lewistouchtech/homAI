@@ -43,7 +43,7 @@ Copyright (c) 2025 Project Contributors
 
 | 项目 | 协议 | 用途 |
 |---|---|---|
-| [mem0](https://github.com/mem0ai/mem0) | Apache-2.0 | 长期记忆引擎（**商业版功能**） |
+| [ltm](https://github.com/ltm_ai/ltm) | Apache-2.0 | 长期记忆引擎（**商业版功能**） |
 | [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk) | MIT | MCP 协议支持（Anthropic） |
 | [CozePy](https://github.com/chyroc/cozepy) | MIT | 扣子（Coze）接入 |
 | [DashScope](https://github.com/QwenLM/Qwen3-TTS) | Apache-2.0 | 阿里云百炼 / 通义千问 |
@@ -113,7 +113,7 @@ Copyright (c) 2025 Project Contributors
 
 - **不 fork 不改协议**：homAI 保留上游 MIT 声明
 - **不隐藏依赖**：所有直接依赖都列在 `requirements.txt`
-- **不捆绑商业组件**：需要商业授权的能力（mem0 长期记忆、健康监测硬件等）不在社区版内
+- **不捆绑商业组件**：需要商业授权的能力（ltm 长期记忆、健康监测硬件等）不在社区版内
 - **商标独立**：「homAI」名称与形象素材为项目所有，代码协议不包含商标授权
 
 如果你发现本文件遗漏了某个依赖，或某个许可标注有误 —— **请提 issue 告诉我们**，这属于必须修正的问题。

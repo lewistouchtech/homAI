@@ -252,7 +252,7 @@ class ConnectionHandler:
         ③ 整段历史一次性提交，很容易撞 LM Studio 的 2048 token 槽位上限。
 
         现在改成只调 provider 的 `flush_now()`：把**已经入队**的待抽取任务抽完
-        （mem0 走落盘 outbox，msg_id 幂等），不重新提交历史。
+        （ltm 走落盘 outbox，msg_id 幂等），不重新提交历史。
         即使这里超时/失败，任务仍在队列里，下次连接或重启后会自动继续。
         """
         try:
@@ -264,10 +264,10 @@ class ConnectionHandler:
                         f"连接收尾记忆 flush：{result}"
                     )
                 else:
-                    # 没有 flush_now 的 provider（如 openviking）：
+                    # 没有 flush_now 的 provider（如 LTM）：
                     # **什么都不做**。逐轮实时保存已经在 chat_engine 里做了，
                     # 这里再提交整段历史只会产生重复；
-                    # 也不能调 clear_session()——openviking 的 clear_session 会
+                    # 也不能调 clear_session()——LTM 的 clear_session 会
                     # **删掉服务端会话**，那是销毁数据不是收尾。
                     self.logger.bind(tag=TAG).debug(
                         "该记忆后端无 flush_now，收尾不重复提交历史"

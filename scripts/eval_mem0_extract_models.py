@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""mem0 抽取模型对比：35B 视觉 vs 8B（2026-10-06）
+"""ltm 抽取模型对比：35B 视觉 vs 8B（2026-10-06）
 
 主人的疑问：记忆抽取用 35B 是不是大材小用、能不能换 8B。
 本脚本用同一批中文记忆、同样的题库，实测两个模型的：
   1. 抽取耗时
   2. 抽取质量（检索命中率）
-  3. 记忆改写程度（原文 vs mem0 改写后的文本）
+  3. 记忆改写程度（原文 vs ltm 改写后的文本）
 
 用法：
-    cd server/homebrain-server && ./venv/bin/python scripts/eval_mem0_extract_models.py
+    cd server/homebrain-server && ./venv/bin/python scripts/eval_ltm_extract_models.py
 """
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ from pathlib import Path
 BASE_URL = "http://localhost:8001/v1"
 API_KEY = "omlx-local"
 EMBED_MODEL = "Qwen3-Embedding-0.6B-8bit"
-HOME = Path.home() / ".mem0"
+HOME = Path.home() / ".ltm"
 
 # 候选抽取模型：35B（当前）vs 8B（主人提议）
 CANDIDATES = [
@@ -54,7 +54,7 @@ QUERIES = [
 
 
 def build(llm_model: str, tag: str):
-    from mem0 import Memory
+    from ltm import Memory
     path = str(HOME / f"cmp_{tag}")
     shutil.rmtree(path, ignore_errors=True)
     return Memory.from_config({
@@ -71,7 +71,7 @@ def build(llm_model: str, tag: str):
 def covered(fact: str, text: str) -> bool:
     """判断检索结果是否覆盖了原始事实的关键内容。
 
-    mem0 会改写记忆（去主语、合并句子），故不能用前缀精确匹配，
+    ltm 会改写记忆（去主语、合并句子），故不能用前缀精确匹配，
     改为 2-gram 词块覆盖率。
     """
     grams = [fact[i:i + 2] for i in range(0, len(fact) - 1, 2)]
@@ -127,7 +127,7 @@ def run(tag: str, llm_model: str) -> dict:
 
 
 def main() -> int:
-    print("mem0 抽取模型对比：35B vs 8B")
+    print("ltm 抽取模型对比：35B vs 8B")
     print(f"端点 {BASE_URL}  embedder {EMBED_MODEL}")
     results = []
     for tag, model in CANDIDATES:
@@ -142,9 +142,9 @@ def main() -> int:
         print(f"{r['tag']:<16}{r['extract_sec']:>8.1f}s{r['memories']:>8}"
               f"{r['hits']}/{r['total']:>6}{r['search_ms']:>8}ms")
 
-    Path("/tmp/mem0_model_cmp.json").write_text(
+    Path("/tmp/ltm_model_cmp.json").write_text(
         json.dumps(results, ensure_ascii=False, indent=2), encoding="utf-8")
-    print("\n明细: /tmp/mem0_model_cmp.json")
+    print("\n明细: /tmp/ltm_model_cmp.json")
     return 0
 
 

@@ -4,11 +4,11 @@
   识别请求（规则）→ 取候选对话窗口（硬规则：同设备、相邻间隔≤10分钟、最多20轮）
   → 整理模型一次调用：自己判断这件事从哪一轮开始、写成一条完整的话
     （开头像半截话就再往前扩，最多扩 2 次；**边界由大模型判断，不用 GEV**）
-  → 念给主人确认 → 主人说「对」才写：mem0 长期记忆（带标签）+ 原文归档表
+  → 念给主人确认 → 主人说「对」才写：ltm 长期记忆（带标签）+ 原文归档表
   → 主人说「不对，……」则带着纠正重新整理；说别的事则放弃草稿。
 
 第一步只做三类：fact 事实偏好 / plan 约定计划 / howto 步骤经验。
-整理模型由后台「记忆整理模型」配置决定（见 memory_curator_config）；失败自动退回 mem0 抽取模型。
+整理模型由后台「记忆整理模型」配置决定（见 memory_curator_config）；失败自动退回 ltm 抽取模型。
 """
 from __future__ import annotations
 
@@ -238,7 +238,7 @@ def curate(config: Dict[str, Any], turns: List[Dict[str, Any]], *, request: str,
     result = _call_llm(r, SYSTEM_PROMPT, user_prompt, mode=r["mode"])
     used, fell_back = r["model"], False
     if result is None and r["mode"] != "extractor":
-        logger.bind(tag=TAG).warning("整理模型不可用，退回 mem0 抽取模型")
+        logger.bind(tag=TAG).warning("整理模型不可用，退回 ltm 抽取模型")
         result = _call_llm(r["fallback"], SYSTEM_PROMPT, user_prompt, mode="extractor")
         used, fell_back = r["fallback"].get("model", ""), True
     if result is None:
@@ -283,12 +283,12 @@ CREATE TABLE IF NOT EXISTS memory_episodes (
     device_id TEXT, speaker TEXT, scope TEXT,
     ep_type TEXT, title TEXT, summary TEXT,
     ep_date TEXT, transcript TEXT, source_ids TEXT,
-    mem0_id TEXT, model TEXT
+    ltm_id TEXT, model TEXT
 )"""
 
 
 def archive_episode(draft: Dict[str, Any], *, device_id: str, speaker: Optional[str], scope: str,
-                    mem0_id: Optional[str], db_path: Optional[Path] = None) -> Optional[int]:
+                    ltm_id: Optional[str], db_path: Optional[Path] = None) -> Optional[int]:
     p = Path(db_path) if db_path else _DATA_DIR / "memory_episodes.db"
     conn = None
     try:
@@ -297,10 +297,10 @@ def archive_episode(draft: Dict[str, Any], *, device_id: str, speaker: Optional[
         turns = draft.get("_turns") or []
         cur = conn.execute(
             "INSERT INTO memory_episodes (device_id, speaker, scope, ep_type, title, summary, ep_date,"
-            " transcript, source_ids, mem0_id, model) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+            " transcript, source_ids, ltm_id, model) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
             (device_id, speaker, scope, draft.get("type"), draft.get("title"), draft.get("summary"),
              draft.get("date"), json.dumps(turns, ensure_ascii=False),
-             json.dumps([t.get("id") for t in turns]), mem0_id, draft.get("_model")))
+             json.dumps([t.get("id") for t in turns]), ltm_id, draft.get("_model")))
         conn.commit()
         return cur.lastrowid
     except Exception as e:
@@ -374,7 +374,7 @@ def _commit(conn, draft: Dict[str, Any], speaker: Optional[str]) -> str:
     res = provider.store_episode(str(draft["summary"]).strip(), scope=scope, speaker=speaker, meta=meta)
     status = res.get("status")
     if status == "added":
-        eid = archive_episode(draft, device_id=device_id, speaker=speaker, scope=scope, mem0_id=res.get("id"))
+        eid = archive_episode(draft, device_id=device_id, speaker=speaker, scope=scope, ltm_id=res.get("id"))
         logger.bind(tag=TAG).info(f"情节记忆已保存：类型={draft.get('type')} scope={scope} 归档编号={eid}")
         return f"好的，已经记下了（{TYPE_LABELS.get(draft.get('type'), '')}）。"
     if status == "duplicate":

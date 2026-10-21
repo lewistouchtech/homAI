@@ -145,11 +145,11 @@ def fetch_unread(accounts: list[str] | None = None, per_account_timeout: int = 1
             if not rec:
                 continue
             p = rec.split(SEP)
-            if len(p) < 6:
+            if len(p) < 5:
                 continue
             mails.append({
                 "account": p[0].strip(), "mailbox": p[1].strip(), "sender": p[2].strip(),
-                "subject": p[3].strip(), "date": p[4].strip(), "message_id": p[5].strip(),
+                "subject": p[3].strip(), "message_id": p[4].strip(),
             })
     return mails
 

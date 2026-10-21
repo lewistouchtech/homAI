@@ -149,16 +149,16 @@ class ConfigSyncAPI:
 
             self.logger.info(f"配置已更新，原 prompt {end-start} 行，新 prompt {len(new_block)} 行")
 
-            # 后台人设是唯一权威源：配置写入后异步同步到 OpenViking identity.md / soul.md
+            # 后台人设是唯一权威源：配置写入后异步同步到 Ltm identity.md / soul.md
             try:
                 import threading
-                from core.utils.openviking_sync import sync_assistant_identity_to_openviking
+                from core.utils.ltm_sync import sync_assistant_identity_to_LTM
 
                 threading.Thread(
-                    target=sync_assistant_identity_to_openviking, daemon=True
+                    target=sync_assistant_identity_to_LTM, daemon=True
                 ).start()
             except Exception as _sync_err:
-                self.logger.warning(f"同步人设到 OpenViking 失败（不影响配置保存）: {_sync_err}")
+                self.logger.warning(f"同步人设到 Ltm 失败（不影响配置保存）: {_sync_err}")
 
             return {
                 "success": True,

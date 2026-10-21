@@ -1495,25 +1495,25 @@ async def update_memory_config(request):
         }, status=500)
 
 
-# ==================== 长期记忆（mem0 向量库）列表 / 删除 / 清空（2026-10-13 WP-6 / D6） ====================
+# ==================== 长期记忆（ltm 向量库）列表 / 删除 / 清空（2026-10-13 WP-6 / D6） ====================
 # 背景：此前管理台「记忆管理」卡片调用的是不存在的 /api/memory 假接口，长期记忆
-# （mem0 向量库）没有任何列表/删除入口。D6 裁决：成员私有记忆（m:<id>）只能删自己的，
+# （ltm 向量库）没有任何列表/删除入口。D6 裁决：成员私有记忆（m:<id>）只能删自己的，
 # 家庭共享记忆（family）必须经主人确认（接口层用 confirm_family 显式确认参数兜底）。
 
 _FAMILY_SCOPE = 'family'
 
 
-def _get_running_mem0_provider():
-    """拿正在运行的 mem0 provider 实例（不是新建一个，避免读到不同的库句柄）。
+def _get_running_ltm_provider():
+    """拿正在运行的 ltm provider 实例（不是新建一个，避免读到不同的库句柄）。
 
-    返回 (provider, error_msg)。当前记忆模块不是 mem0 时返回错误说明。
+    返回 (provider, error_msg)。当前记忆模块不是 ltm 时返回错误说明。
     """
     server = get_websocket_server_instance()
     memory = getattr(server, '_memory', None) if server else None
     if memory is None:
         return None, '拿不到运行中的记忆实例（服务未就绪或独立进程）'
     if not hasattr(memory, 'list_memories'):
-        return None, f'当前记忆模块（{type(memory).__name__}）不支持长期记忆列表，仅 mem0 支持'
+        return None, f'当前记忆模块（{type(memory).__name__}）不支持长期记忆列表，仅 ltm 支持'
     return memory, None
 
 
@@ -1575,7 +1575,7 @@ async def trigger_memory_consolidation(request):
     不传 lookback_hours 则按游标续跑（与每天 03:30 的定时任务同一逻辑）。
     """
     try:
-        provider, err = _get_running_mem0_provider()
+        provider, err = _get_running_ltm_provider()
         if provider is None:
             return web.json_response({'success': False, 'message': err})
         try:
@@ -1614,13 +1614,13 @@ async def list_long_term_memories(request):
     返回条目 + 家庭成员清单（供前端「我是谁」下拉做 D6 权限判定）。
     """
     try:
-        provider, err = _get_running_mem0_provider()
+        provider, err = _get_running_ltm_provider()
         if provider is None:
             return web.json_response({'success': False, 'message': err})
         scope_q = (request.query.get('scope') or 'all').strip()
         scope = None if scope_q in ('', 'all') else scope_q
 
-        # mem0 的 get_all 是同步阻塞调用，放线程里跑，别卡住事件循环
+        # ltm 的 get_all 是同步阻塞调用，放线程里跑，别卡住事件循环
         entries = await asyncio.get_event_loop().run_in_executor(
             None, lambda: provider.list_memories(scope=scope)
         )
@@ -1675,7 +1675,7 @@ async def delete_long_term_memory(request):
         if not memory_id:
             return web.json_response({'success': False, 'message': '缺少记忆 id'}, status=400)
 
-        provider, err = _get_running_mem0_provider()
+        provider, err = _get_running_ltm_provider()
         if provider is None:
             return web.json_response({'success': False, 'message': err})
 
@@ -1731,7 +1731,7 @@ async def clear_long_term_memories(request):
         if not confirm:
             return web.json_response({'success': False, 'message': '清空不可逆，必须带 confirm=true'}, status=400)
 
-        provider, err = _get_running_mem0_provider()
+        provider, err = _get_running_ltm_provider()
         if provider is None:
             return web.json_response({'success': False, 'message': err})
 
@@ -1937,7 +1937,7 @@ def register_routes(app):
     app.router.add_get('/api/config/load-all-categories', config_load_all_categories)
     app.router.add_get('/api/config/memory', get_memory_config)
     app.router.add_post('/api/config/update-memory', update_memory_config)  # 更新记忆模块
-    # 长期记忆（mem0 向量库）列表/删除/清空（2026-10-13 WP-6 / D6 权限）
+    # 长期记忆（ltm 向量库）列表/删除/清空（2026-10-13 WP-6 / D6 权限）
     app.router.add_get('/api/config/memory/entries', list_long_term_memories)
     app.router.add_post('/api/config/memory/entries/delete', delete_long_term_memory)
     app.router.add_post('/api/config/memory/entries/clear', clear_long_term_memories)
@@ -2290,7 +2290,7 @@ def _collect_memory_systems(config: dict) -> dict:
       - 服务是否可达
       - **存储是否正常**（provider 初始化 + 已存条数）
       - **抽取是否正常**（provider 能否接受对话并落库的能力自检）
-      - 依赖哪些模型（MEM0 需要 oMLX 提供 LLM + embedding）
+      - 依赖哪些模型（LTM 需要 oMLX 提供 LLM + embedding）
 
     注意：探测用的provider 是独立实例，走懒加载构造，不会污染运行中的记忆实例。
     """
@@ -2300,15 +2300,15 @@ def _collect_memory_systems(config: dict) -> dict:
     selected = (config.get("selected_module", {}) or {}).get("Memory", "")
 
     # ── 每个记忆模块的元信息 ──
-    # 只列主人关心的三个（2026-10-06 原话「我只需要统计 openviking 和Mem0
+    # 只列主人关心的三个（2026-10-06 原话「我只需要统计 LTM 和Ltm
     # 和本地短期记忆的状态。这3 个就可以」）：
-    # powermem / mem_report_only / nomem 已从面板移除。
+    # ltm_store / mem_report_only / nomem 已从面板移除。
     # tier 用来在页面上标出定位（主人 2026-10-06 澄清）：
     #   商用版= 长期记忆主系统，商用环境必须用它
-    #   开源版 = 给开源部署准备的兜底方案（没跑 OpenViking 这类服务时用）
+    #   开源版 = 给开源部署准备的兜底方案（没跑 Ltm 这类服务时用）
     MODULES = [
-        ("openviking", "OpenViking", "向量记忆库，长期记忆的主系统", "商用版"),
-        ("mem0", "MEM0", "本地向量库，不需要外部 API key", "商用版"),
+        ("LTM", "Ltm", "向量记忆库，长期记忆的主系统", "商用版"),
+        ("ltm", "LTM", "本地向量库，不需要外部 API key", "商用版"),
         ("mem_local_short", "本地短期记忆", "LLM 总结存本地文件，不依赖记忆服务", "开源版"),
     ]
 
@@ -2330,27 +2330,27 @@ def _collect_memory_systems(config: dict) -> dict:
             'dependsOn': [],
         }
 
-        # —— OpenViking：走独立服务端口 ——
-        if key == 'openviking':
+        # —— Ltm：走独立服务端口 ——
+        if key == 'LTM':
             port = None
             try:
-                url = (config.get("openviking", {}) or {}).get("server_url", "")
+                url = (config.get("LTM", {}) or {}).get("server_url", "")
                 if url:
                     port = urlparse(url).port
             except Exception:
                 port = None
             entry['servicePort'] = port or 8765
             entry['serviceOnline'] = _probe_port('127.0.0.1', entry['servicePort'])
-            entry['dependsOn'] = [{'name': 'OpenViking 服务', 'port': entry['servicePort'],
+            entry['dependsOn'] = [{'name': 'Ltm 服务', 'port': entry['servicePort'],
                                    'online': entry['serviceOnline']}]
             if entry['inUse']:
                 entry['storageOk'], entry['memoryCount'], entry['detail'] = \
-                    _probe_openviking(cfg_item)
+                    _probe_LTM(cfg_item)
                 entry['extractOk'] = entry['storageOk']
 
-        # —— MEM0：不监听端口，靠外部 OpenAI 兼容端点提供 LLM + embedding ——
+        # —— LTM：不监听端口，靠外部 OpenAI 兼容端点提供 LLM + embedding ——
         # 2026-10-06 起两者分端点：抽取走 LM Studio（记忆专用），embedding 留 oMLX。
-        elif key == 'mem0':
+        elif key == 'ltm':
             def _cfg_port(cfg_key, fallback):
                 try:
                     return urlparse(cfg_item.get(cfg_key, "") or "").port or fallback
@@ -2358,7 +2358,7 @@ def _collect_memory_systems(config: dict) -> dict:
                     return fallback
             llm_port = _cfg_port("llm_base_url", 1234)
             embed_port = _cfg_port("embed_base_url", 8001)
-            # servicePort 取抽取端点——MEM0 挂不挂主要看它（embedding 是毫秒级小模型）
+            # servicePort 取抽取端点——LTM 挂不挂主要看它（embedding 是毫秒级小模型）
             entry['servicePort'] = llm_port
             entry['serviceOnline'] = _probe_port('127.0.0.1', llm_port)
             dep = [{'name': 'LM Studio（记忆抽取）', 'port': llm_port,
@@ -2369,10 +2369,10 @@ def _collect_memory_systems(config: dict) -> dict:
             entry['dependsOn'] = dep
             entry['llmModel'] = cfg_item.get("llm_model", "")
             entry['embedModel'] = cfg_item.get("embed_model", "")
-            entry['vecDir'] = '~/.mem0'
-            # MEM0 的记忆抽取由 oMLX 里的 LLM 完成（它没有自带抽取模型），
+            entry['vecDir'] = '~/.ltm'
+            # LTM 的记忆抽取由 oMLX 里的 LLM 完成（它没有自带抽取模型），
             # 所以「抽取正常」等价于「LLM+embedding 都通」= storageOk。
-            # ⚠️ 不能留None，MEM0 恰恰是靠 LLM 抽取的模块。
+            # ⚠️ 不能留None，LTM 恰恰是靠 LLM 抽取的模块。
             entry['extractOk'] = None
             # 抽取耗时与批量上限（provider 里实测踩过的坑，显示出来方便调参）
             entry['batchSize'] = int(cfg_item.get("batch_size", 4))
@@ -2390,7 +2390,7 @@ def _collect_memory_systems(config: dict) -> dict:
             )
             if entry['inUse'] or cfg_item.get('enabled'):
                 entry['storageOk'], entry['memoryCount'], entry['detail'] = \
-                    _probe_mem0(cfg_item)
+                    _probe_ltm(cfg_item)
                 entry['extractOk'] = entry['storageOk']
 
         # —— 本地短期记忆：进程内实现，不依赖任何外部服务 ——
@@ -2409,8 +2409,8 @@ def _collect_memory_systems(config: dict) -> dict:
     }
 
 
-def _probe_openviking(cfg_item: dict):
-    """实测 OpenViking：能否连上、能否取到记忆。
+def _probe_LTM(cfg_item: dict):
+    """实测 Ltm：能否连上、能否取到记忆。
 
     返回 (storage_ok, memory_count, detail)。任何一步失败都返回 False 而不抛异常——
     这个接口是给页面看的，不能因为记忆服务挂了就把整个页面搞崩。
@@ -2422,11 +2422,11 @@ def _probe_openviking(cfg_item: dict):
     try:
         import asyncio
         from concurrent.futures import ThreadPoolExecutor
-        from core.providers.memory.openviking.provider import OpenVikingProvider
+        from core.providers.memory.LTM.provider import Ltmprovider
 
-        provider = OpenVikingProvider(dict(cfg_item or {}))
+        provider = Ltmprovider(dict(cfg_item or {}))
         if not provider._ensure_client():
-            return False, None, '无法连接 OpenViking 服务'
+            return False, None, '无法连接 Ltm 服务'
         provider.init_memory('homebrain', None)
 
         # 真跑一次检索：能返回内容说明存储层可读
@@ -2448,14 +2448,14 @@ def _probe_openviking(cfg_item: dict):
         return False, None, f'{type(e).__name__}: {e}'
 
 
-def _probe_mem0(cfg_item: dict):
-    """实测 MEM0：能否初始化（= LLM/embedding 通）、已存多少条。
+def _probe_ltm(cfg_item: dict):
+    """实测 LTM：能否初始化（= LLM/embedding 通）、已存多少条。
 
     返回 (storage_ok, memory_count, detail)。
     """
     try:
-        from core.providers.memory.mem0.provider import Mem0Provider
-        provider = Mem0Provider(dict(cfg_item or {}))
+        from core.providers.memory.ltm.provider import LtmProvider
+        provider = LtmProvider(dict(cfg_item or {}))
         if not provider.is_healthy():
             return False, None, '初始化失败（检查 oMLX 是否在跑、模型名是否对）'
         stats = provider.stats()

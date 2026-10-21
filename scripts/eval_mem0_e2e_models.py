@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
-"""mem0 抽取模型端到端对比：35B / 8B / 4B（2026-10-06）
+"""ltm 抽取模型端到端对比：35B / 8B / 4B（2026-10-06）
 
 架构澄清（主人 2026-10-06 指出，此前我判断错）：
-    mem0 负责**抽取**候选记忆 → GEV 判停层 `rerank_memory_lines` 负责**筛选**
-    哪些记忆对当前请求有用。所以评价抽取模型的质量，**不该看 mem0 检索的
+    ltm 负责**抽取**候选记忆 → GEV 判停层 `rerank_memory_lines` 负责**筛选**
+    哪些记忆对当前请求有用。所以评价抽取模型的质量，**不该看 ltm 检索的
     首位命中率**（那只是候选顺序），而该看「经GEV 精排后最终选出的记忆
     是否正确」。
 
 本脚本按真实链路测：
-    1. mem0.add()抽取候选记忆（计时）
-    2. mem0.search() 召回候选
+    1. ltm.add()抽取候选记忆（计时）
+    2. ltm.search() 召回候选
     3. **GEV rerank_memory_lines() 精排**（计时）
     4. 报告最终注入 prompt 的记忆，与期望对比
 
 用法：
-    cd server/homebrain-server && ./venv/bin/python scripts/eval_mem0_e2e_models.py
+    cd server/homebrain-server && ./venv/bin/python scripts/eval_ltm_e2e_models.py
 """
 from __future__ import annotations
 
@@ -29,7 +29,7 @@ from pathlib import Path
 # 允许从 scripts/ 目录运行
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-HOME = Path.home() / ".mem0"
+HOME = Path.home() / ".ltm"
 FAISS = str(HOME / "homebrain_faiss")
 
 # 原始对话事实
@@ -62,7 +62,7 @@ MODELS = [
 
 
 def build(llm_model: str):
-    from mem0 import Memory
+    from ltm import Memory
     return Memory.from_config({
         "vector_store": {"provider": "faiss", "config": {
             "path": FAISS, "embedding_model_dims": 1024, "distance_strategy": "cosine"}},
@@ -107,7 +107,7 @@ async def run(tag: str, llm_model: str) -> dict:
     from core.utils.jev_decision import get_jev_decision
     jev = get_jev_decision()
     if not getattr(jev, "memory_enabled", False):
-        print("  ⚠️ GEV memory_enabled=False，改用 mem0 排序结果直接评估")
+        print("  ⚠️ GEV memory_enabled=False，改用 ltm 排序结果直接评估")
         return {"tag": tag, "extract_sec": round(extract_sec, 1),
                 "memories": len(stored), "hits": 0, "total": len(QUERIES),
                 "gev_ms": 0, "search_ms": 0, "note": "GEV 未启用"}
@@ -146,7 +146,7 @@ async def run(tag: str, llm_model: str) -> dict:
 
     total = len(QUERIES)
     print(f"\n  ④ 最终结果   : {hits}/{total} = {hits/total*100:.0f}%")
-    print(f"     mem0 召回延迟中位: {statistics.median(search_lat):.0f}ms")
+    print(f"     ltm 召回延迟中位: {statistics.median(search_lat):.0f}ms")
     print(f"     GEV 精排延迟中位 : {statistics.median(gev_lat):.0f}ms")
 
     return {"tag": tag, "model": llm_model,
@@ -159,7 +159,7 @@ async def run(tag: str, llm_model: str) -> dict:
 
 
 async def main() -> int:
-    print("mem0 抽取模型端到端对比（mem0 抽取 → GEV 精排 → 最终结果）")
+    print("ltm 抽取模型端到端对比（ltm 抽取 → GEV 精排 → 最终结果）")
     results = []
     for tag, model in MODELS:
         results.append(await run(tag, model))
@@ -175,9 +175,9 @@ async def main() -> int:
               f"{str(r['hits'])+'/'+str(r['total']):>10}"
               f"{str(r['search_ms'])+'ms':>10}{str(r['gev_ms'])+'ms':>10}")
 
-    Path("/tmp/mem0_e2e_cmp.json").write_text(
+    Path("/tmp/ltm_e2e_cmp.json").write_text(
         json.dumps(results, ensure_ascii=False, indent=2), encoding="utf-8")
-    print("\n明细: /tmp/mem0_e2e_cmp.json")
+    print("\n明细: /tmp/ltm_e2e_cmp.json")
     return 0
 
 

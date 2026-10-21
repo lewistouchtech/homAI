@@ -99,10 +99,10 @@ async def handle_get_welcome_llm(request):
         cfg, _, _, _ = _load_both()
         llm_section = cfg.get("LLM") or {}
         # 2026-10-05：与 /api/config/providers 用同一口径过滤，否则这里会把
-        # 记忆后端（mem_local_short/openviking）也列进下拉框——
+        # 记忆后端（mem_local_short/LTM）也列进下拉框——
         # 主人反馈「下拉菜单乱，什么都有，还有什么 power 都有」。它们是上游
         # 误放在 LLM: 段的记忆后端，llm.py 里没有实现，选了必然失败。
-        _MEMORY_ONLY = ("mem_local_short", "openviking")
+        _MEMORY_ONLY = ("mem_local_short", "LTM")
         # 记忆后端之外，还要排掉没有实现文件的（routing-hybrid 之类）
         providers = []
         for name, v in llm_section.items():

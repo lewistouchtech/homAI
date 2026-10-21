@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""mem0 抽取模型对比（严格控制变量版，2026-10-06）
+"""ltm 抽取模型对比（严格控制变量版，2026-10-06）
 
 修正前一版的两个错误：
 1. **计时不可信**：四个模型同时常驻 omlx，抢内存带宽（实测生成速度掉到 28 tok/s），
@@ -13,7 +13,7 @@
   - 强制 JSON：prompt 里明确要求不输出推理（看能否提升速度与格式稳定性）
 
 用法：
-    cd server/homebrain-server && ./venv/bin/python scripts/eval_mem0_models_fair.py
+    cd server/homebrain-server && ./venv/bin/python scripts/eval_ltm_models_fair.py
 """
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-HOME = Path.home() / ".mem0"
+HOME = Path.home() / ".ltm"
 FAISS = str(HOME / "cmp_fair")
 
 FACTS = [
@@ -64,8 +64,8 @@ def omlx_status() -> dict:
 
 
 def build(llm_model: str, strict_json: bool):
-    """strict_json=True 时给 mem0 换一条强调直接输出 JSON 的抽取提示词。"""
-    from mem0 import Memory
+    """strict_json=True 时给 ltm 换一条强调直接输出 JSON 的抽取提示词。"""
+    from ltm import Memory
     cfg = {
         "vector_store": {"provider": "faiss", "config": {
             "path": FAISS, "embedding_model_dims": 1024, "distance_strategy": "cosine"}},
@@ -77,7 +77,7 @@ def build(llm_model: str, strict_json: bool):
             "openai_base_url": "http://localhost:8001/v1", "embedding_dims": 1024}},
     }
     if strict_json:
-        # mem0 允许自定义抽取提示词：强调不要输出推理，直接给 JSON
+        # ltm 允许自定义抽取提示词：强调不要输出推理，直接给 JSON
         cfg["custom_fact_extraction_prompt"] = (
             "你是记忆抽取器。**直接输出 JSON，不要任何解释、不要推理过程。**\n"
             "从下面的对话中抽取值得长期记住的事实。\n"
@@ -181,7 +181,7 @@ async def measure(tag: str, llm_model: str, strict_json: bool) -> dict:
 
 
 async def main() -> int:
-    print("mem0 抽取模型对比（控制变量：预热后计时 + 检查输出格式）")
+    print("ltm 抽取模型对比（控制变量：预热后计时 + 检查输出格式）")
     results = []
     for tag, model in MODELS:
         for strict in (False, True):
@@ -198,9 +198,9 @@ async def main() -> int:
               f"{str(r['memories'])+'/'+str(r['facts']):>8}"
               f"{str(r['hits'])+'/'+str(r['total']):>10}")
 
-    Path("/tmp/mem0_fair_cmp.json").write_text(
+    Path("/tmp/ltm_fair_cmp.json").write_text(
         json.dumps(results, ensure_ascii=False, indent=2), encoding="utf-8")
-    print("\n明细: /tmp/mem0_fair_cmp.json")
+    print("\n明细: /tmp/ltm_fair_cmp.json")
     return 0
 
 

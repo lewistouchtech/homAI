@@ -68,12 +68,12 @@ for pid in $(ps aux | grep -E "python.*app\.py|python.*main\.py|python.*run\.py"
     fi
 done
 
-# 杀掉可能残留的 nohup 进程（排除 openviking-server，避免误杀记忆服务）
+# 杀掉可能残留的 nohup 进程（排除 LTM-server，避免误杀记忆服务）
 for pid in $(pgrep -f "homebrain-server" 2>/dev/null || true); do
     if [ "$pid" != "$$" ] && [ "$pid" != "$MY_PPID" ]; then
-        # 检查是否是 openviking 进程，是则跳过
-        if ps -p "$pid" -o command= 2>/dev/null | grep -q "openviking-server"; then
-            echo "[$(date '+%Y-%m-%d %H:%M:%S')] 跳过 openviking 进程: $pid" >> "$LOG_FILE"
+        # 检查是否是 LTM 进程，是则跳过
+        if ps -p "$pid" -o command= 2>/dev/null | grep -q "LTM-server"; then
+            echo "[$(date '+%Y-%m-%d %H:%M:%S')] 跳过 LTM 进程: $pid" >> "$LOG_FILE"
             continue
         fi
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] 杀掉 homebrain 残留进程: $pid" >> "$LOG_FILE"
@@ -150,14 +150,14 @@ else
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] 警告: 进程可能启动失败，请检查日志: $SCRIPT_DIR/tmp/server.log" >> "$LOG_FILE"
 fi
 
-# 自动启动 OpenViking（如果配置了 openviking 记忆）
-if [ -f "$SCRIPT_DIR/data/openviking/ov.conf" ]; then
-    if launchctl print "gui/$(id -u)/com.homebrain.openviking" >/dev/null 2>&1; then
-        echo "[$(date '+%Y-%m-%d %H:%M:%S')] OpenViking 由 launchd 管理，跳过手动启动" >> "$LOG_FILE"
+# 自动启动 Ltm（如果配置了 LTM 记忆）
+if [ -f "$SCRIPT_DIR/data/LTM/ov.conf" ]; then
+    if launchctl print "gui/$(id -u)/com.homebrain.LTM" >/dev/null 2>&1; then
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] Ltm 由 launchd 管理，跳过手动启动" >> "$LOG_FILE"
     elif ! lsof -i :8765 2>/dev/null | grep -q LISTEN; then
-        echo "[$(date '+%Y-%m-%d %H:%M:%S')] 启动 OpenViking 服务..." >> "$LOG_FILE"
-        bash "$SCRIPT_DIR/start_openviking.sh" >> "$LOG_FILE" 2>&1
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] 启动 Ltm 服务..." >> "$LOG_FILE"
+        bash "$SCRIPT_DIR/start_LTM.sh" >> "$LOG_FILE" 2>&1
     else
-        echo "[$(date '+%Y-%m-%d %H:%M:%S')] OpenViking 服务已在运行" >> "$LOG_FILE"
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] Ltm 服务已在运行" >> "$LOG_FILE"
     fi
 fi

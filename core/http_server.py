@@ -61,7 +61,11 @@ from core.api.callpilot_api import register_routes as register_callpilot_routes
 from core.api.notification_api import register_routes as register_notification_routes
 from core.api.email_api import register_routes as register_email_routes
 from core.api.emergency_api import register_routes as register_emergency_routes
-from core.api.openviking_api import register_openviking_routes
+# 长期记忆路由为商业版功能，社区版不提供（公开版已移除该模块）
+try:  # pragma: no cover - 商业版才有该路由
+    from core.api.ltm_api import register_LTM_routes
+except Exception:  # noqa: BLE001
+    register_LTM_routes = None
 from core.api.weather_config_api import handle_get_weather_config, handle_save_weather_config
 from core.api.weather_city_api import handle_city_lookup, handle_city_list
 from core.api.weather_city_api import handle_city_lookup, handle_city_list, handle_lifestyle_indices
@@ -510,7 +514,7 @@ class SimpleHttpServer:
                         web.post("/api/model-providers/activate", activate_model_provider),
                         web.get("/api/config/memory", get_memory_config),
                         web.post("/api/config/update-memory", update_memory_config),
-                        # 长期记忆（mem0 向量库）列表/删除/清空（2026-10-13 WP-6 / D6 权限）
+                        # 长期记忆（ltm 向量库）列表/删除/清空（2026-10-13 WP-6 / D6 权限）
                         web.get("/api/config/memory/entries", list_long_term_memories),
                         web.post("/api/config/memory/entries/delete", delete_long_term_memory),
                         web.post("/api/config/memory/entries/clear", clear_long_term_memories),
@@ -712,7 +716,8 @@ class SimpleHttpServer:
                 register_notification_routes(app)
                 register_email_routes(app)   # 邮箱管家（2026-10-21）
                 register_emergency_routes(app)
-                register_openviking_routes(app)
+                if register_LTM_routes is not None:  # 商业版功能
+                    register_LTM_routes(app)
 
                 # RAGflow 代理 API（搜索走 WebSocketServer.handle_ragflow_search，此处只注册测试和文档列表）
                 app.router.add_get('/api/ragflow/test', ragflow_test_connection)
@@ -1538,7 +1543,7 @@ class SimpleHttpServer:
         "本地LLM":             {"group": "local_service", "note": "本地·自建 OpenAI 兼容服务（无需 Key）"},
         # 下面 2 个不是模型而是「记忆后端」，历史设计混在 LLM 列表里；均为本机/自建
         "mem_local_short":    {"group": "local_service", "note": "本地·短期记忆（不含长期记忆）"},
-        "openviking":         {"group": "local_service", "note": "本地·OpenViking 记忆后端"},
+        "LTM":         {"group": "local_service", "note": "本地·Ltm 记忆后端"},
         # ---- VLLM（视觉模型）----
         "豆包视觉":             {"group": "cloud",         "note": "云端·火山方舟视觉理解模型，需 API Key"},
         "oMLX-Qwen3.6-35B-VL": {"group": "local_service", "note": "本地·MLX 视觉模型服务（127.0.0.1:8001），无需 Key"},
@@ -1613,7 +1618,7 @@ class SimpleHttpServer:
     # 它们该在 Memory 段选，出现在 LLM 下拉框里会让主人切过去然后热更新失败
     # （ValueError: 不支持的LLM类型）。这里从 LLM 列表里滤掉，不动配置文件，
     # 避免影响可能存在的代码依赖。
-    _MEMORY_ONLY_TYPES = ("mem_local_short", "openviking")
+    _MEMORY_ONLY_TYPES = ("mem_local_short", "LTM")
 
     async def handle_get_providers(self, request):
         """获取 ASR/TTS/LLM/VLLM 可用 provider 列表 + 当前选中（供后台下拉）"""
@@ -3870,21 +3875,21 @@ class SimpleHttpServer:
             finally:
                 conn.close()
 
-            # 后台人设是唯一权威源：保存后让身份缓存失效，并异步同步到 OpenViking，
-            # 保证 OpenViking 的 identity.md / soul.md 与后台设置一致
+            # 后台人设是唯一权威源：保存后让身份缓存失效，并异步同步到 Ltm，
+            # 保证 Ltm 的 identity.md / soul.md 与后台设置一致
             if any(k in configs for k in ("name", "nickname", "soul", "identity")):
                 try:
                     from core.utils.assistant_identity import invalidate_cache
-                    from core.utils.openviking_sync import sync_assistant_identity_to_openviking
+                    from core.utils.ltm_sync import sync_assistant_identity_to_LTM
 
                     invalidate_cache()
                     import asyncio as _asyncio
                     _asyncio.get_running_loop().run_in_executor(
-                        None, sync_assistant_identity_to_openviking
+                        None, sync_assistant_identity_to_LTM
                     )
                 except Exception as _sync_err:
                     self.logger.bind(tag="ai_butler_config").warning(
-                        f"同步人设到 OpenViking 失败（不影响保存）: {_sync_err}"
+                        f"同步人设到 Ltm 失败（不影响保存）: {_sync_err}"
                     )
 
             # 唤醒词热更新（2026-10-13 修复）：后台改 wakeWord/name 等键后不必重启服务。

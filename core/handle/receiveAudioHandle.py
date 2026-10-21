@@ -475,7 +475,7 @@ def _drop_queued_turns(conn, keep_seq: int, logger) -> int:
     [2026-10-12 P0 修复的必要一环]
 
     背景：`conn.executor` 是每连接一个 ThreadPoolExecutor，而 `chat()` 是同步阻塞的
-    （LLM 60s 超时、mem0 抽取、工具执行全在里面）。abort 只清音频队列，
+    （LLM 60s 超时、ltm 抽取、工具执行全在里面）。abort 只清音频队列，
     **停不掉已经排进线程池的 future**。于是：
 
         主人连说 4 句 → 4 个 future 排队 → worker 被旧轮占满
@@ -512,7 +512,7 @@ def _drop_queued_turns(conn, keep_seq: int, logger) -> int:
         try:
             logger.bind(tag=TAG).warning(
                 f"[线程池救援] 取消 {cancelled} 个排队中的旧轮次（只保留最新一轮）。"
-                "若这句反复出现，说明单轮 chat 执行过慢，需查 LLM 超时/mem0 抽取"
+                "若这句反复出现，说明单轮 chat 执行过慢，需查 LLM 超时/ltm 抽取"
             )
         except Exception:
             pass
@@ -783,7 +783,7 @@ async def startToChat(conn: "ConnectionHandler", text, speaker: str = None):
     # │   18:19:08 / 18:19:14 / 18:19:20 / ... 共 10 次「提交 LLM chat」  │
     # │   而 chat() 第一行的「大模型收到用户消息」一次都没出现            │
     # │                                                                 │
-    # │ 根因：chat() 是同步阻塞函数（LLM 60s 超时 + mem0 抽取都在里      │
+    # │ 根因：chat() 是同步阻塞函数（LLM 60s 超时 + ltm 抽取都在里      │
     # │ 面），而 conn.executor 是每连接 ThreadPoolExecutor(max_workers=5)。│
     # │ 主人连说几句时：                                                │
     # │   每句都 submit 一个新任务 → 前面几轮占着 worker 不释放 →       │

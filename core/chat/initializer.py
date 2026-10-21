@@ -125,7 +125,7 @@ def _initialize_memory(conn):
     """初始化记忆模块。
 
     ⚠️ 2026-10-13 WP-1：这里传的 `role_id=conn.device_id` **不再是记忆身份**。
-    Mem0Provider 是 websocket_server 的单例（所有连接共用一个实例），
+    LtmProvider 是 websocket_server 的单例（所有连接共用一个实例），
     原来 provider 内部执行 `self.user_id = role_id`，于是「最后一个连上的设备」
     决定全家的记忆归属 —— 真跑复现：管理台 WS 一连（device_id=admin-console），
     所有终端此后的查询与抽取都写到 admin-console 名下（库里 27 条）。
@@ -165,8 +165,8 @@ def _initialize_memory(conn):
     except Exception as e:
         conn.logger.bind(tag=TAG).warning(f"[短期续接] 初始化失败（不影响对话）: {e}")
 
-    if memory_type == "openviking":
-        # OpenViking：恢复会话上下文（M1 会话恢复）
+    if memory_type == "LTM":
+        # Ltm：恢复会话上下文（M1 会话恢复）
         if hasattr(conn.memory, 'get_recent_messages'):
             try:
                 recent_msgs = conn.memory.get_recent_messages(limit=10)

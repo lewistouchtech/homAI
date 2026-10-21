@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 """记忆 scope 解析（2026-10-13 WP-1）
 
-背景（实测确认）：`Mem0Provider` 是 websocket_server 的**单例**，所有连接共用；
+背景（实测确认）：`LtmProvider` 是 websocket_server 的**单例**，所有连接共用；
 原来 `init_memory(role_id=device_id)` 会覆盖全局 `self.user_id`，真跑复现：
     init_memory("web-terminal-56ops5ll") → user_id = web-terminal-56ops5ll
     init_memory("admin-console")         → user_id = admin-console

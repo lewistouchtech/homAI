@@ -15,6 +15,8 @@
 from __future__ import annotations
 
 import json
+import os
+import time
 
 from aiohttp import web
 
@@ -23,6 +25,39 @@ from core.utils.email_manager import email_manager
 routes = web.RouteTableDef()
 
 _LAST_REPORT: dict = {}
+
+
+def _local_origin_allowed(request: web.Request) -> tuple[str, bool]:
+    """只放行「本机来源」：null(file:// 预览面板) / 127.0.0.1 / localhost / 本机 IP。
+
+    不放行任意外站，避免外部网页读取主人邮箱信息。
+    """
+    origin = request.headers.get("Origin", "")
+    host = request.host.split(":")[0]
+    allow = (origin == "null"
+             or origin.startswith("http://127.0.0.1")
+             or origin.startswith("http://localhost")
+             or origin.startswith(f"http://{host}"))
+    return origin, allow
+
+
+def cors_local(fn):
+    """给 handler 补 CORS 头（邮箱规则页可能被 file:// 打开预览面板）
+
+    前端刻意用 `text/plain` 发 POST（简单请求）→ 不触发 CORS 预检，
+    所以这里不需要处理 OPTIONS，只需在响应上加 Allow-Origin。
+    """
+    async def wrapper(request: web.Request):
+        resp = await fn(request)
+        origin, allow = _local_origin_allowed(request)
+        if origin and allow:
+            resp.headers["Access-Control-Allow-Origin"] = origin
+            resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
+            resp.headers["Access-Control-Allow-Methods"] = "GET, POST, DELETE, OPTIONS"
+            resp.headers["Vary"] = "Origin"
+        return resp
+    wrapper.__name__ = fn.__name__
+    return wrapper
 
 
 @routes.get("/api/email/mailboxes")
@@ -135,25 +170,34 @@ async def status(request: web.Request):
 
 
 # ---------------------------------------------------------------- 来源清单
-def _domain_of(sender: str) -> str:
-    s = (sender or "").lower()
-    if "<" in s:
-        s = s.split("<")[-1]
-    s = s.split(">")[0]
-    if "@" in s:
-        return s.split("@")[-1].strip()
-    return s.strip() or "(未知)"
+# 扫描状态与缓存（后台线程跑，结果落 data/.email_sources_cache.json）
+_CACHE_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(
+    os.path.abspath(__file__)))), "data", ".email_sources_cache.json")
+_SCAN = {"scanning": False, "started_at": None, "last_done": None, "error": None}
 
 
-@routes.get("/api/email/sources")
-async def list_sources(request: web.Request):
-    """按发件域聚合的所有未读邮件来源（供网页端逐条定规则）"""
+def _load_cache() -> dict:
+    try:
+        with open(_CACHE_PATH, encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
+def _save_cache(data: dict) -> None:
+    try:
+        os.makedirs(os.path.dirname(_CACHE_PATH), exist_ok=True)
+        with open(_CACHE_PATH, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False)
+    except Exception:
+        pass
+
+
+def _build_sources() -> dict:
+    """真扫一遍（慢，放后台线程）"""
     from collections import Counter, defaultdict
     from core.utils.mailapp_bridge import fetch_unread
-    try:
-        mails = fetch_unread()
-    except Exception as e:
-        return web.json_response({"error": str(e)}, status=500)
+    mails = fetch_unread()
     buckets = defaultdict(lambda: {"count": 0, "accounts": Counter(), "samples": [],
                                    "trash": 0, "important": 0})
     for m in mails:
@@ -173,17 +217,81 @@ async def list_sources(request: web.Request):
         rows.append({
             "domain": dom, "count": b["count"], "trash": b["trash"], "important": b["important"],
             "accounts": dict(b["accounts"]), "samples": b["samples"],
-            "decision": ("清" if dom in (email_manager.settings.get("trash_domains") or []) else
-                         "留" if dom in (email_manager.settings.get("keep_domains") or []) else ""),
         })
+    return {"ts": int(time.time()), "total_unread": len(mails),
+            "domains": len(rows), "rows": rows}
+
+
+def _start_scan() -> None:
+    import asyncio
+    _SCAN.update({"scanning": True, "started_at": int(time.time()), "error": None})
+
+    async def _run():
+        try:
+            data = await asyncio.to_thread(_build_sources)
+            _save_cache(data)
+            _SCAN["last_done"] = int(time.time())
+        except Exception as e:
+            _SCAN["error"] = f"{type(e).__name__}: {e}"
+        finally:
+            _SCAN["scanning"] = False
+
+    try:
+        asyncio.get_running_loop().create_task(_run())
+    except RuntimeError:
+        # 没有事件循环（同步调用场景）→ 直接同步跑
+        try:
+            _save_cache(_build_sources())
+            _SCAN["last_done"] = int(time.time())
+        except Exception as e:
+            _SCAN["error"] = f"{type(e).__name__}: {e}"
+        finally:
+            _SCAN["scanning"] = False
+
+
+def _domain_of(sender: str) -> str:
+    s = (sender or "").lower()
+    if "<" in s:
+        s = s.split("<")[-1]
+    s = s.split(">")[0]
+    if "@" in s:
+        return s.split("@")[-1].strip()
+    return s.strip() or "(未知)"
+
+
+@routes.get("/api/email/sources")
+@cors_local
+async def list_sources(request: web.Request):
+    """来源清单：**立即返回缓存**；缓存缺失/过期则后台开扫，前端轮询。
+
+    ⚠️ 必须异步（主人 2026-10-21 报「一直显示正在扫描」→ 查实因）：
+       扫 1000+ 封邮件要走 4700+ 次 Apple Event，**同步要 100~180 秒**，
+       浏览器请求必然被中途掐断 → 页面永远停在「正在扫描」。
+    """
+    cache = _load_cache()
+    age = int(time.time()) - int(cache.get("ts", 0) or 0)
+    if (not cache or age > 300) and not _SCAN["scanning"]:
+        _start_scan()
+    trash = email_manager.settings.get("trash_domains", []) or []
+    keep = email_manager.settings.get("keep_domains", []) or []
+    for r in cache.get("rows", []):
+        r["decision"] = ("清" if r["domain"] in trash else
+                         "留" if r["domain"] in keep else "")
     return web.json_response({
-        "total_unread": len(mails), "domains": len(rows), "rows": rows,
-        "trash_domains": email_manager.settings.get("trash_domains", []),
-        "keep_domains": email_manager.settings.get("keep_domains", []),
+        "scanning": _SCAN["scanning"],
+        "last_done": _SCAN["last_done"],
+        "error": _SCAN["error"],
+        "cache_age_sec": age,
+        "total_unread": cache.get("total_unread", 0),
+        "domains": cache.get("domains", 0),
+        "rows": cache.get("rows", []),
+        "trash_domains": trash,
+        "keep_domains": keep,
     })
 
 
 @routes.post("/api/email/domains")
+@cors_local
 async def set_domain_rules(request: web.Request):
     """批量设置发件域规则：{"trash": [...], "keep": [...]}"""
     try:
@@ -202,6 +310,7 @@ async def set_domain_rules(request: web.Request):
 
 
 @routes.post("/api/email/clean-now")
+@cors_local
 async def clean_now(request: web.Request):
     """按当前规则立刻清理一轮（垃圾 → 移到废纸篓，可恢复）"""
     try:

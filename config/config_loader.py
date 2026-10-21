@@ -329,15 +329,15 @@ def merge_configs(default_config, custom_config):
                                "access_key_id", "access_key_secret", "api_secret")
                 _LOCAL_TYPES = ("fun_local", "sherpa_onnx_local", "vosk", "funasr_nano",
                                 "fun_server", "moss_nano", "mem_local_short",
-                                "openviking")
-                # 记忆后端（mem_local_short/openviking）被上游
+                                "LTM")
+                # 记忆后端（mem_local_short/LTM）被上游
                 # 误放在 LLM: 段里，但 llm.py 没有它们的实现，选中会让服务启动失败。
                 # 2026-10-05 主人/我自己连续踩到两次，这里额外兜一层。
-                if mod == "LLM" and cur in ("mem_local_short", "openviking"):
+                if mod == "LLM" and cur in ("mem_local_short", "LTM"):
                     real_llm = [n for n, c in avail.items()
                                 if isinstance(c, dict)
                                 and str(c.get("type", "")) not in
-                                ("mem_local_short", "openviking")]
+                                ("mem_local_short", "LTM")]
                     if real_llm:
                         selected[mod] = real_llm[0]
                         print(f"[config] ⚠️ selected_module.LLM 指向记忆后端 {cur!r}，"
